@@ -2,7 +2,7 @@ import './styles/CreatePlaylistCard.css';
 import React, { useState, useEffect } from 'react';
 import * as u from './utils';
 
-function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess, token, userId }) {
+function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess, token, firebaseUserId }) {
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [cardMode, setCardMode] = useState('newMode');
   const [creatingNewPlaylist, setCreatingNewPlaylist] = useState(false);
@@ -26,35 +26,40 @@ function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess,
 
   const handleSubmitNewPlaylist = () => {
     setCreatingNewPlaylist(true)
-    u.createSpotifyPlaylist(spotifyUserInfo.id, spotifyToken, newPlaylistName).then(({ data, status }) => {
-      if (status === 201 | status === 200) {
-        const { id, name } = data;
-        u.createFirebasePlaylist(id, name, userId, token).then(fbRes => {
-          if (status === 201 | status === 200) {
-            setCreatingNewPlaylist(false);
-            newPlaylistSuccess(true)
+    // create spotify playlist
+    u.createSpotifyPlaylist(spotifyUserInfo.id, spotifyToken, newPlaylistName).then(({ status, data }) => {
+      if ([200, 201].includes(status)) {
+        const { id: spotifyPlaylistId, name: spotifyPlaylistName } = data;
+        // create playlist object on the FB /playlists endpoint - doing this, if successful, should then trigger creation of metadata object
+        const playlistData = {
+          chatLog: '',
+          posts: [{ id: 123912 }],
+          spotifyUserId: spotifyUserInfo.id,
+          spotifyPlaylistId: spotifyPlaylistId,
+          spotifyPlaylistName: spotifyPlaylistName,
+        };
 
-          } else {
-            setCreatingNewPlaylist(false);
-            newPlaylistSuccess(false)
-            // delete the new playlist we created on spoti - can't delete spotify playlist via API :/ - could handle FB first, but we wanted the spotify PL id for that...
-            console.log('posting new playlist info to firebase failed.')
-          }
+        u.createOrUpdateFirebasePlaylist('POST', firebaseUserId, token, playlistData).then(({ success }) => {
+          newPlaylistSuccess(success)
+          setCreatingNewPlaylist(false);
+          setNewPlaylistName('');
+          setCardMode('newMode')
         })
       } else {
-        setCreatingNewPlaylist(false);
         newPlaylistSuccess(false)
+        setCreatingNewPlaylist(false);
+        setNewPlaylistName('');
+        setCardMode('newMode')
         console.log('creating spotify playlist failed.')
       }
-    })
-
+    });
   };
 
   const newMode = () => {
     return (
       <div className="newMode">
         <p>Create +</p>
-        <button onClick={handleStartCreate}>Create</button>
+        <button onClick={handleStartCreate} type="button">Create</button>
       </div >
     )
   }

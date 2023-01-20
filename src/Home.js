@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 import * as u from './utils';
 import PlaylistCard from './PlaylistCard';
@@ -9,7 +9,7 @@ import './styles/Home.css';
 
 function Home({ handleLogout, userId, userEmail, token, spotifyUserInfo }) {
   let history = useHistory();
-  // let location = useLocation();
+
   const spotifyToken = localStorage.getItem('spotifyToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
 
@@ -20,24 +20,24 @@ function Home({ handleLogout, userId, userEmail, token, spotifyUserInfo }) {
     if (!token) {
       history.push('login');
     }
-    u.getUserFirebasePlaylists(firebaseUserId, token).then(({ data, status }) => {
+    u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(({ data, status }) => {
       if (status === 200) {
-        // insert an 'if data = something, not nothing' block for this
-        const userPlaylists = Object.values(data.playlists);
-        setUserPlaylists(userPlaylists);
+        if (data) {
+          const userPlaylists = Object.values(data.playlistMetas);
+          setUserPlaylists(userPlaylists);
+        }
       }
     })
     // console.log(spotifyUserInfo, ' <-- spotifyUserInfo')
   }, []);
 
-
   const newPlaylistSuccess = (success) => {
     if (success) {
       toast('Playlist created!', { duration: 1500 })
       // pull down users playlists again, so we can display the newly-created playlist
-      u.getUserFirebasePlaylists(firebaseUserId, token).then(({ data, status }) => {
+      u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(({ data, status }) => {
         if (status === 200) {
-          const userPlaylists = Object.values(data.playlists);
+          const userPlaylists = Object.values(data.playlistMetas);
           setUserPlaylists(userPlaylists);
         }
       })
@@ -63,7 +63,7 @@ function Home({ handleLogout, userId, userEmail, token, spotifyUserInfo }) {
         spotifyUserInfo={spotifyUserInfo}
         newPlaylistSuccess={newPlaylistSuccess}
         token={token}
-        userId={userId}
+        firebaseUserId={firebaseUserId}
       />
       <Toaster />
     </div >
