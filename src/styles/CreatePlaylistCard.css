@@ -1,0 +1,9 @@
+.CreatePlaylistCard {
+  border: 2px dashed purple;
+}
+
+.newMode {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
