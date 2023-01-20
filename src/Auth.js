@@ -24,6 +24,7 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
         console.log(data, ' <--- data in .then of Auth')
         const expirationDate = new Date(new Date().getTime() + (data.expiresIn * 1000))
         localStorage.setItem('token', data.idToken);
+        localStorage.setItem('firebaseUserId', data.localId);
         localStorage.setItem('expirationDate', expirationDate);
         setLoginPending(false);
         updateLoggedIn(data);

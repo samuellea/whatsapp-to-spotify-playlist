@@ -4,6 +4,7 @@ import { Route, BrowserRouter as Router } from "react-router-dom";
 import Home from './Home';
 import Auth from './Auth';
 import Signup from './Signup';
+import Update from './Update';
 import axios from 'axios';
 
 function App() {
@@ -62,12 +63,13 @@ function App() {
 
   const handleLogout = () => {
     console.log('handleLogout');
-    localStorage.removeItem('token');
-    localStorage.removeItem('expirationDate');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('spotifyToken');
-    localStorage.removeItem('spotifyUserId');
-    localStorage.removeItem('spotifyUserDisplayName');
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('expirationDate');
+    // localStorage.removeItem('userId');
+    // localStorage.removeItem('spotifyToken');
+    // localStorage.removeItem('spotifyUserId');
+    // localStorage.removeItem('spotifyUserDisplayName');
+    localStorage.clear();
     setLoggedIn(false);
     setToken(null);
     setUserId(null);
@@ -91,20 +93,18 @@ function App() {
   useEffect(() => {
     // Component did mount
     const token = localStorage.getItem('token');
-    const persistentUserId = localStorage.getItem('userId');
     if (!token) {
       handleLogout()
     } else {
       const expirationDate = new Date(localStorage.getItem('expirationDate'));
-      const persistentUserId = localStorage.getItem('userId');
+      const firebaseUserId = localStorage.getItem('firebaseUserId');
       const timeRemaining = ((expirationDate.getTime() - new Date().getTime()));
-      console.log('timeRemaining: ' + timeRemaining)
       if (expirationDate <= new Date()) { // HAD a valid token, but it has since expired
         handleLogout()
       } else { // HAD a valid token, AND the current time is still less than the expirationDate
         setLoggedIn(true);
         setToken(token);
-        setUserId(persistentUserId)
+        setUserId(firebaseUserId)
       }
     };
   }, []);
@@ -130,6 +130,9 @@ function App() {
         </Route>
         <Route path="/spotifylogin">
           {spotifyLoginScreen()}
+        </Route>
+        <Route path="/update/:playlist_id">
+          <Update />
         </Route>
       </Router>
     </div >

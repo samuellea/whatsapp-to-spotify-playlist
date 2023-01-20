@@ -8,23 +8,35 @@ export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) =>
     headers: { 'Authorization': 'Bearer ' + spotifyToken },
     data: {
       'name': newPlaylistName,
-      'description': 'New playlist description',
+      'description': 'Created and maintained using whatsapp-to-sptofiy-playlist',
       'public': true,
     }
   });
 };
 
-export const createFirebasePlaylist = (newPlaylistName, firebaseToken) => {
-  const data = { id: 1, info: newPlaylistName };
-  const jsonifiedData = JSON.stringify(data);
-  console.log(jsonifiedData);
+export const createFirebasePlaylist = (newSpotifyPlaylistId, newSpotifyPlaylistName, userId, token) => {
+  const data = { spotifyPlaylistId: newSpotifyPlaylistId, spotifyPlaylistName: newSpotifyPlaylistName, totalTracks: 0 };
   return axios({
-    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/playlists.json?auth=${firebaseToken}`,
+    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/playlists.json?auth=${token}`,
     method: 'POST',
-    data: jsonifiedData, // you need to stringify this yourself
+    data: JSON.stringify(data), // you need to stringify this yourself
     headers: {
       'Content-Type': 'application/json'
     }
+  });
+};
+
+export const getUserFirebasePlaylists = (userId, token) => {
+
+  /*
+   firebaseAxios.get(`/artists.json?auth=${token}&orderBy="artist"&equalTo=${artistEncrypted}`).then(({ dat
+  */
+  console.log('userId: ' + userId);
+
+  return axios({
+    // url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/playlists.json?auth=${token}`,
+    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json?auth=${token}`,
+    method: 'GET',
   });
 };
 

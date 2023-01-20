@@ -1,0 +1,20 @@
+.PlaylistCard {
+  border: 2px dashed green;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.PlaylistCard button {
+  width: 70px;
+}
+
+.PlaylistCard h4 {
+  margin: 0;
+}
+
+.PlaylistCard button {
+  height: 100%;
+}

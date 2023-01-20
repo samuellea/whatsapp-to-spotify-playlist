@@ -1,5 +1,10 @@
 .CreatePlaylistCard {
   border: 2px dashed purple;
+  height: 50px;
+}
+
+.CreatePlaylistCard button {
+  width: 70px;
 }
 
 .newMode {

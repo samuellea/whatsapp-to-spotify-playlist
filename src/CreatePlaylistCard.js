@@ -2,7 +2,7 @@ import './styles/CreatePlaylistCard.css';
 import React, { useState, useEffect } from 'react';
 import * as u from './utils';
 
-function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, createNewPlaylist, token }) {
+function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess, token, userId }) {
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [cardMode, setCardMode] = useState('newMode');
   const [creatingNewPlaylist, setCreatingNewPlaylist] = useState(false);
@@ -26,11 +26,28 @@ function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, createNewPlaylist, 
 
   const handleSubmitNewPlaylist = () => {
     setCreatingNewPlaylist(true)
-    u.createFirebasePlaylist(newPlaylistName, token);
-    // u.createSpotifyPlaylist(spotifyUserId, spotifyToken, newPlaylistName).then(spotifyRes => {
-    //   setCreatingNewPlaylist(false);
-    //   createNewPlaylist(spotifyRes);
-    // })
+    u.createSpotifyPlaylist(spotifyUserInfo.id, spotifyToken, newPlaylistName).then(({ data, status }) => {
+      if (status === 201 | status === 200) {
+        const { id, name } = data;
+        u.createFirebasePlaylist(id, name, userId, token).then(fbRes => {
+          if (status === 201 | status === 200) {
+            setCreatingNewPlaylist(false);
+            newPlaylistSuccess(true)
+
+          } else {
+            setCreatingNewPlaylist(false);
+            newPlaylistSuccess(false)
+            // delete the new playlist we created on spoti - can't delete spotify playlist via API :/ - could handle FB first, but we wanted the spotify PL id for that...
+            console.log('posting new playlist info to firebase failed.')
+          }
+        })
+      } else {
+        setCreatingNewPlaylist(false);
+        newPlaylistSuccess(false)
+        console.log('creating spotify playlist failed.')
+      }
+    })
+
   };
 
   const newMode = () => {
