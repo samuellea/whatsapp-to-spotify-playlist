@@ -2,6 +2,7 @@ import './styles/Update.css';
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from "react-router-dom";
 import * as u from './utils';
+import * as h from './helpers';
 
 function Update() {
   let history = useHistory();
@@ -10,12 +11,20 @@ function Update() {
   const [inputText, setInputText] = useState('');
   const [infoLoading, setInfoLoading] = useState(false);
   const [youtubePostsFound, setYoutubePostsFound] = useState(false);
+  const [validInputText, setValidInputText] = useState(false);
 
   const token = localStorage.getItem('token');
+  const spotifyToken = localStorage.getItem('spotifyToken');
 
   useEffect(() => {
     // trigger a call to FB /playlists endpoint for this playlist obj - but where to store? Here, in update? Or up in home? Or even App?
   }, []);
+
+  useEffect(() => {
+    const inputTextIsValid = h.inputTextIsValid(inputText);
+    setValidInputText(inputTextIsValid);
+  }, [inputText]);
+
 
   const handleChange = (e) => {
     setInputText(e.target.value)
@@ -23,29 +32,48 @@ function Update() {
 
   const handleSubmit = () => {
     setInfoLoading(true);
-    // STEP ONE - determine NEW messages in input text by comparing input text with any pre-existing chatlogs for this playlist (if they exist on Firebase)
-    // pull down this playlist's playlistObj from firebase
-    u.getFirebasePlaylist(playlist_id, token).then(({ status, data }) => {
+    // pull down the Firebase object for this playlist
+    u.getFirebasePlaylist(playlist_id, token).then(async ({ status, data }) => {
       if ([200, 201].includes(status)) {
+        // TO-DO: handle data being returned but empty?
         const playlistObj = Object.values(data)[0];
         const { chatLog, posts } = playlistObj;
-        const chatLogSplit = u.splitTextIntoIndividualMessages(chatLog);
-        const inputTextSplit = u.splitTextIntoIndividualMessages(inputText); ⭐⭐⭐⭐⭐ // REFACTOR SPLITTEXTINTOINDIVUDALMESSAGES to just do into messages, atm its doing it into posts
-        console.log(chatLogSplit);
-        console.log(inputTextSplit);
+        // determine new messages by comparing input text with chat log
+        const chatLogSplit = h.splitTextIntoIndividualMessages(chatLog);
+        const inputTextSplit = h.splitTextIntoIndividualMessages(inputText);
+        const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
+        // extract posts from these new messages
+        const newPosts = h.splitIndividualMessagesIntoPosts(newMessages);
+        console.log(newPosts)
 
-        // if (chatLog.length) {
-        //   // you've updated this playlist before, so let's check to see if there are any NEW messages in the input text since the
-        //   // last message in the old chat log.
-        //   // So, split chat log into individual messages
-        //   u.splitTextIntoIndividualMessages(inputText)
-        // } else {
-        //   // this playlist's chat log is empty, meaning you haven't updated it using input text before!
-        //   // that's fine, don't need to find 'newest' messages in the input text - THEY'RE ALL new!
-        // }
+        // if some of the posts are youtube links, find the closest matching results for these on spotify
+        if (newPosts.some(e => /youtu.*/g.test(e.linkURL))) {
+          const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
+          const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(newPosts, youtubeApiKey, spotifyToken);
+          console.log('🍿 --------------------');
+          console.log(videoDataObjs);
+          console.log('💿 --------------------');
+          console.log(spotifyDataObjs);
+        }
 
-      };
+      } else {
+        // handle error getting this playlist from firebase - server error, bad request, 
+      }
     })
+  }
+
+  const inputTextInfo = () => {
+    if (!inputText.length) return <p>Paste a WhatsApp chat export .txt file here</p>
+    if (inputText.length && !validInputText) {
+      return (
+        <div className="inputTextWarning">
+          <p>The text you've pasted does not appear to either: </p>
+          <p>- be a correctly formatted WhatsApp chat text export</p>
+          <p>- contain any valid Spotify or Youtube links</p>
+        </div>
+      );
+    }
+    if (inputText.length && validInputText) return <h2>✅</h2>
   }
 
   return (
@@ -60,10 +88,10 @@ function Update() {
             <h1>Youtube Conversion Screen</h1>
             : <textarea id="w3review" name="w3review" onChange={handleChange}></textarea>
         }
-        some info
+        {inputTextInfo()}
       </div>
       <div className="buttonArea">
-        <button id="submitButton" type="button" onClick={handleSubmit} disabled={inputText.length === 0}>Submit</button>
+        <button id="submitButton" type="button" onClick={handleSubmit} disabled={!validInputText}>Submit</button>
       </div>
     </div>
   )

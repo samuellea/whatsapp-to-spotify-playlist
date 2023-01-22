@@ -1,10 +1,5 @@
 import axios from 'axios';
-
-export const spotiOrYTRegex = () => {
-  const spotiYTRegexPattern = '(open.spotify.com\/track\/.*)|(youtu.be\/.*)|(youtube.com\/.*)'
-  const spotifyOrYoutubeLinkRegex = new RegExp(`${spotiYTRegexPattern}`, 'g');
-  return spotifyOrYoutubeLinkRegex;
-};
+import * as accents from 'remove-accents';
 
 export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) => {
   return axios({
@@ -80,44 +75,107 @@ export const getFirebasePlaylist = (spotifyPlaylistId, token) => {
 };
 
 
-// ?orderBy="spotifyPlaylistId"&equalTo=${spotifyPlaylistId}
+export const getYoutubeVideosAndClosestSpotifyMatches = async (posts, youtubeApiKey, spotifyToken) => {
+  // HANDLE ANY YOUTUBE LINKS
+  // get just the postObjs that are youtube videos
+  const youtubePosts = [...posts.filter(e => e.linkType === 'youtube')];
 
-export const splitTextIntoIndividualMessages = (inputText) => {
-  const individualMessages = inputText.trim().split(/(?=^\d{1,2}\/\d{1,2}\/\d{4})/m).filter(Boolean)
+  const youtubeApiBaseURL1 = 'https://content-youtube.googleapis.com/youtube/v3/videos?id=';
+  const youtubeApiBaseURL2 = `&part=snippet%2CcontentDetails%2Cstatistics&key=${youtubeApiKey}`;
 
-  // iterate over individualMessages
-  const messageDateTimeRegex = /\w{2}\/\w{2}\/\w{4},\s{1}\w{2}\:\w{2}/g
-  const allPostsCrude = [];
-  let postCounter = 0;
+  if (youtubePosts.length) {
+    // extract the YT video IDs from those, and create GET promises with them.
+    const videoDataQueries = youtubePosts.map(youtubePost => {
+      const youtubeIDRegex = /(?<=v=|v\/|vi=|vi\/|youtu.be\/)[a-zA-Z0-9_-]*/g;
+      const videoID = youtubePost.linkURL.match(youtubeIDRegex);
+      const youtubeQuery = `${youtubeApiBaseURL1}${videoID}${youtubeApiBaseURL2}`;
+      return youtubeQuery;
+    })
 
-  for (let i = 0; i <= individualMessages.length; i++) {
-    const singleMessage = individualMessages[i];
-    if (spotiOrYTRegex().test(singleMessage)) { // if this message contains one or more Spoti or YT links...
-      // grab required data
-      const dateTime = singleMessage.match(messageDateTimeRegex)[0]; // 14/01/2023, 15:00
-      const poster = singleMessage.match(/-\s{1}.*:/g)[0].match(/-\s{1}(\S*)/g)[0].slice(2).replace(/\:$/, ''); // 'Sam'
-      const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())].map(arrEl => arrEl[0].trim());
+    const youtubeGetResponses = await Promise.all(
+      videoDataQueries.map(async (query) => (await axios.get(query)))
+    );
 
-      // iterate over all Spoti or YT links in this message, and compose a postObj for each link found
-      spotiOrYTLinks.forEach(link => {
-        const decideLinkType = (urlString) => {
-          let linkType = 'spotify';
-          if (/youtu.*/g.test(urlString)) linkType = 'youtube';
-          return linkType;
-        };
+    const videoDataObjs = youtubeGetResponses.map(({ data }) => {
+      const videoData = {};
+      if (!data || !data.items.length) {
+        return null;
+      } else {
+        videoData.title = data.items[0].snippet.title;
+        videoData.thumbnail = data.items[0].snippet?.thumbnails.default.url;
+        videoData.youtubeID = data.items[0].id;
+        return videoData;
+      }
+    })
 
-        postCounter++;
-        const postObj = {
-          postId: postCounter,
-          poster: poster,
-          dateTime: dateTime,
-          linkType: decideLinkType(link),
-          linkURL: link,
-        };
-        // then push this postObj into allPostsCrude
-        allPostsCrude.push(postObj);
-      });
-    }
+    // search Spotify API using these returned titles
+    const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${el.title}&type=track&limit=5` : null);
+
+    const spotifyGetResponses = await Promise.all(
+      spotifySearchQueries.map(async (query) => {
+        if (!query) { return null } else {
+          return await axios.get(query, {
+            headers: {
+              Authorization: `Bearer ${spotifyToken}`
+            }
+          })
+        }
+      })
+    );
+
+    // see if we can decide out of the 5 spotify tracks returned for each search with a video title
+    // WHICH is the most likely correct result.
+    // return the FIRST result in either an array of tracks scored for similarity with the youtube title,
+    // or the original array of 5 (the limit) tracks returned to us for each search by Spotify.
+
+    const closestMatchInEachSpotifySearchResponse = spotifyGetResponses.map((spotiRes, i) => {
+      const correspondingVideoTitle = videoDataObjs[i] ? accents.remove(videoDataObjs[i].title) : null;
+      if (!spotiRes) { return null } else {
+
+        const fiveTracksCondensed = spotiRes.data.tracks.items.map(item => {
+          const title = accents.remove(item.name);
+          const artists = accents.remove(item.artists.map(artist => artist.name).join(' '));
+          const titleAndArtists = [title, artists].join(' ');
+          return titleAndArtists;
+        })
+
+        const fiveTracksScored = fiveTracksCondensed.map((titleAndArtistsJoined, i) => {
+          const scoreSimilarity = (aVideoTitle, aString) => {
+            let count = 0;
+            const videoTitleTerms = aVideoTitle.split(' ').filter(term => {
+              const termsToRemove = ['&', '-', '+'];
+              if (!termsToRemove.includes(term)) return term;
+            });
+            videoTitleTerms.forEach(term => aString.includes(term) ? count++ : null)
+            return count;
+          };
+          const similarity = scoreSimilarity(correspondingVideoTitle, titleAndArtistsJoined);
+          return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
+        })
+
+        // choose the most likely index of spotiRes.data.tracks.items
+        const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
+        const highestScoringCandidates = fiveTracksScored.filter(e => e.similarity === highestScore);
+        const highestScoringCandidate = highestScoringCandidates[0];
+        return spotiRes.data.tracks.items[highestScoringCandidate.itemsIndex];
+      }
+
+    });
+
+    const spotifyDataObjs = closestMatchInEachSpotifySearchResponse.map((el) => {
+      if (!el) { return null; } else {
+        const spotifyTrackData = {};
+        spotifyTrackData.artist = el.artists.map(artist => artist.name).join(', ');
+        spotifyTrackData.title = el.name;
+        spotifyTrackData.thumbnail = el.album.images[el.album.images.length - 1];
+        spotifyTrackData.spotifyTrackID = el.id;
+        return spotifyTrackData;
+      };
+    });
+    // console.log('🍿 --------------------');
+    // console.log(videoDataObjs);
+    // console.log('💿 --------------------');
+    // console.log(spotifyDataObjs);
+    return { videoDataObjs, spotifyDataObjs };
   };
-  return allPostsCrude;
 };
