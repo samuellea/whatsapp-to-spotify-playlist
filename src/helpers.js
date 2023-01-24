@@ -67,3 +67,10 @@ export const inputTextIsValid = (inputText) => {
   }
   return isValid;
 };
+
+export const mockSleep = async (milliseconds) => {
+  const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const sleep = async (fn, ...args) => await timeout(milliseconds);
+  await sleep();
+  return;
+};

@@ -1,6 +1,8 @@
 import './styles/Update.css';
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from "react-router-dom";
+import YoutubeConversionInterface from './YoutubeConversionInterface';
+import InputTextInterface from './InputTextInterface';
 import * as u from './utils';
 import * as h from './helpers';
 
@@ -10,8 +12,9 @@ function Update() {
 
   const [inputText, setInputText] = useState('');
   const [infoLoading, setInfoLoading] = useState(false);
-  const [youtubePostsFound, setYoutubePostsFound] = useState(false);
   const [validInputText, setValidInputText] = useState(false);
+  const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] })
+  const [newPosts, setNewPosts] = useState([]);
 
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
@@ -25,12 +28,19 @@ function Update() {
     setValidInputText(inputTextIsValid);
   }, [inputText]);
 
+  const handleGoBack = () => {
+    setInputText('');
+    setInfoLoading(false)
+    setValidInputText(false)
+    setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] })
+    history.goBack()
+  };
 
-  const handleChange = (e) => {
+  const handleChangeTextArea = (e) => {
     setInputText(e.target.value)
   }
 
-  const handleSubmit = () => {
+  const handleSubmitInputText = () => {
     setInfoLoading(true);
     // pull down the Firebase object for this playlist
     u.getFirebasePlaylist(playlist_id, token).then(async ({ status, data }) => {
@@ -47,13 +57,12 @@ function Update() {
         console.log(newPosts)
 
         // if some of the posts are youtube links, find the closest matching results for these on spotify
-        if (newPosts.some(e => /youtu.*/g.test(e.linkURL))) {
+        if (newPosts.some(e => e.linkType === 'youtube')) {
           const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
           const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(newPosts, youtubeApiKey, spotifyToken);
-          console.log('🍿 --------------------');
-          console.log(videoDataObjs);
-          console.log('💿 --------------------');
-          console.log(spotifyDataObjs);
+          setInfoLoading(false);
+          setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
+          setNewPosts(newPosts);
         }
 
       } else {
@@ -62,37 +71,29 @@ function Update() {
     })
   }
 
-  const inputTextInfo = () => {
-    if (!inputText.length) return <p>Paste a WhatsApp chat export .txt file here</p>
-    if (inputText.length && !validInputText) {
-      return (
-        <div className="inputTextWarning">
-          <p>The text you've pasted does not appear to either: </p>
-          <p>- be a correctly formatted WhatsApp chat text export</p>
-          <p>- contain any valid Spotify or Youtube links</p>
-        </div>
-      );
-    }
-    if (inputText.length && validInputText) return <h2>✅</h2>
+  const handleConvertedPosts = (convertedPosts) => {
+    console.log('NEW POSTS --------------------');
+    console.log(newPosts)
+    console.log('CONVERTED POSTS --------------------');
+    console.log(convertedPosts);
   }
+
 
   return (
     <div className="Update">
-      <button type="button" onClick={() => history.goBack()}>{'<- Back'}</button>
+      <button type="button" onClick={handleGoBack}>{'<- Back'}</button>
       <h1>Update page</h1>
 
       <div className="infoArea">
         {infoLoading ?
           <h1>⌛</h1>
-          : youtubePostsFound ?
-            <h1>Youtube Conversion Screen</h1>
-            : <textarea id="w3review" name="w3review" onChange={handleChange}></textarea>
+          : convertYoutubePosts.youtubePosts.length
+            ? <YoutubeConversionInterface convertYoutubePosts={convertYoutubePosts} handleConvertedPosts={handleConvertedPosts} />
+            : <InputTextInterface inputText={inputText} validInputText={validInputText} handleChangeTextArea={handleChangeTextArea} handleSubmitInputText={handleSubmitInputText} />
         }
-        {inputTextInfo()}
       </div>
-      <div className="buttonArea">
-        <button id="submitButton" type="button" onClick={handleSubmit} disabled={!validInputText}>Submit</button>
-      </div>
+
+
     </div>
   )
 };

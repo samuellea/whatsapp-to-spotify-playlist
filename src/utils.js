@@ -83,6 +83,8 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (posts, youtubeApi
   const youtubeApiBaseURL1 = 'https://content-youtube.googleapis.com/youtube/v3/videos?id=';
   const youtubeApiBaseURL2 = `&part=snippet%2CcontentDetails%2Cstatistics&key=${youtubeApiKey}`;
 
+  console.log(youtubePosts)
+
   if (youtubePosts.length) {
     // extract the YT video IDs from those, and create GET promises with them.
     const videoDataQueries = youtubePosts.map(youtubePost => {
@@ -96,19 +98,20 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (posts, youtubeApi
       videoDataQueries.map(async (query) => (await axios.get(query)))
     );
 
-    const videoDataObjs = youtubeGetResponses.map(({ data }) => {
-      const videoData = {};
+    // fetch the title, thumb and YT video ID for each of these youtube posts
+    const videoDataObjs = youtubeGetResponses.map(({ data }, index) => {
+      let videoData = {};
       if (!data || !data.items.length) {
-        return null;
+        videoData = null;
       } else {
         videoData.title = data.items[0].snippet.title;
         videoData.thumbnail = data.items[0].snippet?.thumbnails.default.url;
         videoData.youtubeID = data.items[0].id;
-        return videoData;
       }
+      return videoData;
     })
 
-    // search Spotify API using these returned titles
+    // search Spotify API using these returned YT titles
     const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${el.title}&type=track&limit=5` : null);
 
     const spotifyGetResponses = await Promise.all(
@@ -176,6 +179,10 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (posts, youtubeApi
     // console.log(videoDataObjs);
     // console.log('💿 --------------------');
     // console.log(spotifyDataObjs);
-    return { videoDataObjs, spotifyDataObjs };
-  };
+    const spotifyDataObjsWithCorrespondingPostIDs = spotifyDataObjs.map((obj, i) => ({ postId: youtubePosts[i].postId, data: obj ? { ...obj } : null }));
+
+    return { videoDataObjs, spotifyDataObjs: spotifyDataObjsWithCorrespondingPostIDs };
+  } else {
+    return null;
+  }
 };

@@ -1,0 +1,198 @@
+.ChangeModal {
+  height: 400px;
+  width: 90%;
+  /* width: 90%; */
+  background-color: lightgray;
+  left: 4%;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.TrackInfo {
+  /* border: 1px solid purple; */
+  height: 95%;
+  width: 95%;
+  display: grid;
+  grid-template: 40% 20% 15% 25% / 1fr;
+}
+
+.TrackArtContainer {
+  /* border: 1px solid red; */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  /* padding-bottom: 5px; */
+}
+
+.SpotifyThumbnail {
+  height: 90%;
+  width: auto;
+}
+
+.TitleArtistsContainer {
+  /* border: 3px solid orange; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: 300;
+}
+
+.TitleContainer {
+  /* border: 1px solid green; */
+  font-size: 18px;
+}
+
+.ArtistsContainer {
+  /* border: 1px solid hotpink; */
+  font-size: 14px;
+}
+
+.InputContainer {
+  /* border: 1px solid blue; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.InputAndErrorContainer {
+  /* border: 1px solid red; */
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template: 75% 25% / 1fr;
+}
+
+.InputBarAndButtonContainer {
+  grid-area: 1/1/2/2;
+  /* border: 1px solid orange; */
+  display: grid;
+  grid-template: 1fr / 85% 15%;
+}
+
+.InputBarContainer {
+  grid-area: 1/1/2/2;
+  /* border: 1px solid yellow; */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.InputBarContainer input {
+  height: 85%;
+  width: 95%;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.InputBarError-false {
+  border: none;
+}
+
+.InputBarError-true {
+  border: 2px solid rgb(209, 0, 0);
+}
+
+.SearchButtonContainer {
+  grid-area: 1/2/2/3;
+  /* border: 1px solid green; */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.SearchButtonContainer button {
+  height: 85%;
+  width: 85%;
+  border-radius: 100%;
+  border: none;
+}
+
+
+.InputErrorMessageContainer {
+  grid-area: 2/1/3/2;
+  /* border: 1px solid cyan; */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+}
+
+.InputErrorMessageContainer span {
+  color: darkred;
+  /* border: 1px solid darkred; */
+  font-size: 10px;
+  /* line-height: 0px; */
+  padding-left: 3%;
+}
+
+.InputErrorMsg-false {
+  visibility: hidden;
+}
+
+.InputErrorMsg-true {
+  visibility: visible;
+}
+
+#Search {
+  color: gray;
+}
+
+.Buttons {
+  /* border: 1px solid hotpink; */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.Buttons button {
+  height: 30px;
+  width: 100px;
+  border-radius: 20px;
+  border: none;
+  margin: 10% 10px;
+}
+
+.ReplaceSuccessMessage {
+  /* border: 1px dashed black; */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.GreenCircle {
+  height: 40vw;
+  width: 40vw;
+  border-radius: 100%;
+  background-color: limegreen;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 1s;
+}
+
+.GreenCircle span {
+  font-size: 20vw;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
