@@ -75,15 +75,10 @@ export const getFirebasePlaylist = (spotifyPlaylistId, token) => {
 };
 
 
-export const getYoutubeVideosAndClosestSpotifyMatches = async (posts, youtubeApiKey, spotifyToken) => {
+export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, youtubeApiKey, spotifyToken) => {
   // HANDLE ANY YOUTUBE LINKS
-  // get just the postObjs that are youtube videos
-  const youtubePosts = [...posts.filter(e => e.linkType === 'youtube')];
-
   const youtubeApiBaseURL1 = 'https://content-youtube.googleapis.com/youtube/v3/videos?id=';
   const youtubeApiBaseURL2 = `&part=snippet%2CcontentDetails%2Cstatistics&key=${youtubeApiKey}`;
-
-  console.log(youtubePosts)
 
   if (youtubePosts.length) {
     // extract the YT video IDs from those, and create GET promises with them.
@@ -165,24 +160,30 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (posts, youtubeApi
 
     });
 
-    const spotifyDataObjs = closestMatchInEachSpotifySearchResponse.map((el) => {
-      if (!el) { return null; } else {
-        const spotifyTrackData = {};
-        spotifyTrackData.artist = el.artists.map(artist => artist.name).join(', ');
-        spotifyTrackData.title = el.name;
-        spotifyTrackData.thumbnail = el.album.images[el.album.images.length - 1];
-        spotifyTrackData.spotifyTrackID = el.id;
-        return spotifyTrackData;
-      };
+    const spotifyDataObjs = closestMatchInEachSpotifySearchResponse.map((el, i) => {
+      const spotifyTrackData = { ...youtubePosts[i] };
+      spotifyTrackData.artist = el?.artists.map(artist => artist.name).join(', ') || null;
+      spotifyTrackData.title = el?.name || null;
+      spotifyTrackData.thumbnail = el?.album.images[1].url || null;
+      spotifyTrackData.spotifyTrackID = el?.id || null;
+      spotifyTrackData.include = true; // default
+      return spotifyTrackData;
     });
     // console.log('🍿 --------------------');
     // console.log(videoDataObjs);
     // console.log('💿 --------------------');
     // console.log(spotifyDataObjs);
-    const spotifyDataObjsWithCorrespondingPostIDs = spotifyDataObjs.map((obj, i) => ({ postId: youtubePosts[i].postId, data: obj ? { ...obj } : null }));
 
-    return { videoDataObjs, spotifyDataObjs: spotifyDataObjsWithCorrespondingPostIDs };
+    // const spotifyDataObjsWithCorrespondingPostIDs = spotifyDataObjs.map((obj, i) => ({ postId: youtubePosts[i].postId, data: obj ? { ...obj } : null }));
+
+    // return { videoDataObjs, spotifyDataObjs: spotifyDataObjsWithCorrespondingPostIDs };
+    return { videoDataObjs, spotifyDataObjs: spotifyDataObjs };
   } else {
     return null;
   }
+};
+
+export const getSpotifyTrackData = async (spotifyPosts) => {
+  console.log(spotifyPosts);
+
 };

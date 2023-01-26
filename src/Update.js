@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from "react-router-dom";
 import YoutubeConversionInterface from './YoutubeConversionInterface';
 import InputTextInterface from './InputTextInterface';
+import FinalReviewInterface from './FinalReviewInterface';
 import * as u from './utils';
 import * as h from './helpers';
+import { zip } from 'lodash';
 
 function Update() {
   let history = useHistory();
@@ -14,7 +16,8 @@ function Update() {
   const [infoLoading, setInfoLoading] = useState(false);
   const [validInputText, setValidInputText] = useState(false);
   const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] })
-  const [newPosts, setNewPosts] = useState([]);
+  const [newPostsInState, setNewPostsInState] = useState([]);
+  const [screen, setScreen] = useState('input');
 
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
@@ -29,10 +32,11 @@ function Update() {
   }, [inputText]);
 
   const handleGoBack = () => {
-    setInputText('');
-    setInfoLoading(false)
-    setValidInputText(false)
-    setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] })
+    // setInputText('');
+    // setInfoLoading(false)
+    // setValidInputText(false)
+    // setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] })
+    // setScreen('')
     history.goBack()
   };
 
@@ -56,27 +60,96 @@ function Update() {
         const newPosts = h.splitIndividualMessagesIntoPosts(newMessages);
         console.log(newPosts)
 
+
+
+
+        // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
+
+        // before doing so, get all the Spotify Data for all .linkType = 'spotify' tracks
+        // const newSpotifyPostsPlusData = await u.getSpotifyTrackData(newPosts.filter(e => e.linkType === 'spotify'));
+        // console.log(newSpotifyPostsPlusData);
+
+        //   setNewPostsInState(newPosts);
+
         // if some of the posts are youtube links, find the closest matching results for these on spotify
         if (newPosts.some(e => e.linkType === 'youtube')) {
           const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
-          const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(newPosts, youtubeApiKey, spotifyToken);
-          setInfoLoading(false);
+          // get just the postObjs that are youtube videos
+          const youtubePosts = [...newPosts.filter(e => e.linkType === 'youtube')];
+          const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
+          console.log(spotifyDataObjs);
           setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
-          setNewPosts(newPosts);
+          setInfoLoading(false);
+          setScreen('youtube');
+        } else {
+          // skip YT conversion step and fetch spotify data for the objects in newPosts
+
+          // then go straight to the Final Review screen
+          setScreen('review');
         }
 
       } else {
         // handle error getting this playlist from firebase - server error, bad request, 
       }
+
     })
   }
 
   const handleConvertedPosts = (convertedPosts) => {
-    console.log('NEW POSTS --------------------');
-    console.log(newPosts)
-    console.log('CONVERTED POSTS --------------------');
-    console.log(convertedPosts);
+    console.log(convertedPosts)
+    // setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] });
+
+    // console.log('NEW POSTS IN STATE --------------------');
+    // console.log(newPostsInState)
+    // console.log('CONVERTED POSTS --------------------');
+    // console.log(convertedPosts);
+
+    // const convertedPostsCompleteProps = convertedPosts.map(post => {
+    //   const indexInNewPosts = newPostsInState.findIndex(e => e.postId === post.postId);
+    //   return {
+    //     ...newPostsInState[indexInNewPosts],
+    //     artist: post.data?.artist || null,
+    //     title: post.data?.title || null,
+    //     thumbnail: post.data?.thumbnail || null,
+    //     spotifyTrackID: post.data?.spotifyTrackID || null,
+    //   }
+    // });
+
+    // console.log('CONVERTED POSTS COMPLETE PROPS --------------------');
+    // console.log(convertedPostsCompleteProps);
+
+    setScreen('review');
   }
+
+  const screenToRender = () => {
+    if (infoLoading) return (<h1>⌛</h1>);
+    if (screen === 'input') {
+      return (
+        <InputTextInterface
+          inputText={inputText}
+          validInputText={validInputText}
+          handleChangeTextArea={handleChangeTextArea}
+          handleSubmitInputText={handleSubmitInputText}
+        />
+      )
+    }
+    if (screen === 'youtube') {
+      return (
+        <YoutubeConversionInterface
+          convertYoutubePosts={convertYoutubePosts}
+          handleConvertedPosts={handleConvertedPosts}
+        />
+      )
+    }
+    if (screen === 'review') {
+      return (
+        <FinalReviewInterface
+          newPosts={newPostsInState}
+        />
+      )
+    }
+
+  };
 
 
   return (
@@ -85,14 +158,8 @@ function Update() {
       <h1>Update page</h1>
 
       <div className="infoArea">
-        {infoLoading ?
-          <h1>⌛</h1>
-          : convertYoutubePosts.youtubePosts.length
-            ? <YoutubeConversionInterface convertYoutubePosts={convertYoutubePosts} handleConvertedPosts={handleConvertedPosts} />
-            : <InputTextInterface inputText={inputText} validInputText={validInputText} handleChangeTextArea={handleChangeTextArea} handleSubmitInputText={handleSubmitInputText} />
-        }
+        {screenToRender()}
       </div>
-
 
     </div>
   )

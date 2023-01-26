@@ -3,21 +3,20 @@ import React, { useState, useEffect } from 'react';
 import ChangeModal from './ChangeModal';
 
 function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts }) {
+
   const { youtubePosts, spotifyMatches } = convertYoutubePosts;
 
   const [changeModal, setChangeModal] = useState({ show: false, matchToChange: {}, index: null });
   const [spotifyMatchesAfterReview, setSpotifyMatchesAfterReview] = useState([]);
-  const [matchInspected, setMatchInspected] = useState(null)
+  const [matchInspected, setMatchInspected] = useState(null);
 
   useEffect(() => {
     if (spotifyMatches.length) {
-      const spotifyMatchesPlusIncludeProp = spotifyMatches.map(el => ({ ...el, include: el.data ? true : false }));
-      setSpotifyMatchesAfterReview(spotifyMatchesPlusIncludeProp);
+      setSpotifyMatchesAfterReview(spotifyMatches);
     }
   }, [spotifyMatches]);
 
   const handleSpotifyMatchClick = (index) => {
-    console.log(index, ' <--- ')
     setMatchInspected(index);
   };
 
@@ -115,16 +114,15 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
         </div>
         <div className="SpotifyColumn">
           {spotifyMatchesAfterReview.map((spotifyMatch, index) => {
-            if (!spotifyMatch.data) {
+            if (!spotifyMatch.spotifyTrackID) {
               return (
                 <div className="NullPost" onClick={(e) => e.stopPropagation()} key={`matchCard-${index}`}>
                   <p>Spotify match not found</p>
                 </div>
               )
             } else {
-              const { include, data } = spotifyMatch;
-              const { artist, title, thumbnail } = data;
-              const undoEnabled = spotifyMatch.data.spotifyTrackID !== spotifyMatches[index].data.spotifyTrackID;
+              const { include, artist, title, thumbnail } = spotifyMatch;
+              const undoEnabled = spotifyMatch.spotifyTrackID !== spotifyMatches[index].spotifyTrackID;
               if (matchInspected === index && include) {
                 return (
                   <div className={`SpotifyMatchInspected Include-${include}`} key={`matchCard-${index}`}>
@@ -145,7 +143,7 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
                   <div className={`SpotifyMatch Include-${include}`} onClick={() => handleSpotifyMatchClick(index)} key={`matchCard-${index}`}>
 
                     <div className="SpotifyThumbContainer">
-                      <img className="SpotifyThumbnail" src={thumbnail.url} alt="Spotify Thumbnail" />
+                      <img className="SpotifyThumbnail" src={thumbnail} alt="Spotify Thumbnail" />
                     </div>
 
                     <div className="SpotifyInfoContainer">

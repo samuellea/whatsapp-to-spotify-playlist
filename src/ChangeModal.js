@@ -13,7 +13,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   const [inputBarErrorMsg, setInputBarErrorMsg] = useState('* Must be a valid Spotify track URL');
   const [spotifyObj, setSpotifyObj] = useState({
     ...matchToChange,
-    data: { artist: '', title: '', thumbnail: '', spotifyTrackID: '' }
+    artist: '', title: '', thumbnail: '', spotifyTrackID: '',
   })
   const [searchLoading, setSearchLoading] = useState(false);
   const [replaceSuccess, setReplaceSuccess] = useState(false);
@@ -52,11 +52,11 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
     }).then(({ status, data }) => {
       setSearchLoading(false);
       if (status === 200) {
-        const spotifyTrackData = { ...matchToChange, data: {} };
-        spotifyTrackData.data.artist = data.artists.map(artist => artist.name).join(', ');
-        spotifyTrackData.data.title = data.name;
-        spotifyTrackData.data.thumbnail = data.album.images[data.album.images.length - 1];
-        spotifyTrackData.data.spotifyTrackID = data.id;
+        const spotifyTrackData = { ...matchToChange };
+        spotifyTrackData.artist = data.artists.map(artist => artist.name).join(', ');
+        spotifyTrackData.title = data.name;
+        spotifyTrackData.thumbnail = data.album.images[1].url;
+        spotifyTrackData.spotifyTrackID = data.id;
         setSpotifyObj(spotifyTrackData);
       } else {
         setInputBarErrorMsg('Error retrieving Spotify track');
@@ -93,7 +93,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
     return false;
   }
 
-  const { artist, title, thumbnail, spotifyTrackID } = spotifyObj.data;
+  const { artist, title, thumbnail, spotifyTrackID } = spotifyObj;
 
   const replaceSuccessMessage = () => {
     return (
@@ -109,7 +109,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
     return (
       <div className="TrackInfo">
         <div className="TrackArtContainer">
-          <img className="SpotifyThumbnail" src={thumbnail.url} alt="Spotify Thumbnail" />
+          <img className="SpotifyArtwork" src={thumbnail} alt="Spotify Thumbnail" />
         </div>
 
         <div className="TitleArtistsContainer">
