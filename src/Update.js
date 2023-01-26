@@ -58,10 +58,6 @@ function Update() {
         const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
         // extract posts from these new messages
         const newPosts = h.splitIndividualMessagesIntoPosts(newMessages);
-        console.log(newPosts)
-
-
-
 
         // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
 

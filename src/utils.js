@@ -166,7 +166,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
       spotifyTrackData.title = el?.name || null;
       spotifyTrackData.thumbnail = el?.album.images[1].url || null;
       spotifyTrackData.spotifyTrackID = el?.id || null;
-      spotifyTrackData.include = true; // default
+      spotifyTrackData.include = el ? true : false;
       return spotifyTrackData;
     });
     // console.log('🍿 --------------------');

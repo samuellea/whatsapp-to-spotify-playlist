@@ -73,7 +73,12 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
     setMatchInspected(null);
     let r = window.confirm(`Convert these Youtube videos to Spotify tracks?`);
     if (r == true) {
-      handleConvertedPosts(spotifyMatchesAfterReview);
+      const onlySpotifyMatchesWhereIncludeIsTrue = spotifyMatchesAfterReview.filter(e => e.include)
+      const matchesMinusIncludeKey = onlySpotifyMatchesWhereIncludeIsTrue.map(obj => {
+        const { include, ...objMinusIncludeKey } = obj;
+        return objMinusIncludeKey
+      });
+      handleConvertedPosts(matchesMinusIncludeKey);
     }
   };
 
