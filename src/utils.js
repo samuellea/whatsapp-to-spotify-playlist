@@ -66,14 +66,36 @@ export const getUserFirebasePlaylistsMetadata = (userId, token) => {
   return axios({
     url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json?auth=${token}`,
     method: 'GET',
-  });
+  }).catch(e => console.log(e));
 };
 
 export const getFirebasePlaylist = (spotifyPlaylistId, token) => {
   return axios({
     url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/playlists.json?orderBy="spotifyPlaylistId"&equalTo="${spotifyPlaylistId}"&auth=${token}`,
     method: 'GET',
-  });
+  }).catch(e => console.log(e));
+};
+
+export const getSpotifyPlaylist = (spotifyPlaylistId, spotifyToken) => {
+  return axios({
+    url: `https://api.spotify.com/v1/playlists/${spotifyPlaylistId}`,
+    method: 'GET',
+    headers: { 'Authorization': 'Bearer ' + spotifyToken },
+  }).catch(e => console.log(e));
+};
+
+export const postToSpotifyPlaylist = (targetPlaylistID, spotifyToken, trackIDs) => {
+  // reverse() ensures tracks added to playlist in correct order
+  const spotifyLinksFormatted = trackIDs.map(id => `spotify:track:${id}`).reverse();
+  return axios({
+    method: 'post',
+    url: `https://api.spotify.com/v1/playlists/${targetPlaylistID}/tracks`,
+    headers: { 'Authorization': 'Bearer ' + spotifyToken },
+    data: {
+      'uris': [...spotifyLinksFormatted],
+      'position': 0,
+    }
+  }).catch(e => console.log(e));
 };
 
 
@@ -214,7 +236,9 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
     const getTracksResponsesFlattened = spotifyGetTracksResponses.reduce((acc, e, i) => {
       e.data.tracks.forEach(obj => acc.push({
         title: obj.name,
-        artist: obj.artists.map(artist => artist.name).join(', ')
+        artist: obj.artists.map(artist => artist.name).join(', '),
+        spotifyTrackID: obj.id,
+        thumbnail: obj.album.images[1].url,
       }))
       return acc;
     }, []);

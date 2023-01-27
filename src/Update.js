@@ -6,13 +6,14 @@ import InputTextInterface from './InputTextInterface';
 import FinalReviewInterface from './FinalReviewInterface';
 import * as u from './utils';
 import * as h from './helpers';
-import { zip } from 'lodash';
 
 function Update() {
   let history = useHistory();
   const { playlist_id } = useParams();
 
+  const [spotifyPlaylistInState, setSpotifyPlaylistInState] = useState(null);
   const [inputText, setInputText] = useState('');
+  const [firebasePlaylistObj, setFirebasePlaylistObj] = useState(null);
   const [infoLoading, setInfoLoading] = useState(false);
   const [validInputText, setValidInputText] = useState(false);
   const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] })
@@ -21,10 +22,6 @@ function Update() {
 
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
-
-  useEffect(() => {
-    // trigger a call to FB /playlists endpoint for this playlist obj - but where to store? Here, in update? Or up in home? Or even App?
-  }, []);
 
   useEffect(() => {
     const inputTextIsValid = h.inputTextIsValid(inputText);
@@ -44,13 +41,16 @@ function Update() {
     setInputText(e.target.value)
   }
 
-  const handleSubmitInputText = () => {
+  const handleSubmitInputText = async () => {
     setInfoLoading(true);
+    const { data: spotifyPlaylistData, status } = await u.getSpotifyPlaylist(playlist_id, spotifyToken);
+    if (status === 200) setSpotifyPlaylistInState(spotifyPlaylistData);
     // pull down the Firebase object for this playlist
     u.getFirebasePlaylist(playlist_id, token).then(async ({ status, data }) => {
       if ([200, 201].includes(status)) {
         // TO-DO: handle data being returned but empty?
         const playlistObj = Object.values(data)[0];
+        setFirebasePlaylistObj(playlistObj);
         const { chatLog, posts } = playlistObj;
         // determine new messages by comparing input text with chat log
         const chatLogSplit = h.splitTextIntoIndividualMessages(chatLog);
@@ -95,6 +95,30 @@ function Update() {
     setScreen('review');
   }
 
+  const handleFinalSubmission = async (trackIDs) => {
+
+    // concat the new messages from the input text to the end of the firebase PL's chatLog, creating one big updated string
+    // this will be the NEW fb .chatLog property value, we'll post to it
+
+    const { chatLog, posts } = firebasePlaylistObj;
+    const chatLogSplit = h.splitTextIntoIndividualMessages(chatLog);
+    const inputTextSplit = h.splitTextIntoIndividualMessages(inputText);
+    const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
+    // extract posts from these new messages
+    const newPosts = h.splitIndividualMessagesIntoPosts(newMessages);
+
+    // create a new .posts array, combining the .posts array downloaded from FB with the newPostsInState
+    // this will be the NEW fb .posts property value, we'll post to it
+
+
+
+    // await u.postToSpotifyPlaylist(playlist_id, spotifyToken, trackIDs) // <--- POSTING TRACKS TO SPOTIFY!!
+
+    // ⭐⭐⭐ we should be adding a latestPostMostRecentUpdate prop - which is just the last post obj whenever we 
+    // do a confirmed update / submission. Post that obj to the .latestPostMostRecentUpdate prop on the /users/playlistMetas/:id
+    // endpoint - that's important
+  };
+
   const screenToRender = () => {
     if (infoLoading) return (<h1>⌛</h1>);
     if (screen === 'input') {
@@ -118,7 +142,10 @@ function Update() {
     if (screen === 'review') {
       return (
         <FinalReviewInterface
+          firebasePlaylistObj={firebasePlaylistObj}
+          spotifyPlaylistObj={spotifyPlaylistInState}
           newPosts={newPostsInState}
+          handleFinalSubmission={handleFinalSubmission}
         />
       )
     }

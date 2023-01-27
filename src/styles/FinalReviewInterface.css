@@ -1,1 +1,16 @@
 .FinalReviewInterface {}
+
+.FinalReviewInterface h4,
+h1,
+h2,
+h6 {
+  /* border: 1px solid red; */
+  margin: 5px 0px;
+}
+
+.PostsContainer {
+  border: 2px solid green;
+  height: 60vh;
+  max-height: 60vh;
+  overflow-y: scroll;
+}

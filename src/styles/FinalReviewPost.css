@@ -1,0 +1,49 @@
+.FinalReviewPost {
+  /* border: 1px solid green; */
+  height: 60px;
+  display: grid;
+  grid-template: 1fr / 20% 1fr;
+}
+
+.Odd {
+  background-color: rgb(190, 190, 190);
+}
+
+.Even {
+  background-color: rgb(231, 231, 231);
+}
+
+.ThumbContainer {
+  grid-area: 1/1/2/2;
+  /* border: 1px solid blue; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.SpotifyThumb {
+  height: 49px;
+  width: 49px;
+}
+
+.PostInfoContainer {
+  grid-area: 1/2/2/3;
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.PostInfoContainer p {
+  margin: 0;
+  /* border: 1px solid orange; */
+}
+
+.Title {
+  font-size: 12px;
+}
+
+.Artist {
+  font-size: 10px;
+}

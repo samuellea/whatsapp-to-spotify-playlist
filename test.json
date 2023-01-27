@@ -1,0 +1,250 @@
+{
+  "collaborative": false,
+  "description": "Created and maintained using whatsapp-to-sptofiy-playlist",
+  "external_urls": {
+    "spotify": "https://open.spotify.com/playlist/3hGHr2xEa30pKRNeKcJ0Gw"
+  },
+  "followers": {
+    "href": null,
+    "total": 0
+  },
+  "href": "https://api.spotify.com/v1/playlists/3hGHr2xEa30pKRNeKcJ0Gw",
+  "id": "3hGHr2xEa30pKRNeKcJ0Gw",
+  "images": [
+    {
+      "height": 640,
+      "url": "https://i.scdn.co/image/ab67616d0000b273458514e07a6d99d842ab1035",
+      "width": 640
+    }
+  ],
+  "name": "Phulle Phreshe",
+  "owner": {
+    "display_name": "Sam Lea",
+    "external_urls": {
+      "spotify": "https://open.spotify.com/user/zonaverdi"
+    },
+    "href": "https://api.spotify.com/v1/users/zonaverdi",
+    "id": "zonaverdi",
+    "type": "user",
+    "uri": "spotify:user:zonaverdi"
+  },
+  "primary_color": null,
+  "public": true,
+  "snapshot_id": "NCwyOWNjMDllN2E4Mzg4MzkzYjQ5MjJiMDY1N2EyMjM3YmZjNjE4ODBk",
+  "tracks": {
+    "href": "https://api.spotify.com/v1/playlists/3hGHr2xEa30pKRNeKcJ0Gw/tracks?offset=0&limit=100&locale=en-GB,en-US;q=0.9,en;q=0.8",
+    "items": [
+      {
+        "added_at": "2023-01-27T17:07:42Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/zonaverdi"
+          },
+          "href": "https://api.spotify.com/v1/users/zonaverdi",
+          "id": "zonaverdi",
+          "type": "user",
+          "uri": "spotify:user:zonaverdi"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "single",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/2lHSlOOSjpb0qKUkrpXT6J"
+                },
+                "href": "https://api.spotify.com/v1/artists/2lHSlOOSjpb0qKUkrpXT6J",
+                "id": "2lHSlOOSjpb0qKUkrpXT6J",
+                "name": "Bremer/McCoy",
+                "type": "artist",
+                "uri": "spotify:artist:2lHSlOOSjpb0qKUkrpXT6J"
+              }
+            ],
+            "available_markets": [
+              "AD",
+              "ZW"
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/7a6TvoS6oFoAjLMoyRNB1p"
+            },
+            "href": "https://api.spotify.com/v1/albums/7a6TvoS6oFoAjLMoyRNB1p",
+            "id": "7a6TvoS6oFoAjLMoyRNB1p",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273458514e07a6d99d842ab1035",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02458514e07a6d99d842ab1035",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851458514e07a6d99d842ab1035",
+                "width": 64
+              }
+            ],
+            "name": "Forsvinder",
+            "release_date": "2017-02-10",
+            "release_date_precision": "day",
+            "total_tracks": 2,
+            "type": "album",
+            "uri": "spotify:album:7a6TvoS6oFoAjLMoyRNB1p"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/2lHSlOOSjpb0qKUkrpXT6J"
+              },
+              "href": "https://api.spotify.com/v1/artists/2lHSlOOSjpb0qKUkrpXT6J",
+              "id": "2lHSlOOSjpb0qKUkrpXT6J",
+              "name": "Bremer/McCoy",
+              "type": "artist",
+              "uri": "spotify:artist:2lHSlOOSjpb0qKUkrpXT6J"
+            }
+          ],
+          "available_markets": [
+            "AD",
+            "ZW"
+          ],
+          "disc_number": 1,
+          "duration_ms": 228394,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "FR10S1763377"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/3qNdddxA3KCQbgS73aWeca"
+          },
+          "href": "https://api.spotify.com/v1/tracks/3qNdddxA3KCQbgS73aWeca",
+          "id": "3qNdddxA3KCQbgS73aWeca",
+          "is_local": false,
+          "name": "Dub",
+          "popularity": 36,
+          "preview_url": "https://p.scdn.co/mp3-preview/283f5d109f3ea854ee3a2f06c632210008bc0be1?cid=774b29d4f13844c495f206cafdad9c86",
+          "track": true,
+          "track_number": 2,
+          "type": "track",
+          "uri": "spotify:track:3qNdddxA3KCQbgS73aWeca"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-01-27T17:08:17Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/zonaverdi"
+          },
+          "href": "https://api.spotify.com/v1/users/zonaverdi",
+          "id": "zonaverdi",
+          "type": "user",
+          "uri": "spotify:user:zonaverdi"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "single",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/2lHSlOOSjpb0qKUkrpXT6J"
+                },
+                "href": "https://api.spotify.com/v1/artists/2lHSlOOSjpb0qKUkrpXT6J",
+                "id": "2lHSlOOSjpb0qKUkrpXT6J",
+                "name": "Bremer/McCoy",
+                "type": "artist",
+                "uri": "spotify:artist:2lHSlOOSjpb0qKUkrpXT6J"
+              }
+            ],
+            "available_markets": [
+              "AD",
+              "ZW"
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/7a6TvoS6oFoAjLMoyRNB1p"
+            },
+            "href": "https://api.spotify.com/v1/albums/7a6TvoS6oFoAjLMoyRNB1p",
+            "id": "7a6TvoS6oFoAjLMoyRNB1p",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273458514e07a6d99d842ab1035",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02458514e07a6d99d842ab1035",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851458514e07a6d99d842ab1035",
+                "width": 64
+              }
+            ],
+            "name": "Forsvinder",
+            "release_date": "2017-02-10",
+            "release_date_precision": "day",
+            "total_tracks": 2,
+            "type": "album",
+            "uri": "spotify:album:7a6TvoS6oFoAjLMoyRNB1p"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/2lHSlOOSjpb0qKUkrpXT6J"
+              },
+              "href": "https://api.spotify.com/v1/artists/2lHSlOOSjpb0qKUkrpXT6J",
+              "id": "2lHSlOOSjpb0qKUkrpXT6J",
+              "name": "Bremer/McCoy",
+              "type": "artist",
+              "uri": "spotify:artist:2lHSlOOSjpb0qKUkrpXT6J"
+            }
+          ],
+          "available_markets": [
+            "AD",
+            "ZW"
+          ],
+          "disc_number": 1,
+          "duration_ms": 228394,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "FR10S1763377"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/3qNdddxA3KCQbgS73aWeca"
+          },
+          "href": "https://api.spotify.com/v1/tracks/3qNdddxA3KCQbgS73aWeca",
+          "id": "3qNdddxA3KCQbgS73aWeca",
+          "is_local": false,
+          "name": "Dub",
+          "popularity": 36,
+          "preview_url": "https://p.scdn.co/mp3-preview/283f5d109f3ea854ee3a2f06c632210008bc0be1?cid=774b29d4f13844c495f206cafdad9c86",
+          "track": true,
+          "track_number": 2,
+          "type": "track",
+          "uri": "spotify:track:3qNdddxA3KCQbgS73aWeca"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      }
+    ],
+    "limit": 100,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total": 2
+  },
+  "type": "playlist",
+  "uri": "spotify:playlist:3hGHr2xEa30pKRNeKcJ0Gw"
+}
