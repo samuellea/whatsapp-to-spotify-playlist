@@ -1,5 +1,7 @@
 import axios from 'axios';
 import * as accents from 'remove-accents';
+import * as h from './helpers';
+import _ from 'lodash';
 
 export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) => {
   return axios({
@@ -90,7 +92,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     })
 
     const youtubeGetResponses = await Promise.all(
-      videoDataQueries.map(async (query) => (await axios.get(query)))
+      videoDataQueries.map(async (query) => (await axios.get(query).catch(e => { console.log(e); return e })))
     );
 
     // fetch the title, thumb and YT video ID for each of these youtube posts
@@ -116,7 +118,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
             headers: {
               Authorization: `Bearer ${spotifyToken}`
             }
-          })
+          }).catch(e => { console.log(e); return e })
         }
       })
     );
@@ -183,7 +185,47 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
   }
 };
 
-export const getSpotifyTrackData = async (spotifyPosts) => {
-  console.log(spotifyPosts);
+export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
+  const spotifyPostsPlusTrackIDs = [];
+  const justTrackIDs = [];
+  spotifyPosts.forEach(e => {
+    const spotifyTrackID = e.linkURL.match(h.spotifyTrackIDRegex())[0].split('?')[0];
+    spotifyPostsPlusTrackIDs.push({ ...e, spotifyTrackID });
+    justTrackIDs.push(spotifyTrackID)
+  });
+
+  const subArraysMax50Each = _.chunk(justTrackIDs, 2);
+
+  const spotifyGetTracksQueries = subArraysMax50Each.map(arrayOfMax50IDs => {
+    const max50IDsJoined = arrayOfMax50IDs.join(',')
+    const spotifyQuery = `https://api.spotify.com/v1/tracks?ids=${max50IDsJoined}`;
+    return spotifyQuery;
+  });
+
+  const spotifyGetTracksResponses = await Promise.all(
+    spotifyGetTracksQueries.map(async (query) => (await axios.get(query, {
+      headers: {
+        Authorization: `Bearer ${spotifyToken}`
+      }
+    }).catch(e => { console.log(e); return e })))
+  );
+
+  if (spotifyGetTracksResponses.every(e => e.status === 200)) {
+    const getTracksResponsesFlattened = spotifyGetTracksResponses.reduce((acc, e, i) => {
+      e.data.tracks.forEach(obj => acc.push({
+        title: obj.name,
+        artist: obj.artists.map(artist => artist.name).join(', ')
+      }))
+      return acc;
+    }, []);
+
+    // recompose spotifyPosts to have each original object's kv pairs PLUS the title, artist and thumbnail back
+    const spotifyPostsCompleteData = spotifyPosts.map((obj, i) => ({ ...obj, ...getTracksResponsesFlattened[i] }))
+    return spotifyPostsCompleteData;
+  } else {
+    console.log('error fetching spotify tracks');
+    return null;
+  };
+
 
 };

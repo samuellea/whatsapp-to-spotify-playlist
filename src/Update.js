@@ -62,9 +62,9 @@ function Update() {
         // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
 
         // before doing so, get all the Spotify Data for all .linkType = 'spotify' tracks
-        // const newSpotifyPostsPlusData = await u.getSpotifyTrackData(newPosts.filter(e => e.linkType === 'spotify'));
-        // console.log(newSpotifyPostsPlusData);
-
+        const justNewSpotifyPosts = newPosts.filter(e => e.linkType === 'spotify');
+        const newSpotifyPostsCompleteData = await u.getSpotifyTrackData(justNewSpotifyPosts, spotifyToken);
+        console.log(newSpotifyPostsCompleteData);
         //   setNewPostsInState(newPosts);
 
         // if some of the posts are youtube links, find the closest matching results for these on spotify
@@ -93,26 +93,12 @@ function Update() {
 
   const handleConvertedPosts = (convertedPosts) => {
     console.log(convertedPosts)
-    // setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] });
+    setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] });
 
     // console.log('NEW POSTS IN STATE --------------------');
     // console.log(newPostsInState)
     // console.log('CONVERTED POSTS --------------------');
     // console.log(convertedPosts);
-
-    // const convertedPostsCompleteProps = convertedPosts.map(post => {
-    //   const indexInNewPosts = newPostsInState.findIndex(e => e.postId === post.postId);
-    //   return {
-    //     ...newPostsInState[indexInNewPosts],
-    //     artist: post.data?.artist || null,
-    //     title: post.data?.title || null,
-    //     thumbnail: post.data?.thumbnail || null,
-    //     spotifyTrackID: post.data?.spotifyTrackID || null,
-    //   }
-    // });
-
-    // console.log('CONVERTED POSTS COMPLETE PROPS --------------------');
-    // console.log(convertedPostsCompleteProps);
 
     setScreen('review');
   }

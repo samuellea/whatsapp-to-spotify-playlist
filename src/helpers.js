@@ -4,6 +4,11 @@ export const spotiOrYTRegex = () => {
   return spotifyOrYoutubeLinkRegex;
 };
 
+export const spotifyTrackIDRegex = () => {
+  const spotifyTrackIDPattern = '(?<=open.spotify.com\/track\/)(.*)';
+  return new RegExp(`${spotifyTrackIDPattern}`, 'g');
+}
+
 export const splitTextIntoIndividualMessages = (inputText) => {
   const individualMessages = inputText.trim().split(/(?=^\d{1,2}\/\d{1,2}\/\d{4})/m).filter(Boolean)
   return individualMessages;
