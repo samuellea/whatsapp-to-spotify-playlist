@@ -58,32 +58,28 @@ function Update() {
         const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
         // extract posts from these new messages
         const newPosts = h.splitIndividualMessagesIntoPosts(newMessages);
-
+        console.log('newPosts original -----------------------');
+        console.log(newPosts);
         // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
 
         // before doing so, get all the Spotify Data for all .linkType = 'spotify' tracks
         const justNewSpotifyPosts = newPosts.filter(e => e.linkType === 'spotify');
         const newSpotifyPostsCompleteData = await u.getSpotifyTrackData(justNewSpotifyPosts, spotifyToken);
-        console.log(newSpotifyPostsCompleteData);
+        setNewPostsInState(newSpotifyPostsCompleteData)
         //   setNewPostsInState(newPosts);
+        const youtubePosts = [...newPosts.filter(e => e.linkType === 'youtube')];
 
-        // if some of the posts are youtube links, find the closest matching results for these on spotify
-        if (newPosts.some(e => e.linkType === 'youtube')) {
+        // if any youtube posts in chat, find the closest matching results for these on spotify
+        if (youtubePosts.length) {
           const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
-          // get just the postObjs that are youtube videos
-          const youtubePosts = [...newPosts.filter(e => e.linkType === 'youtube')];
           const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
-          console.log(spotifyDataObjs);
           setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
-          setInfoLoading(false);
           setScreen('youtube');
+          setInfoLoading(false);
         } else {
-          // skip YT conversion step and fetch spotify data for the objects in newPosts
-
-          // then go straight to the Final Review screen
           setScreen('review');
+          setInfoLoading(false);
         }
-
       } else {
         // handle error getting this playlist from firebase - server error, bad request, 
       }
@@ -92,14 +88,10 @@ function Update() {
   }
 
   const handleConvertedPosts = (convertedPosts) => {
-    console.log(convertedPosts)
     setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] });
-
-    // console.log('NEW POSTS IN STATE --------------------');
-    // console.log(newPostsInState)
-    // console.log('CONVERTED POSTS --------------------');
-    // console.log(convertedPosts);
-
+    // mix convertedPosts with the spotify-type posts already in newPostsInState
+    const combinedAndSortedSpotifyAndYoutubePosts = newPostsInState.concat(convertedPosts).sort((a, b) => (a.postId > b.postId) ? 1 : -1);
+    setNewPostsInState(combinedAndSortedSpotifyAndYoutubePosts);
     setScreen('review');
   }
 
