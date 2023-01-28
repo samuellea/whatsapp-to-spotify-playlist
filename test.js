@@ -1,4 +1,9 @@
-const arrA = [1, 2, 3];
-const arrB = [];
-const res = arrA.concat(arrB);
-console.log(res);
+const spotiOrYTRegex = () => {
+  const spotiYTRegexPattern = '(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)'
+  const spotifyOrYoutubeLinkRegex = new RegExp(`${spotiYTRegexPattern}`, 'm');
+  return spotifyOrYoutubeLinkRegex;
+};
+const link = 'https://open.spotify.com/track/1CcnE9kM0wxQsxx9nonIfo';
+
+const res = link.match(/(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)/g);
+console.log(res)

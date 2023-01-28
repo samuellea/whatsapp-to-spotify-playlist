@@ -1,7 +1,7 @@
 import './styles/InputTextInterface.css';
 import React, { useState, useEffect } from 'react';
 
-function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText }) {
+function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear }) {
   useEffect(() => { }, []);
 
   const inputTextInfo = () => {
@@ -20,8 +20,9 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
 
   return (
     <div className="InputTextInterface">
-      <textarea id="w3review" name="w3review" onChange={handleChangeTextArea}></textarea>
+      <textarea id="w3review" name="w3review" onChange={handleChangeTextArea} disabled={inputText.length} value={inputText}></textarea>
       <div className="buttonArea">
+        <button id="submitButton" type="button" onClick={handleTextAreaClear} disabled={!inputText.length}>Clear</button>
         <button id="submitButton" type="button" onClick={handleSubmitInputText} disabled={!validInputText}>Submit</button>
       </div>
       {inputTextInfo()}

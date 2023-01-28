@@ -98,6 +98,28 @@ export const postToSpotifyPlaylist = (targetPlaylistID, spotifyToken, trackIDs) 
   }).catch(e => console.log(e));
 };
 
+export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedPlaylistObj) => {
+  console.log(firebasePlaylistId)
+  // const playlistMetadata = {
+  //   spotifyPlaylistId: spotifyPlaylistId,
+  //   spotifyPlaylistName: spotifyPlaylistName,
+  //   totalTracks: 0,
+  // };
+  // firebaseAxios.patch(`/newestIdLastSession.json?auth=${token}`, {
+  //   'newestIdLastSession': parseInt(newestIdThisSession)
+  // });
+
+  return axios({
+    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/playlists/${firebasePlaylistId}.json?auth=${token}`,
+    method: 'PATCH',
+    data: updatedPlaylistObj,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+};
+
+
 
 export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, youtubeApiKey, spotifyToken) => {
   // HANDLE ANY YOUTUBE LINKS
@@ -107,8 +129,10 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
   if (youtubePosts.length) {
     // extract the YT video IDs from those, and create GET promises with them.
     const videoDataQueries = youtubePosts.map(youtubePost => {
-      const youtubeIDRegex = /(?<=v=|v\/|vi=|vi\/|youtu.be\/)[a-zA-Z0-9_-]*/g;
-      const videoID = youtubePost.linkURL.match(youtubeIDRegex);
+
+      const youtubeIDRegex = /(?<=v=|v\/|vi=|vi\/|youtu.be\/)[a-zA-Z0-9_-]{11}/g;
+      // const videoID = youtubePost.linkURL.match(youtubeIDRegex).slice(0, 11);
+      const videoID = youtubePost.linkID;
       const youtubeQuery = `${youtubeApiBaseURL1}${videoID}${youtubeApiBaseURL2}`;
       return youtubeQuery;
     })
@@ -211,7 +235,8 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
   const spotifyPostsPlusTrackIDs = [];
   const justTrackIDs = [];
   spotifyPosts.forEach(e => {
-    const spotifyTrackID = e.linkURL.match(h.spotifyTrackIDRegex())[0].split('?')[0];
+    // const spotifyTrackID = e.linkURL.match(h.spotifyTrackIDRegex())[0].split('?')[0]; // cuts off any flags
+    const spotifyTrackID = e.linkID;
     spotifyPostsPlusTrackIDs.push({ ...e, spotifyTrackID });
     justTrackIDs.push(spotifyTrackID)
   });

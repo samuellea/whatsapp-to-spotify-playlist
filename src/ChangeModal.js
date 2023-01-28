@@ -4,6 +4,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import Spinner from './Spinner';
 import { mockSleep } from './helpers';
+import * as h from './helpers';
 
 function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyResult }) {
   const spotifyToken = localStorage.getItem('spotifyToken');
@@ -29,8 +30,11 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
 
     if (inputString.length) {
       setInputBarError(false);
-      const spotifyTrackIDRegex = /(?<=https:\/\/open.spotify.com\/track\/)(.*)/g;
-      const spotifyLink = inputString.match(spotifyTrackIDRegex);
+      // const spotifyTrackIDRegex = /(?<=https:\/\/open.spotify.com\/track\/)(.*)/g;
+      // const spotifyLink = inputString.match(spotifyTrackIDRegex);
+
+      const spotifyLink = inputString.match(h.spotifyTrackIDRegex());
+
       if (spotifyLink) {
         const spotifyLinkNoFlags = spotifyLink[0].split('?')[0];
         setValidTrackID(spotifyLinkNoFlags);
@@ -129,7 +133,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
                 <input className={`InputBarError-${inputBarError}`} type="text" placeholder="Paste a link to a Spotify track" onChange={(event) => handleInputBarChange(event)} />
               </div>
               <div className="SearchButtonContainer">
-                <button type="button" onClick={handleInputBarSearch} disabled={disableSearchButton()}><i id="Search" class="fas fa-search" /></button>
+                <button type="button" onClick={handleInputBarSearch} disabled={disableSearchButton()}><i id="Search" className="fas fa-search" /></button>
               </div>
             </div>
             <div className="InputErrorMessageContainer">

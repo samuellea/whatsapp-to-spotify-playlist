@@ -9,7 +9,7 @@ import * as h from './helpers';
 
 function Update() {
   let history = useHistory();
-  const { playlist_id } = useParams();
+  const { playlist_id } = useParams(); // spotify playlist id!
 
   const [spotifyPlaylistInState, setSpotifyPlaylistInState] = useState(null);
   const [inputText, setInputText] = useState('');
@@ -38,7 +38,12 @@ function Update() {
   };
 
   const handleChangeTextArea = (e) => {
-    setInputText(e.target.value)
+    const inputTextNoLineBreaks = e.target.value.replace(/(\r\n|\n|\r)/gm, " ");
+    setInputText(inputTextNoLineBreaks);
+  }
+
+  const handleTextAreaClear = () => {
+    setInputText('');
   }
 
   const handleSubmitInputText = async () => {
@@ -49,17 +54,44 @@ function Update() {
     u.getFirebasePlaylist(playlist_id, token).then(async ({ status, data }) => {
       if ([200, 201].includes(status)) {
         // TO-DO: handle data being returned but empty?
-        const playlistObj = Object.values(data)[0];
-        setFirebasePlaylistObj(playlistObj);
-        const { chatLog, posts } = playlistObj;
+        // console.log(Object.entries(data))
+        const [firebasePlaylistId, playlistObj] = Object.entries(data)[0];
+        setFirebasePlaylistObj({ firebasePlaylistId, playlistObj });
+        const { chatLog, posts = [] } = playlistObj;
+        console.log(chatLog);
+        console.log(posts);
         // determine new messages by comparing input text with chat log
         const chatLogSplit = h.splitTextIntoIndividualMessages(chatLog);
         const inputTextSplit = h.splitTextIntoIndividualMessages(inputText);
         const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
-        // extract posts from these new messages
-        const newPosts = h.splitIndividualMessagesIntoPosts(newMessages);
-        console.log('newPosts original -----------------------');
-        console.log(newPosts);
+
+        // ⭐⭐⭐ - issue when you accidentally submit an text input that's incomplete halfway through
+        // a message, then come to paste in a new text log (that contains that message in FULL), you can
+        // end up with duplicate posts
+
+        // extract posts from these new messages, and check that none of these posts already exist in FB .posts
+        const newPosts = h.splitIndividualMessagesIntoPosts(newMessages).reduce((acc, suspectedNewPost) => {
+          // if (posts) {
+          const suspectedPostMatchesAPostAlreadyInFBPlaylistObj = posts.find(e => {
+            const dateTimeMatches = e.dateTime === suspectedNewPost.dateTime;
+            const posterMatches = e.poster === suspectedNewPost.poster;
+            const idMatches = e.linkID === suspectedNewPost.linkID;
+            return dateTimeMatches && posterMatches && idMatches
+          })
+          if (!suspectedPostMatchesAPostAlreadyInFBPlaylistObj) acc.push(suspectedNewPost);
+          // } else {
+          // acc.push(suspectedNewPost)
+          // }
+          return acc;
+        }, []);
+
+        // check the .posts from FB
+        // console.log('----------')
+        // console.log(posts)
+        // console.log(newPosts);
+
+
+
         // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
 
         // before doing so, get all the Spotify Data for all .linkType = 'spotify' tracks
@@ -96,16 +128,29 @@ function Update() {
   }
 
   const handleFinalSubmission = async (trackIDs) => {
+    const { firebasePlaylistId, playlistObj } = firebasePlaylistObj;
+    const { chatLog, posts } = playlistObj;
+
+    const chatLogSplit = h.splitTextIntoIndividualMessages(chatLog);
+    const inputTextSplit = h.splitTextIntoIndividualMessages(inputText);
+    const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
+
+    const updatedChatLog = chatLogSplit.join(' ') + newMessages.join('');
+    console.log(updatedChatLog);
+    const updatedPosts = [...(posts || []), ...newPostsInState];
+
+    const updatedPlaylistObj = {
+      ...playlistObj,
+      chatLog: updatedChatLog,
+      posts: updatedPosts,
+    }
+
+    await u.updateFirebasePlaylist(firebasePlaylistId, token, updatedPlaylistObj);
+
 
     // concat the new messages from the input text to the end of the firebase PL's chatLog, creating one big updated string
     // this will be the NEW fb .chatLog property value, we'll post to it
 
-    const { chatLog, posts } = firebasePlaylistObj;
-    const chatLogSplit = h.splitTextIntoIndividualMessages(chatLog);
-    const inputTextSplit = h.splitTextIntoIndividualMessages(inputText);
-    const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
-    // extract posts from these new messages
-    const newPosts = h.splitIndividualMessagesIntoPosts(newMessages);
 
     // create a new .posts array, combining the .posts array downloaded from FB with the newPostsInState
     // this will be the NEW fb .posts property value, we'll post to it
@@ -128,6 +173,7 @@ function Update() {
           validInputText={validInputText}
           handleChangeTextArea={handleChangeTextArea}
           handleSubmitInputText={handleSubmitInputText}
+          handleTextAreaClear={handleTextAreaClear}
         />
       )
     }
@@ -142,7 +188,7 @@ function Update() {
     if (screen === 'review') {
       return (
         <FinalReviewInterface
-          firebasePlaylistObj={firebasePlaylistObj}
+          firebasePlaylistObj={firebasePlaylistObj.playlistObj}
           spotifyPlaylistObj={spotifyPlaylistInState}
           newPosts={newPostsInState}
           handleFinalSubmission={handleFinalSubmission}

@@ -19,7 +19,7 @@ function FinalReviewInterface({ firebasePlaylistObj, spotifyPlaylistObj, newPost
     <div className="FinalReviewInterface">
       <h4>Playlist</h4>
       <h1>{spotifyPlaylistName}</h1>
-      <h6>{posts.length} tracks</h6>
+      <h6>{posts?.length || 0} tracks</h6>
       <h6>(Spotify: {spotifyPlaylistObj.tracks.total} tracks)</h6>
 
       <h2>{newPosts.length}</h2>
