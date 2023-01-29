@@ -57,49 +57,21 @@ function Update() {
         // console.log(Object.entries(data))
         const [firebasePlaylistId, playlistObj] = Object.entries(data)[0];
         setFirebasePlaylistObj({ firebasePlaylistId, playlistObj });
-        const { chatLog, posts = [] } = playlistObj;
-        console.log(chatLog);
-        console.log(posts);
-        // determine new messages by comparing input text with chat log
-        const chatLogSplit = h.splitTextIntoIndividualMessages(chatLog);
-        const inputTextSplit = h.splitTextIntoIndividualMessages(inputText);
-        const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
+        // rawPosts
+        const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
+        console.log(rawPostsLog);
+        console.log(processedPostsLog);
+        // determine new posts by comparing input text's posts with .rawPosts
+        const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
 
-        // ⭐⭐⭐ - issue when you accidentally submit an text input that's incomplete halfway through
-        // a message, then come to paste in a new text log (that contains that message in FULL), you can
-        // end up with duplicate posts
-
-        // extract posts from these new messages, and check that none of these posts already exist in FB .posts
-        const newPosts = h.splitIndividualMessagesIntoPosts(newMessages).reduce((acc, suspectedNewPost) => {
-          // if (posts) {
-          const suspectedPostMatchesAPostAlreadyInFBPlaylistObj = posts.find(e => {
-            const dateTimeMatches = e.dateTime === suspectedNewPost.dateTime;
-            const posterMatches = e.poster === suspectedNewPost.poster;
-            const idMatches = e.linkID === suspectedNewPost.linkID;
-            return dateTimeMatches && posterMatches && idMatches
-          })
-          if (!suspectedPostMatchesAPostAlreadyInFBPlaylistObj) acc.push(suspectedNewPost);
-          // } else {
-          // acc.push(suspectedNewPost)
-          // }
-          return acc;
-        }, []);
-
-        // check the .posts from FB
-        // console.log('----------')
-        // console.log(posts)
-        // console.log(newPosts);
-
-
-
-        // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
-
-        // before doing so, get all the Spotify Data for all .linkType = 'spotify' tracks
-        const justNewSpotifyPosts = newPosts.filter(e => e.linkType === 'spotify');
+        // before handling any YT-type posts, get all the Spotify Data for all .linkType = 'spotify' tracks
+        const justNewSpotifyPosts = newPostsRaw.filter(e => e.linkType === 'spotify');
         const newSpotifyPostsCompleteData = await u.getSpotifyTrackData(justNewSpotifyPosts, spotifyToken);
+        // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
         setNewPostsInState(newSpotifyPostsCompleteData)
-        //   setNewPostsInState(newPosts);
-        const youtubePosts = [...newPosts.filter(e => e.linkType === 'youtube')];
+
+        // handle any YT-type posts
+        const youtubePosts = [...newPostsRaw.filter(e => e.linkType === 'youtube')];
 
         // if any youtube posts in chat, find the closest matching results for these on spotify
         if (youtubePosts.length) {
@@ -114,8 +86,8 @@ function Update() {
         }
       } else {
         // handle error getting this playlist from firebase - server error, bad request, 
-      }
 
+      }
     })
   }
 
@@ -129,39 +101,28 @@ function Update() {
 
   const handleFinalSubmission = async (trackIDs) => {
     const { firebasePlaylistId, playlistObj } = firebasePlaylistObj;
-    const { chatLog, posts } = playlistObj;
+    const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
 
-    const chatLogSplit = h.splitTextIntoIndividualMessages(chatLog);
-    const inputTextSplit = h.splitTextIntoIndividualMessages(inputText);
-    const newMessages = h.newMsgsNotInChatLog(chatLogSplit, inputTextSplit);
+    const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
 
-    const updatedChatLog = chatLogSplit.join(' ') + newMessages.join('');
-    console.log(updatedChatLog);
-    const updatedPosts = [...(posts || []), ...newPostsInState];
+    const newPostsInStateMinusPostIds = [...newPostsInState]
+    newPostsInStateMinusPostIds.forEach(e => delete e.postId);
+
+    // create updated version of rawPostsLog and processedPostsLog with all the newly-found
+    // and newly-processed posts, in order to then send off to FB.
+    const updatedRawPosts = [...rawPostsLog, ...newPostsRaw];
+    const updatedPosts = [...(processedPostsLog || []), ...newPostsInStateMinusPostIds];
 
     const updatedPlaylistObj = {
       ...playlistObj,
-      chatLog: updatedChatLog,
-      posts: updatedPosts,
-    }
+      rawPostsLog: updatedRawPosts,
+      processedPostsLog: updatedPosts,
+    };
 
+    // POST our updatedPlaylistObj off to FB.
     await u.updateFirebasePlaylist(firebasePlaylistId, token, updatedPlaylistObj);
-
-
-    // concat the new messages from the input text to the end of the firebase PL's chatLog, creating one big updated string
-    // this will be the NEW fb .chatLog property value, we'll post to it
-
-
-    // create a new .posts array, combining the .posts array downloaded from FB with the newPostsInState
-    // this will be the NEW fb .posts property value, we'll post to it
-
-
-
-    // await u.postToSpotifyPlaylist(playlist_id, spotifyToken, trackIDs) // <--- POSTING TRACKS TO SPOTIFY!!
-
-    // ⭐⭐⭐ we should be adding a latestPostMostRecentUpdate prop - which is just the last post obj whenever we 
-    // do a confirmed update / submission. Post that obj to the .latestPostMostRecentUpdate prop on the /users/playlistMetas/:id
-    // endpoint - that's important
+    // POST our new tracks to the Spotify playlist.
+    await u.postToSpotifyPlaylist(playlist_id, spotifyToken, trackIDs) // <--- POSTING TRACKS TO SPOTIFY!!
   };
 
   const screenToRender = () => {

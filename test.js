@@ -1,9 +1,11 @@
-const spotiOrYTRegex = () => {
-  const spotiYTRegexPattern = '(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)'
-  const spotifyOrYoutubeLinkRegex = new RegExp(`${spotiYTRegexPattern}`, 'm');
-  return spotifyOrYoutubeLinkRegex;
-};
-const link = 'https://open.spotify.com/track/1CcnE9kM0wxQsxx9nonIfo';
+const _ = require('lodash');
 
-const res = link.match(/(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)/g);
-console.log(res)
+const arrA = [
+  { id: 1, food: 'apple' },
+];
+const arrB = [
+  { id: 1, food: 'apple' },
+  { id: 2, food: 'banana' },
+];
+
+console.log(_.find(arrA, arrB[0]))

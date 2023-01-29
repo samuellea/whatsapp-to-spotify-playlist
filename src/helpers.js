@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export const spotiOrYTRegex = () => {
   const spotiYTRegexPattern = /(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)/g
   return spotiYTRegexPattern;
@@ -53,10 +55,16 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
         const postObj = {
           postId: postCounter,
           poster: poster,
-          dateTime: dateTime,
           linkType: linkType,
           // linkURL: link,
           linkID: linkID,
+          time: {
+            day: dateTime.slice(0, 2),
+            month: dateTime.slice(3, 5),
+            year: dateTime.slice(6, 10),
+            hour: dateTime.slice(12, 14),
+            minute: dateTime.slice(15, 17),
+          },
         };
         // then push this postObj into allPostsCrude
         allPostsCrude.push(postObj);
@@ -66,14 +74,29 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
   return allPostsCrude;
 };
 
-export const newMsgsNotInChatLog = (chatLogSplit, inputTextSplit) => {
-  if (!chatLogSplit.length && !inputTextSplit.length) return [];
-  if (!chatLogSplit.length && inputTextSplit.length) return inputTextSplit;
-  return inputTextSplit.reduce((acc, e) => {
-    if (!chatLogSplit.includes(e)) acc.push(e);
+export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
+  const onlyRequiredKeys = (obj) => ({
+    poster: obj.poster,
+    linkType: obj.linkType,
+    linkID: obj.linkID,
+    time: obj.time,
+  })
+  const inputTextAsRawPostsOnlyReqKeys = inputTextAsRawPosts.map(e => onlyRequiredKeys(e));
+  const rawPostsOnlyReqKeys = rawPostsLog.map(e => onlyRequiredKeys(e));
+  const onlyNewPosts = inputTextAsRawPostsOnlyReqKeys.reduce((acc, post, i) => {
+    if (!_.find(rawPostsOnlyReqKeys, post)) acc.push(inputTextAsRawPosts[i]);
     return acc;
   }, []);
+  return onlyNewPosts;
 };
+
+export const findInputTextNewPosts = (inputText, rawPostsLog) => {
+  const inputTextAsMessages = splitTextIntoIndividualMessages(inputText);
+  const inputTextAsRawPosts = splitIndividualMessagesIntoPosts(inputTextAsMessages);
+  const newPosts = newPostsNotInRawPosts(inputTextAsRawPosts, rawPostsLog);
+  return newPosts;
+};
+
 
 export const inputTextIsValid = (inputText) => {
   let isValid = false;
