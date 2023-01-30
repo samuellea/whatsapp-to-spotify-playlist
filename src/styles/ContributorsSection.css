@@ -1,0 +1,67 @@
+.ContributorsSection {
+  border: 2px solid orange;
+  font-family: monospace, monospace;
+}
+
+.HeaderAndEditButton {
+  border: 1px solid red;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+}
+
+.HeaderAndEditButton h4 {}
+
+
+.HeaderAndEditButton button {
+  position: absolute;
+  right: 0;
+  margin-right: 7%;
+  background-color: none;
+  border: none;
+  width: 35px;
+  height: 35px;
+  font-size: 20px;
+  color: white;
+  background-color: #202124;
+}
+
+.ContributorsList {
+  /* border: 1px solid black; */
+  margin: 10px 0px;
+}
+
+.ContributorCard {
+  flex-direction: row;
+  /* border: 1px solid red; */
+  /* padding-left: 5%; */
+}
+
+.ContributorCard div {
+  /* border: 1px dashed blue; */
+  margin: 0px 10px;
+}
+
+.ContributorName {}
+
+.ContributorTotal {}
+
+.NotEditing {
+  transition: height 1s;
+}
+
+.Editing {
+  border: 2px solid cyan;
+  transition: height 1s;
+}
+
+.CheckBoxOptionCard {
+  color: white;
+  border: 1px solid white;
+  align-items: center;
+}
+
+.CheckBoxOptionCard input {
+  height: 30px;
+  width: 30px;
+}

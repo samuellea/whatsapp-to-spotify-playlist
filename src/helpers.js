@@ -31,7 +31,7 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
     if (spotiOrYTRegex().test(singleMessage)) { // if this message contains one or more Spoti or YT links...
       // grab required data
       const dateTime = singleMessage.match(messageDateTimeRegex)[0]; // 14/01/2023, 15:00
-      const poster = singleMessage.match(/-\s{1}.*:/g)[0].match(/-\s{1}(\S*)/g)[0].slice(2).replace(/\:$/, ''); // 'Sam'
+      const poster = singleMessage.match(/(?<=-).*?(?=:)/g)[0].trim();
 
       const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())].map(arrEl => arrEl[0].trim());
       // const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())];
@@ -56,7 +56,6 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
           postId: postCounter,
           poster: poster,
           linkType: linkType,
-          // linkURL: link,
           linkID: linkID,
           time: {
             day: dateTime.slice(0, 2),
@@ -97,7 +96,6 @@ export const findInputTextNewPosts = (inputText, rawPostsLog) => {
   return newPosts;
 };
 
-
 export const inputTextIsValid = (inputText) => {
   let isValid = false;
   const whatsAppMessageRegex = /(\d{2}\/\d{2}\/\d{4}\,\s{1}\d{2}\:\d{2}\s{1}\-{1}\s{1}.*\:\s{1})+/g
@@ -115,4 +113,29 @@ export const mockSleep = async (milliseconds) => {
   const sleep = async (fn, ...args) => await timeout(milliseconds);
   await sleep();
   return;
+};
+
+export const equalSpacedPosters = (arr, string) => {
+  const longestNameLength = Math.max(...(arr.map(e => e.poster.length)));
+  const diff = longestNameLength - string.length;
+  const nameSpaced = string + new Array(diff + 1).join('\u00a0');
+  return nameSpaced;
+};
+
+export const accountForAliases = (contributorsTally, posterAliases) => {
+  return contributorsTally.reduce((acc, e) => {
+    const indexOfPosterAliasObjWithAliasInArr = posterAliases.findIndex(obj => obj.aliases.includes(e.poster));
+    if (indexOfPosterAliasObjWithAliasInArr !== -1) {
+      const targetMain = posterAliases[indexOfPosterAliasObjWithAliasInArr].main;
+      const indexOfAccObjWithTargetMain = acc.findIndex(obj => obj.poster === targetMain);
+      if (indexOfAccObjWithTargetMain !== -1) {
+        acc[indexOfAccObjWithTargetMain].totalPosts += e.totalPosts;
+      } else {
+        acc.push({ poster: targetMain, totalPosts: e.totalPosts })
+      }
+    } else {
+      acc.push(e)
+    }
+    return acc;
+  }, [])
 };

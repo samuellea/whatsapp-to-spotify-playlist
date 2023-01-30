@@ -1,0 +1,23 @@
+.NoNew {
+  border: 2px solid darkgreen;
+  height: 90vh;
+  margin: 0;
+}
+
+.GreenCircleContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.GreenCircle {
+  height: 40vw;
+  width: 40vw;
+  border-radius: 100%;
+  background-color: limegreen;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 1s;
+}

@@ -3,6 +3,9 @@ import * as accents from 'remove-accents';
 import * as h from './helpers';
 import _ from 'lodash';
 
+
+const firebaseUrl = process.env.REACT_APP_FIREBASE_URL;
+
 export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) => {
   return axios({
     method: 'post',
@@ -10,68 +13,102 @@ export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) =>
     headers: { 'Authorization': 'Bearer ' + spotifyToken },
     data: {
       'name': newPlaylistName,
-      'description': 'Created and maintained using whatsapp-to-sptofiy-playlist',
+      'description': 'Created and maintained using whatsapp-to-spotify-playlist',
       'public': true,
     }
   });
 };
 
+//  url: `${firebaseUrl}/playlists.json?orderBy="spotifyPlaylistId"&equalTo="${spotifyPlaylistId}"&auth=${token}`,
+
 // create playlist metadata object on this user's FB /users/:user_id endpoint
-export const createFirebasePlaylistMetadata = (spotifyPlaylistId, spotifyPlaylistName, userId, token) => {
+export const createOrUpdateFirebasePlaylistMetadata = async (
+  method,
+  firebasePlaylistId,
+  playlistData,
+  userId,
+  token
+) => {
+  let url = `${firebaseUrl}/playlistMetas.json?auth=${token}`;
+
+  if (method === 'PATCH') {
+    console.log('🧵')
+    const { data } = await axios.get(`${firebaseUrl}/playlistMetas.json?orderBy="firebasePlaylistId"&equalTo="${firebasePlaylistId}"&auth=${token}`)
+    const playlistMetaId = Object.entries(data)[0][0];
+    console.log(playlistMetaId)
+    url = `${firebaseUrl}/playlistMetas/${playlistMetaId}.json?auth=${token}`
+  } else {
+    console.log('🌱');
+  }
+
+  const { spotifyPlaylistId, spotifyPlaylistName, processedPostsLog } = playlistData;
   const playlistMetadata = {
+    userId: userId,
+    firebasePlaylistId: firebasePlaylistId,
     spotifyPlaylistId: spotifyPlaylistId,
     spotifyPlaylistName: spotifyPlaylistName,
-    totalTracks: 0,
+    totalTracks: processedPostsLog.length,
   };
+
   return axios({
-    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/playlistMetas.json?auth=${token}`,
-    method: 'POST',
+    url: url,
+    method: method,
     data: JSON.stringify(playlistMetadata),
     headers: {
       'Content-Type': 'application/json'
     }
-  });
+  }).then(({ status }) => status).catch(e => console.log(e));
 };
 
-// create playlist object on the FB /playlists endpoint
-export const createOrUpdateFirebasePlaylist = (method, firebaseUserId, token, playlistData) => {
+// create or update a playlist object on the FB /playlists endpoint
+export const createOrUpdateFirebasePlaylist = (
+  method,
+  firebaseUserId,
+  token,
+  playlistData,
+  firebasePlaylistId
+) => {
+  let url;
+  if (method === 'POST') url = `${firebaseUrl}/playlists.json?auth=${token}`;
+  if (method === 'PATCH') url = `${firebaseUrl}/playlists/${firebasePlaylistId}.json?auth=${token}`;
+
   return axios({
-    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/playlists.json?auth=${token}`,
+    url: url,
     method: method,
-    data: JSON.stringify(playlistData),
+    data: playlistData,
     headers: {
       'Content-Type': 'application/json'
-    }
-  }).then((firebaseRes => {
-    if ([200, 201].includes(firebaseRes.status)) {
-      // create a metadata on /users/:user_id
-      const { spotifyPlaylistId, spotifyPlaylistName } = playlistData;
-      return createFirebasePlaylistMetadata(spotifyPlaylistId, spotifyPlaylistName, firebaseUserId, token).then((firebaseRes2 => {
-        if ([200, 201].includes(firebaseRes2.status)) {
-          return { success: true }
-        } else {
-          // TO-DO delete playlist obj on firebase /playlists endpoint
-          return { success: false }
-        }
-      }))
+    },
+  }).then((createPlaylist => {
+    if ([200, 201].includes(createPlaylist.status)) {
+      console.log('duck')
+      let newFirebasePlaylistId;
+      if (method === 'POST') newFirebasePlaylistId = createPlaylist.data.name;
+      if (method === 'PATCH') newFirebasePlaylistId = firebasePlaylistId;
+
+      console.log('just created an fb playlist obj with id of:')
+      console.log(newFirebasePlaylistId);
+      // create or update a metadata on /users/:user_id
+
+      return createOrUpdateFirebasePlaylistMetadata(method, newFirebasePlaylistId, playlistData, firebaseUserId, token).then(((status) => status)).catch(e => console.log(e))
     } else {
-      // error - dont bother creating metadata object, just return false and stop FB playlist creation on the 2 endpoints here.
-      console.log('6');
-      return { success: false }
+      console.log('cow')
+      // error - dont bother creating metadata object, just return bad status and stop FB playlist creation on the 2 endpoints here.
+      return createPlaylist.status;
     }
-  }));
+  })).catch(e => console.log(e));
 };
 
 export const getUserFirebasePlaylistsMetadata = (userId, token) => {
   return axios({
-    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json?auth=${token}`,
+    url: `${firebaseUrl}/playlistMetas.json?orderBy="userId"&equalTo="${userId}"&auth=${token}`,
     method: 'GET',
   }).catch(e => console.log(e));
 };
 
 export const getFirebasePlaylist = (spotifyPlaylistId, token) => {
   return axios({
-    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/playlists.json?orderBy="spotifyPlaylistId"&equalTo="${spotifyPlaylistId}"&auth=${token}`,
+    url: `${firebaseUrl}/playlists.json?orderBy="spotifyPlaylistId"&equalTo="${spotifyPlaylistId}"&auth=${token}`,
     method: 'GET',
   }).catch(e => console.log(e));
 };
@@ -95,7 +132,7 @@ export const postToSpotifyPlaylist = (targetPlaylistID, spotifyToken, trackIDs) 
       'uris': [...spotifyLinksFormatted],
       'position': 0,
     }
-  }).catch(e => console.log(e));
+  }).then(({ status }) => status).catch(e => console.log(e));
 };
 
 export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedPlaylistObj) => {
@@ -110,7 +147,7 @@ export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedP
   // });
 
   return axios({
-    url: `https://whatsapp-to-spotify-playlist-default-rtdb.europe-west1.firebasedatabase.app/playlists/${firebasePlaylistId}.json?auth=${token}`,
+    url: `${firebaseUrl}/playlists/${firebasePlaylistId}.json?auth=${token}`,
     method: 'PATCH',
     data: updatedPlaylistObj,
     headers: {
@@ -210,11 +247,13 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
 
     const spotifyDataObjs = closestMatchInEachSpotifySearchResponse.map((el, i) => {
       const spotifyTrackData = { ...youtubePosts[i] };
-      spotifyTrackData.artist = el?.artists.map(artist => artist.name).join(', ') || null;
+      spotifyTrackData.artists = el?.artists.map(artist => artist.name) || null;
+
       spotifyTrackData.title = el?.name || null;
       spotifyTrackData.thumbnail = el?.album.images[1].url || null;
       spotifyTrackData.spotifyTrackID = el?.id || null;
       spotifyTrackData.include = el ? true : false;
+      spotifyTrackData.artistIDs = el?.artists.map(artist => artist.id);
       return spotifyTrackData;
     });
     // console.log('🍿 --------------------');
@@ -225,7 +264,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     // const spotifyDataObjsWithCorrespondingPostIDs = spotifyDataObjs.map((obj, i) => ({ postId: youtubePosts[i].postId, data: obj ? { ...obj } : null }));
 
     // return { videoDataObjs, spotifyDataObjs: spotifyDataObjsWithCorrespondingPostIDs };
-    return { videoDataObjs, spotifyDataObjs: spotifyDataObjs };
+    return { videoDataObjs, spotifyDataObjs };
   } else {
     return null;
   }
@@ -241,7 +280,7 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
     justTrackIDs.push(spotifyTrackID)
   });
 
-  const subArraysMax50Each = _.chunk(justTrackIDs, 2);
+  const subArraysMax50Each = _.chunk(justTrackIDs, 50);
 
   const spotifyGetTracksQueries = subArraysMax50Each.map(arrayOfMax50IDs => {
     const max50IDsJoined = arrayOfMax50IDs.join(',')
@@ -261,15 +300,17 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
     const getTracksResponsesFlattened = spotifyGetTracksResponses.reduce((acc, e, i) => {
       e.data.tracks.forEach(obj => acc.push({
         title: obj.name,
-        artist: obj.artists.map(artist => artist.name).join(', '),
+        artists: obj.artists.map(artist => artist.name),
         spotifyTrackID: obj.id,
         thumbnail: obj.album.images[1].url,
+        artistIDs: obj.artists.map(artist => artist.id)
       }))
       return acc;
     }, []);
 
     // recompose spotifyPosts to have each original object's kv pairs PLUS the title, artist and thumbnail back
-    const spotifyPostsCompleteData = spotifyPosts.map((obj, i) => ({ ...obj, ...getTracksResponsesFlattened[i] }))
+    const spotifyPostsCompleteData = spotifyPosts.map((obj, i) => ({ ...obj, ...getTracksResponsesFlattened[i] }));
+
     return spotifyPostsCompleteData;
   } else {
     console.log('error fetching spotify tracks');
@@ -277,4 +318,60 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
   };
 
 
+};
+
+
+export const getGenresForSpotifyTracks = async (tracksArr, spotifyToken) => {
+
+  const postArtists = [];
+
+  tracksArr.forEach(track => {
+    track.artistIDs.forEach(artistID => (postArtists.push({ postId: track.postId, artistID, genres: [] })))
+  })
+
+  const postArtistsMax50Each = _.chunk(postArtists, 50);
+
+  const spotifyGetArtistsQueries = postArtistsMax50Each.map(arrayOfMa50PostArtists => {
+    const max50IDsJoined = arrayOfMa50PostArtists.map(e => e.artistID).join(',');
+    const spotifyQuery = `https://api.spotify.com/v1/artists?ids=${max50IDsJoined}`;
+    return spotifyQuery;
+  });
+
+  const spotifyGetArtistsResponses = await Promise.all(
+    spotifyGetArtistsQueries.map(async (query) => (await axios.get(query, {
+      headers: {
+        Authorization: `Bearer ${spotifyToken}`
+      }
+    }).catch(e => { console.log(e); return e })))
+  );
+
+  if (spotifyGetArtistsResponses.every(e => e.status === 200)) {
+
+    const getArtistsResponsesFlattened = spotifyGetArtistsResponses.reduce((acc, e, i) => {
+      e.data.artists.forEach(obj => acc.push({
+        genres: obj.genres
+      }))
+      return acc;
+    }, []);
+
+    const postArtistsPlusGenres = postArtists.map((e, i) => ({
+      ...e,
+      genres: getArtistsResponsesFlattened[i].genres,
+    }))
+
+    const tracksArrPlusGenres = tracksArr.map(trackObj => {
+      const genresForAllTrackArtists = postArtistsPlusGenres.filter(e => e.postId === trackObj.postId).reduce((acc, postArtistObj) => {
+        return _.uniq([...acc, ...postArtistObj.genres]);
+      }, []);
+
+      return { ...trackObj, genres: genresForAllTrackArtists }
+    })
+
+    console.log(tracksArrPlusGenres);
+    return tracksArrPlusGenres;
+
+  } else {
+    console.log(`error fetching genres for these tracks' artists`);
+    return null;
+  };
 };

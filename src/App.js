@@ -6,6 +6,7 @@ import Auth from './Auth';
 import Signup from './Signup';
 import Update from './Update';
 import axios from 'axios';
+import Stats from './Stats';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -131,8 +132,11 @@ function App() {
         <Route path="/spotifylogin">
           {spotifyLoginScreen()}
         </Route>
-        <Route path="/update/:playlist_id">
+        <Route path="/update">
           <Update />
+        </Route>
+        <Route path="/stats">
+          <Stats />
         </Route>
       </Router>
     </div >

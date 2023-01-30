@@ -126,7 +126,7 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
                 </div>
               )
             } else {
-              const { include, artist, title, thumbnail } = spotifyMatch;
+              const { include, artists, title, thumbnail } = spotifyMatch;
               const undoEnabled = spotifyMatch.spotifyTrackID !== spotifyMatches[index].spotifyTrackID;
               if (matchInspected === index && include) {
                 return (
@@ -157,7 +157,7 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
                       </div>
 
                       <div className="SpotifyArtists">
-                        <span className="CurtailText Curtail1">{artist}</span>
+                        <span className="CurtailText Curtail1">{artists.join(', ')}</span>
                       </div>
                     </div>
 

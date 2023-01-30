@@ -1,3 +1,7 @@
 .HomeContainer {
   border: 2px solid blue;
 }
+
+.CardButtons {
+  height: 100%;
+}

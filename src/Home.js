@@ -13,7 +13,7 @@ function Home({ handleLogout, userId, userEmail, token, spotifyUserInfo }) {
   const spotifyToken = localStorage.getItem('spotifyToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
 
-  const [userPlaylists, setUserPlaylists] = useState([]);
+  const [userPlaylistMetas, setUserPlaylistMetas] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -23,22 +23,26 @@ function Home({ handleLogout, userId, userEmail, token, spotifyUserInfo }) {
     u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(({ data, status }) => {
       if (status === 200) {
         if (data) {
-          const userPlaylists = Object.values(data.playlistMetas);
-          setUserPlaylists(userPlaylists);
+          console.log(data)
+          const userPlaylistMetas = Object.values(data);
+          setUserPlaylistMetas(userPlaylistMetas);
         }
       }
     })
     // console.log(spotifyUserInfo, ' <-- spotifyUserInfo')
   }, []);
 
-  const newPlaylistSuccess = (success) => {
-    if (success) {
+  const newPlaylistSuccess = (status) => {
+    console.log(status, ' <--- status')
+    if ([200, 201].includes(status)) {
       toast('Playlist created!', { duration: 1500 })
       // pull down users playlists again, so we can display the newly-created playlist
       u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(({ data, status }) => {
         if (status === 200) {
-          const userPlaylists = Object.values(data.playlistMetas);
-          setUserPlaylists(userPlaylists);
+          console.log(Object.entries(data)[0][0])
+          console.log(typeof Object.entries(data)[0][0])
+          const userPlaylistMetas = Object.values(data);
+          setUserPlaylistMetas(userPlaylistMetas);
         }
       })
     } else {
@@ -55,8 +59,8 @@ function Home({ handleLogout, userId, userEmail, token, spotifyUserInfo }) {
     <div className="HomeScreenLoggedInSpotify">
       <button type="button" onClick={logoutClicked}>Logout</button>
       <p>logged in: {spotifyUserInfo.displayName}</p>
-      {userPlaylists?.length > 0 ?
-        userPlaylists.map((playlistObj, i) => <PlaylistCard playlistObj={playlistObj} key={`card-${i}`} />)
+      {userPlaylistMetas?.length > 0 ?
+        userPlaylistMetas.map((metaObj, i) => <PlaylistCard metaObj={metaObj} key={`card-${i}`} />)
         : null}
       <CreatePlaylistCard
         spotifyToken={spotifyToken}

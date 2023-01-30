@@ -32,24 +32,24 @@ function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess,
         const { id: spotifyPlaylistId, name: spotifyPlaylistName } = data;
         // create playlist object on the FB /playlists endpoint - doing this, if successful, should then trigger creation of metadata object
         const playlistData = {
-          chatLog: '',
-          posts: [{ id: 123912 }],
+          rawPostsLog: [],
+          processedPostsLog: [],
           spotifyUserId: spotifyUserInfo.id,
           spotifyPlaylistId: spotifyPlaylistId,
           spotifyPlaylistName: spotifyPlaylistName,
         };
 
-        u.createOrUpdateFirebasePlaylist('POST', firebaseUserId, token, playlistData).then(({ success }) => {
-          newPlaylistSuccess(success)
+        u.createOrUpdateFirebasePlaylist('POST', firebaseUserId, token, playlistData).then((status) => {
+          newPlaylistSuccess(status)
           setCreatingNewPlaylist(false);
           setNewPlaylistName('');
           setCardMode('newMode')
         })
       } else {
-        newPlaylistSuccess(false)
+        newPlaylistSuccess(status)
         setCreatingNewPlaylist(false);
         setNewPlaylistName('');
-        setCardMode('newMode')
+        setCardMode('newMode');
         console.log('creating spotify playlist failed.')
       }
     });

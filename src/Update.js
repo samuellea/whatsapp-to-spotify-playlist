@@ -6,10 +6,14 @@ import InputTextInterface from './InputTextInterface';
 import FinalReviewInterface from './FinalReviewInterface';
 import * as u from './utils';
 import * as h from './helpers';
+import NoNew from './NoNew';
 
 function Update() {
   let history = useHistory();
-  const { playlist_id } = useParams(); // spotify playlist id!
+  const params = new URLSearchParams(window.location.search);
+
+  const spotifyPlaylistId = params.get('spotifyPlaylistId');
+  const firebasePlaylistId = params.get('firebasePlaylistId');
 
   const [spotifyPlaylistInState, setSpotifyPlaylistInState] = useState(null);
   const [inputText, setInputText] = useState('');
@@ -19,7 +23,9 @@ function Update() {
   const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] })
   const [newPostsInState, setNewPostsInState] = useState([]);
   const [screen, setScreen] = useState('input');
+  const [submissionSuccess, setSubmissionSuccess] = useState(null);
 
+  const firebaseUserId = localStorage.getItem('firebaseUserId');
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
 
@@ -29,12 +35,7 @@ function Update() {
   }, [inputText]);
 
   const handleGoBack = () => {
-    // setInputText('');
-    // setInfoLoading(false)
-    // setValidInputText(false)
-    // setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] })
-    // setScreen('')
-    history.goBack()
+    history.goBack();
   };
 
   const handleChangeTextArea = (e) => {
@@ -48,45 +49,55 @@ function Update() {
 
   const handleSubmitInputText = async () => {
     setInfoLoading(true);
-    const { data: spotifyPlaylistData, status } = await u.getSpotifyPlaylist(playlist_id, spotifyToken);
+    const { data: spotifyPlaylistData, status } = await u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken);
     if (status === 200) setSpotifyPlaylistInState(spotifyPlaylistData);
     // pull down the Firebase object for this playlist
-    u.getFirebasePlaylist(playlist_id, token).then(async ({ status, data }) => {
+    u.getFirebasePlaylist(spotifyPlaylistId, token).then(async ({ status, data }) => {
       if ([200, 201].includes(status)) {
         // TO-DO: handle data being returned but empty?
-        // console.log(Object.entries(data))
         const [firebasePlaylistId, playlistObj] = Object.entries(data)[0];
+        // set the firebase playlist object returned from firebase in state, for later access by other functions.
         setFirebasePlaylistObj({ firebasePlaylistId, playlistObj });
-        // rawPosts
+
         const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
-        console.log(rawPostsLog);
-        console.log(processedPostsLog);
         // determine new posts by comparing input text's posts with .rawPosts
         const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
+        console.log(newPostsRaw, ' <-- newPostsRaw')
 
-        // before handling any YT-type posts, get all the Spotify Data for all .linkType = 'spotify' tracks
+        // if there ARE no new posts found from the input text, feedback to user.
+        if (!newPostsRaw.length) {
+          console.log('fish')
+          setInfoLoading(false);
+          return setScreen('nonew')
+        };
+
+        console.log('ape')
+        // first, get all the Spotify Data for all .linkType = 'spotify' posts
         const justNewSpotifyPosts = newPostsRaw.filter(e => e.linkType === 'spotify');
         const newSpotifyPostsCompleteData = await u.getSpotifyTrackData(justNewSpotifyPosts, spotifyToken);
+        // // ❓❓❓❓ check newSpotifyPostsCompleteData
         // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
         setNewPostsInState(newSpotifyPostsCompleteData)
 
-        // handle any YT-type posts
+        // second, handle any .linkType = 'youtube' posts
         const youtubePosts = [...newPostsRaw.filter(e => e.linkType === 'youtube')];
 
         // if any youtube posts in chat, find the closest matching results for these on spotify
         if (youtubePosts.length) {
+          console.log('giraffe')
           const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
           const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
+          // ❓❓❓❓ check spotifyDataObjs
           setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
           setScreen('youtube');
           setInfoLoading(false);
         } else {
+          console.log('hippo')
           setScreen('review');
           setInfoLoading(false);
         }
       } else {
         // handle error getting this playlist from firebase - server error, bad request, 
-
       }
     })
   }
@@ -105,13 +116,15 @@ function Update() {
 
     const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
 
-    const newPostsInStateMinusPostIds = [...newPostsInState]
-    newPostsInStateMinusPostIds.forEach(e => delete e.postId);
+    // scrape genres for each spotify track
+    const newPostsInStatePlusGenres = await u.getGenresForSpotifyTracks(newPostsInState, spotifyToken);
+    const newPostsInStateMinusUnnecessaryKeys = [...newPostsInStatePlusGenres]
+    newPostsInStateMinusUnnecessaryKeys.forEach(e => delete e.postId);
 
     // create updated version of rawPostsLog and processedPostsLog with all the newly-found
     // and newly-processed posts, in order to then send off to FB.
     const updatedRawPosts = [...rawPostsLog, ...newPostsRaw];
-    const updatedPosts = [...(processedPostsLog || []), ...newPostsInStateMinusPostIds];
+    const updatedPosts = [...(processedPostsLog || []), ...newPostsInStateMinusUnnecessaryKeys];
 
     const updatedPlaylistObj = {
       ...playlistObj,
@@ -119,11 +132,25 @@ function Update() {
       processedPostsLog: updatedPosts,
     };
 
+    console.log(updatedPlaylistObj)
+
     // POST our updatedPlaylistObj off to FB.
-    await u.updateFirebasePlaylist(firebasePlaylistId, token, updatedPlaylistObj);
+
+
+
+
+    const firebaseStatus = await u.createOrUpdateFirebasePlaylist('PATCH', firebaseUserId, token, updatedPlaylistObj, firebasePlaylistId);
     // POST our new tracks to the Spotify playlist.
-    await u.postToSpotifyPlaylist(playlist_id, spotifyToken, trackIDs) // <--- POSTING TRACKS TO SPOTIFY!!
-  };
+    const spotifyStatus = await u.postToSpotifyPlaylist(spotifyPlaylistId, spotifyToken, trackIDs) // <--- POSTING TRACKS TO SPOTIFY!!
+
+    if ([200, 201].includes(firebaseStatus) && [200, 201].includes(spotifyStatus)) {
+      console.log('SUCCESS!')
+      setSubmissionSuccess(true);
+    } else {
+      setSubmissionSuccess(false);
+      console.log('failure updating playlist - firebase or spotify')
+    }
+  }
 
   const screenToRender = () => {
     if (infoLoading) return (<h1>⌛</h1>);
@@ -136,6 +163,11 @@ function Update() {
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
         />
+      )
+    }
+    if (screen === 'nonew') {
+      return (
+        <NoNew />
       )
     }
     if (screen === 'youtube') {
@@ -153,9 +185,12 @@ function Update() {
           spotifyPlaylistObj={spotifyPlaylistInState}
           newPosts={newPostsInState}
           handleFinalSubmission={handleFinalSubmission}
+          submissionSuccess={submissionSuccess}
+          firebasePlaylistId={firebasePlaylistId}
         />
       )
     }
+
 
   };
 

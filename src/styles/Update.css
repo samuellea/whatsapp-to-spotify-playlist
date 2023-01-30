@@ -7,6 +7,7 @@ textarea {
   border: 1px solid red;
   width: 90%;
   height: 50vh;
+  background-color: #202124;
 }
 
 textarea::-webkit-scrollbar {

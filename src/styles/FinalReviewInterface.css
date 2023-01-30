@@ -1,4 +1,15 @@
-.FinalReviewInterface {}
+.FinalReviewInterface {
+  border: 1px solid green;
+}
+
+.FinalReviewFeedback {
+  border: 1px solid green;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
 
 .FinalReviewInterface h4,
 h1,
@@ -13,4 +24,40 @@ h6 {
   height: 60vh;
   max-height: 60vh;
   overflow-y: scroll;
+}
+
+.SuccessIcon {
+  height: 40vw;
+  width: 40vw;
+  border-radius: 100%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 1s;
+  margin-bottom: 50px;
+}
+
+.SuccessIcon span {
+  font-size: 20vw;
+}
+
+.Green {
+  background-color: limegreen;
+}
+
+.Red {
+  background-color: red;
+}
+
+.Message {
+  /* font-size: 38px; */
+}
+
+.Success {
+  color: limegreen;
+}
+
+.Failure {
+  color: red;
 }

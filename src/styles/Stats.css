@@ -1,0 +1,52 @@
+.StatsContainer {
+  border: 4px dashed blue;
+  height: 99vh;
+}
+
+.Stats {
+  border: 2px solid darkred;
+  height: 100%;
+}
+
+.SpotifyPlaylistArtwork {
+  /* border: 3px solid green; */
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+  box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.3);
+}
+
+.Flex {
+  display: flex;
+}
+
+.Section {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.Column {
+  flex-direction: column;
+}
+
+.ContributorsContainer {
+  border: 2px solid black;
+}
+
+.OverviewSection {
+  border: 2px solid gray;
+}
+
+.ByYearSection {
+  border: 2px solid greenyellow;
+
+}
+
+.ByGenreSection {
+  border: 2px solid purple;
+}
+
+.SectionHeader {
+  text-decoration: underline;
+  margin: 0;
+}
