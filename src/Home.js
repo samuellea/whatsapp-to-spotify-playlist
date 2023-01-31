@@ -7,13 +7,19 @@ import PlaylistCard from './PlaylistCard';
 import CreatePlaylistCard from './CreatePlaylistCard';
 import './styles/Home.css';
 
-function Home({ handleLogout, userId, userEmail, token, spotifyUserInfo }) {
+function Home({
+  handleLogout,
+  userId,
+  userEmail,
+  token,
+  spotifyUserInfo,
+  userPlaylistMetas,
+  setUserPlaylistMetas,
+}) {
   let history = useHistory();
 
   const spotifyToken = localStorage.getItem('spotifyToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
-
-  const [userPlaylistMetas, setUserPlaylistMetas] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');

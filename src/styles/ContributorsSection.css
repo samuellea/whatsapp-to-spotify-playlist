@@ -33,6 +33,7 @@
 
 .ContributorCard {
   flex-direction: row;
+  height: 20px;
   /* border: 1px solid red; */
   /* padding-left: 5%; */
 }
@@ -59,9 +60,14 @@
   color: white;
   border: 1px solid white;
   align-items: center;
+  height: 20px;
 }
 
-.CheckBoxOptionCard input {
-  height: 30px;
-  width: 30px;
+.CheckBoxOptionCard #checkbox {
+  height: 20px;
+  width: 20px;
+}
+
+.EditRadios {
+  border: 2px dashed red;
 }
