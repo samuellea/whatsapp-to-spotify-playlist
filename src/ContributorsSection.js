@@ -1,68 +1,127 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as h from './helpers';
+import _ from 'lodash';
 import './styles/ContributorsSection.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 
-function ContributorsSection({ contributors }) {
+function ContributorsSection({ contributors, posterAliasesInState, setPosterAliasesInState }) {
+  // console.log(contributors);
   const contributorsRef = useRef();
 
-  const [height, setHeight] = useState();
+  // const [height, setHeight] = useState();
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [editView, setEditView] = useState(null);
 
-  const getContributorsSize = () => {
-    const newHeight = contributorsRef.current.clientHeight;
-    console.log(newHeight)
-    setHeight(newHeight);
-  };
+  const [main, setMain] = useState(null);
+  const [namesToGroup, setNamesToGroup] = useState([]);
 
-  useEffect(() => {
-    getContributorsSize();
-  }, [contributors]);
+
+  // const getContributorsSize = () => {
+  //   const newHeight = contributorsRef.current.clientHeight;
+  //   console.log(newHeight)
+  //   setHeight(newHeight);
+  // };
+
+  // useEffect(() => {
+  //   getContributorsSize();
+  // }, [contributors]);
 
   const handleEditStart = () => {
-    setEditView('edit_options')
+    setEditView('edit_checkboxes');
     setEditing(true);
   }
 
   const handleEditCancel = () => {
     setEditing(false);
+    setEditView(null);
+    setMain(null);
+    setNamesToGroup([]);
   }
 
-  const handleGroupOpt = () => {
-    setEditView('edit_checkboxes')
-  }
+  const handleUngroup = () => {
+    // let r = window.confirm(`Ungroup all names?`);
+    // if (r == true) {
+    const updatedAliasesInState = [];
+    setPosterAliasesInState(updatedAliasesInState);
+    setEditView(null);
+    setEditing(false);
+    // }
 
-  const handleUngroupOpt = () => {
-    // setEditing(false);
   }
 
   const handleCheckbox = (e) => {
-    console.log(e.target.value)
+    const value = e.target.value;
+    const updatedNamesToGroup = namesToGroup.includes(value) ? [...namesToGroup.filter(e => e !== value)] : [...namesToGroup, value];
+    setNamesToGroup(updatedNamesToGroup);
+  };
+
+  const handleConfirmGroupOptions = () => {
+    setMain(namesToGroup[0]); // set default main when rendering edit_radios
+    setEditView('edit_radios');
+  };
+
+  const handleRadio = (e) => {
+    const value = e.target.value;
+    const updatedMain = value;
+    setMain(updatedMain);
+  };
+
+  const handleConfirmAndSaveGroup = () => {
+    // let r = window.confirm(`Group these posters by the selected name?`);
+    // if (r == true) {
+
+    /*
+        const posterAliasesInState = [
+          { main: 'Sam', aliases: ['Sam', 'Sam (Work)'] },
+        ];
+    
+        main: 'Ben'
+        namesToGroup: ['Ben', 'Sam']
+    */
+
+    const indexOfAliasObjIfAlreadyExists = posterAliasesInState.findIndex(obj => obj.aliases.some(e => namesToGroup.includes(e)));
+
+    if (indexOfAliasObjIfAlreadyExists === -1) {
+      const newNameGrouping = { main: main, aliases: [...namesToGroup] };
+      updatedAliasesInState = [...posterAliasesInState, newNameGrouping];
+    } else {
+      const targetPosterAliasesObj = posterAliasesInState[indexOfAliasObjIfAlreadyExists];
+      const newNameGrouping = { main: main, aliases: _.uniq([...namesToGroup, ...targetPosterAliasesObj.aliases]) };
+
+    }
+
+    let updatedAliasesInState = [];
+
+    /*
+    Do any objects with .main === main (in state here) exist in posterAliasesInState?
+    If not, create a new obj with this .main, attach namesToGroup on .aliases, spread into updatedAliasesInState + set
+    If YES, push all names to group that aren't our main (in state) into that object's .aliases array
+    */
+
+    console.log(updatedAliasesInState)
+    setPosterAliasesInState(updatedAliasesInState);
+    setMain(null);
+    setNamesToGroup([]);
+    setEditView(null);
+    setEditing(false);
+    // }
   };
 
   const editScreenRender = () => {
-    if (editView === 'edit_options') {
-      return (
-        <div className="EditOptions Flex Column">
-          <button type="button" onClick={handleGroupOpt}>Group</button>
-          <button type="button" onClick={handleUngroupOpt}>Ungroup</button>
-        </div>
-      )
-    }
-
     if (editView === 'edit_checkboxes') {
       return (
         <div className="EditCheckboxes">
-          <h4>Select names to group</h4>
+          <h5>Select names to group</h5>
           {contributors.map((contributor, i) => (
             <div className="CheckBoxOptionCard Flex Row">
-              <input type="checkbox" value={contributor.poster} onClick={handleCheckbox} />
+              <input type="checkbox" id="checkbox" value={contributor.poster} onClick={handleCheckbox} />
               <span>{contributor.poster}</span>
             </div>
           ))}
+          <button type="button" onClick={handleUngroup} disabled={!posterAliasesInState.length}>Ungroup</button>
+          <button type="button" onClick={handleConfirmGroupOptions} disabled={namesToGroup.length < 2}>Group</button>
         </div>
       )
     }
@@ -70,6 +129,14 @@ function ContributorsSection({ contributors }) {
     if (editView === 'edit_radios') {
       return (
         <div className="EditRadios">
+          <h5>Pick name to group by</h5>
+          {namesToGroup.map(name => (
+            <div className="CheckBoxOptionCard Flex Row">
+              <input type="radio" id="radio" name="group_by_name" value={name} onClick={handleRadio} />
+              <span>{name}</span>
+            </div>
+          ))}
+          <button type="button" onClick={handleConfirmAndSaveGroup}>Confirm</button>
         </div>
       )
     }
@@ -78,7 +145,8 @@ function ContributorsSection({ contributors }) {
   return (
     <div className="ContributorsSection Flex Column">
       {!editing ?
-        <div className="NotEditing" ref={contributorsRef} style={{ height: `${height}px` }}>
+        // <div className="NotEditing" ref={contributorsRef} style={{ height: `${height}px` }}>
+        <div className="NotEditing" ref={contributorsRef}>
           <div className="HeaderAndEditButton Flex Row">
             <h4 className="SectionHeader">Contributors</h4>
             <button type="button" onClick={handleEditStart}>
@@ -107,7 +175,8 @@ function ContributorsSection({ contributors }) {
           </div>
         </div>
         :
-        <div className="Editing" style={{ height: `${height + 100}px` }}>
+        // <div className="Editing" style={{ height: `${height + 100}px` }}>
+        <div className="Editing">
           <button type="button" onClick={handleEditCancel}>Cancel</button>
           {editScreenRender()}
         </div>

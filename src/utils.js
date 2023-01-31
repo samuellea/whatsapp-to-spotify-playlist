@@ -271,12 +271,12 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
 };
 
 export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
-  const spotifyPostsPlusTrackIDs = [];
+  const spotifyPostsPlusTrackIDs = []; // ❓❓❓
   const justTrackIDs = [];
   spotifyPosts.forEach(e => {
     // const spotifyTrackID = e.linkURL.match(h.spotifyTrackIDRegex())[0].split('?')[0]; // cuts off any flags
     const spotifyTrackID = e.linkID;
-    spotifyPostsPlusTrackIDs.push({ ...e, spotifyTrackID });
+    spotifyPostsPlusTrackIDs.push({ ...e, spotifyTrackID }); // ❓❓❓
     justTrackIDs.push(spotifyTrackID)
   });
 

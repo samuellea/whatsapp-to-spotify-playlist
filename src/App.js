@@ -15,6 +15,7 @@ function App() {
   const [userEmail, setUserEmail] = useState(null);
   const [spotifyTokenInState, setSpotifyTokenInState] = useState(null);
   const [spotifyUserInfo, setSpotifyUserInfo] = useState({ id: '', displayName: '' });
+  const [userPlaylistMetas, setUserPlaylistMetas] = useState([]);
 
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
@@ -121,7 +122,15 @@ function App() {
     <div className="App">
       <Router>
         <Route exact path="/">
-          <Home handleLogout={handleLogout} userId={userId} userEmail={userEmail} token={token} spotifyUserInfo={spotifyUserInfo} />
+          <Home
+            handleLogout={handleLogout}
+            userId={userId} // ?
+            userEmail={userEmail} // ?
+            token={token}
+            spotifyUserInfo={spotifyUserInfo}
+            userPlaylistMetas={userPlaylistMetas}
+            setUserPlaylistMetas={setUserPlaylistMetas}
+          />
         </Route>
         <Route path="/login">
           <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
@@ -136,7 +145,7 @@ function App() {
           <Update />
         </Route>
         <Route path="/stats">
-          <Stats />
+          <Stats userPlaylistMetas={userPlaylistMetas} />
         </Route>
       </Router>
     </div >

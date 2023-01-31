@@ -47,6 +47,14 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
           return linkType;
         };
 
+        /*
+        [
+          {id: 1a, aliases: ['+447595', 'Matthew (Work)'], displayName: 'Matt S.'},
+          {id: 2b, aliases: ['Sam'], displayName: 'Sam' // default},
+          {id: 3c, aliases: ['Jonny', 'Johnny Ratcliffe'], displayName: 'Jonny'},
+        ]
+        */
+
         const linkType = decideLinkType(link);
         let linkID;
         if (linkType === 'spotify') linkID = link.match(spotifyTrackIDRegex())[0].split('?')[0];
@@ -75,7 +83,7 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
 
 export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
   const onlyRequiredKeys = (obj) => ({
-    poster: obj.poster,
+    poster: obj.poster, // could remove this
     linkType: obj.linkType,
     linkID: obj.linkID,
     time: obj.time,
@@ -123,7 +131,8 @@ export const equalSpacedPosters = (arr, string) => {
 };
 
 export const accountForAliases = (contributorsTally, posterAliases) => {
-  return contributorsTally.reduce((acc, e) => {
+  console.log(posterAliases)
+  const res = contributorsTally.reduce((acc, e) => {
     const indexOfPosterAliasObjWithAliasInArr = posterAliases.findIndex(obj => obj.aliases.includes(e.poster));
     if (indexOfPosterAliasObjWithAliasInArr !== -1) {
       const targetMain = posterAliases[indexOfPosterAliasObjWithAliasInArr].main;
@@ -138,4 +147,6 @@ export const accountForAliases = (contributorsTally, posterAliases) => {
     }
     return acc;
   }, [])
+  console.log(res);
+  return res;
 };

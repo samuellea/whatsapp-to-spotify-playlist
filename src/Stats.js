@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import Spinner from './Spinner';
+import * as h from './helpers';
 import * as u from './utils';
 import './styles/Stats.css';
 import ContributorsSection from './ContributorsSection';
 
-function Stats({ }) {
+function Stats({ userPlaylistMetas }) {
   const params = new URLSearchParams(window.location.search);
   const spotifyPlaylistId = params.get('spotifyPlaylistId');
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
 
+  const metaObj = userPlaylistMetas.filter(meta => meta.spotifyPlaylistId === spotifyPlaylistId);
+
   const [loading, setLoading] = useState(true);
   const [firebasePlaylist, setFirebasePlaylist] = useState({ id: null, obj: {} });
   const [spotifyArtwork, setSpotifyArtwork] = useState(null);
+  const [posterAliasesInState, setPosterAliasesInState] = useState([]);
   const [contributors, setContributors] = useState([]);
 
   useEffect(() => {
+    // get the firebase playlist object
     u.getFirebasePlaylist(spotifyPlaylistId, token).then((firebaseRes) => {
+      // get the spotify playlist artwork
       u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(async (spotifyRes) => {
         setSpotifyArtwork(spotifyRes.data.images[0].url)
         const { status, data } = firebaseRes;
@@ -26,25 +32,30 @@ function Stats({ }) {
           id: firebasePlaylistId,
           obj: firebasePlaylistObj,
         });
+        setPosterAliasesInState(metaObj.posterAliases || [])
+        // setPosterAliasesInState([{ main: 'Sam', aliases: ['Sam', 'Sam (Work)'] }]);
       });
     });
   }, []);
 
+  const { processedPostsLog, spotifyPlaylistName } = firebasePlaylist.obj;
+
   useEffect(() => {
     if (firebasePlaylist.id !== null) {
+      // create contributors tally object
       const contributorsTally = processedPostsLog.reduce((acc, e) => {
         if (!acc.some(obj => obj.poster === e.poster)) acc.push({ poster: e.poster, totalPosts: 0 });
         const indexOfPoster = acc.findIndex(obj => obj.poster === e.poster);
         acc[indexOfPoster].totalPosts++;
         return acc;
       }, []).sort((a, b) => (a.totalPosts < b.totalPosts) ? 1 : -1);
-      console.log(contributorsTally)
-      setContributors(contributorsTally);
+      // then, account for aliases stored on the meta obj
+      const contributorsTallyAccountingForAliases = h.accountForAliases(contributorsTally, posterAliasesInState);
+      setContributors(contributorsTallyAccountingForAliases);
       setLoading(false);
     }
-  }, [firebasePlaylist])
+  }, [posterAliasesInState])
 
-  const { processedPostsLog, spotifyPlaylistName } = firebasePlaylist.obj;
 
 
   /*
@@ -89,7 +100,7 @@ fb.playlists/:id/.posterAliases
             <h2>{processedPostsLog.length} tracks</h2>
 
             <div className="ContributorsContainer">
-              <ContributorsSection contributors={contributors} />
+              <ContributorsSection contributors={contributors} posterAliasesInState={posterAliasesInState} setPosterAliasesInState={setPosterAliasesInState} />
             </div>
 
             <div className="OverviewSection Flex Column">
