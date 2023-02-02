@@ -16,8 +16,8 @@ function Stats({ userPlaylistMetas }) {
   const [loading, setLoading] = useState(true);
   const [firebasePlaylist, setFirebasePlaylist] = useState({ id: null, obj: {} });
   const [spotifyArtwork, setSpotifyArtwork] = useState(null);
-  const [posterAliasesInState, setPosterAliasesInState] = useState([]);
-  const [contributors, setContributors] = useState([]);
+  const [lookupInState, setLookupInState] = useState(null);
+  const [tallied, setTallied] = useState([]); // 'contributos' has accounted for aliases in the init useEffect
 
   useEffect(() => {
     // get the firebase playlist object
@@ -32,8 +32,7 @@ function Stats({ userPlaylistMetas }) {
           id: firebasePlaylistId,
           obj: firebasePlaylistObj,
         });
-        setPosterAliasesInState(metaObj.posterAliases || [])
-        // setPosterAliasesInState([{ main: 'Sam', aliases: ['Sam', 'Sam (Work)'] }]);
+        setLookupInState(metaObj.lookupInState || {})
       });
     });
   }, []);
@@ -42,52 +41,12 @@ function Stats({ userPlaylistMetas }) {
 
   useEffect(() => {
     if (firebasePlaylist.id !== null) {
-      // create contributors tally object
-      const contributorsTally = processedPostsLog.reduce((acc, e) => {
-        if (!acc.some(obj => obj.poster === e.poster)) acc.push({ poster: e.poster, totalPosts: 0 });
-        const indexOfPoster = acc.findIndex(obj => obj.poster === e.poster);
-        acc[indexOfPoster].totalPosts++;
-        return acc;
-      }, []).sort((a, b) => (a.totalPosts < b.totalPosts) ? 1 : -1);
-      // then, account for aliases stored on the meta obj
-      const contributorsTallyAccountingForAliases = h.accountForAliases(contributorsTally, posterAliasesInState);
-      setContributors(contributorsTallyAccountingForAliases);
+      const contributions = h.tallyContributions(processedPostsLog, lookupInState);
+      console.log(contributions)
+      setTallied(contributions);
       setLoading(false);
     }
-  }, [posterAliasesInState])
-
-
-
-  /*
-  1) contributorsTally
-  {poster: 'Sam', totalPosts: 5},
-  {poster: 'Ben Belward', totalPosts: 2},
-  {poster: 'Sam (Work)', totalPosts: 1},
-  {poster: 'Johnny Ratcliffe', totalPosts: 1},
-
-  2) contributorsGroupedByAlias
-
-fb.playlists/:id/.posterAliases
-
-  {
-    aliases: [
-      {
-        main: 'Sam', // this is the one the user SELECTS (not types)
-        // - after selecting multiple and clicking 'Group', radio buttons appear
-        // with values = the selected names,
-        // 'which SINGLE NAME should these posts be grouped under'? - clicking
-        // this sets the value of this alias obj's .main key
-        // NB!!! need to ensure, after selecting a saving,
-        // one can't then go and click group again and group a name 
-        // that's already been group with ANOTHER name that wasn't in that
-        // ORIGINAL group! - i guess just check if that name exists 
-        // in any '.aliases' arrays in any objects in posterAliases
-        aliases: ['Sam', 'Sam (Work)'],
-      } 
-    ],
-}
-
-  */
+  }, [lookupInState])
 
   return (
     <div className="StatsContainer">
@@ -100,7 +59,11 @@ fb.playlists/:id/.posterAliases
             <h2>{processedPostsLog.length} tracks</h2>
 
             <div className="ContributorsContainer">
-              <ContributorsSection contributors={contributors} posterAliasesInState={posterAliasesInState} setPosterAliasesInState={setPosterAliasesInState} />
+              <ContributorsSection
+                tallied={tallied}
+                lookupInState={lookupInState}
+                setLookupInState={setLookupInState}
+              />
             </div>
 
             <div className="OverviewSection Flex Column">

@@ -5,123 +5,219 @@ import './styles/ContributorsSection.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 
-function ContributorsSection({ contributors, posterAliasesInState, setPosterAliasesInState }) {
-  // console.log(contributors);
+function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
   const contributorsRef = useRef();
 
   // const [height, setHeight] = useState();
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [editView, setEditView] = useState(null);
-
-  const [main, setMain] = useState(null);
-  const [namesToGroup, setNamesToGroup] = useState([]);
-
-
-  // const getContributorsSize = () => {
-  //   const newHeight = contributorsRef.current.clientHeight;
-  //   console.log(newHeight)
-  //   setHeight(newHeight);
-  // };
-
-  // useEffect(() => {
-  //   getContributorsSize();
-  // }, [contributors]);
+  const [renaming, setRenaming] = useState({ currentName: '', newName: '', error: false });
+  const [grouping, setGrouping] = useState({ groupees: [], groupOn: null })
 
   const handleEditStart = () => {
-    setEditView('edit_checkboxes');
     setEditing(true);
-  }
+    setEditView('edit_options');
+  };
 
   const handleEditCancel = () => {
-    setEditing(false);
     setEditView(null);
-    setMain(null);
-    setNamesToGroup([]);
+    setRenaming({ currentName: '', newName: '', error: false });
+    setGrouping({ groupees: [], groupOn: null });
+    setEditing(false);
+  };
+
+  const handleRevertStart = () => { };
+
+  const handleRenameStart = () => {
+    setEditView('edit_rename');
+  };
+
+  const handleGroupStart = () => {
+    setEditView('edit_checkboxes');
+  };
+
+  const handleRenameClick = (e) => {
+    const { value } = e.target;
+    setRenaming({ currentName: value, newName: '', error: false });
   }
 
-  const handleUngroup = () => {
-    // let r = window.confirm(`Ungroup all names?`);
-    // if (r == true) {
-    const updatedAliasesInState = [];
-    setPosterAliasesInState(updatedAliasesInState);
-    setEditView(null);
-    setEditing(false);
-    // }
-
-  }
-
-  const handleCheckbox = (e) => {
-    const value = e.target.value;
-    const updatedNamesToGroup = namesToGroup.includes(value) ? [...namesToGroup.filter(e => e !== value)] : [...namesToGroup, value];
-    setNamesToGroup(updatedNamesToGroup);
-  };
-
-  const handleConfirmGroupOptions = () => {
-    setMain(namesToGroup[0]); // set default main when rendering edit_radios
-    setEditView('edit_radios');
-  };
-
-  const handleRadio = (e) => {
-    const value = e.target.value;
-    const updatedMain = value;
-    setMain(updatedMain);
-  };
-
-  const handleConfirmAndSaveGroup = () => {
-    // let r = window.confirm(`Group these posters by the selected name?`);
-    // if (r == true) {
-
-    /*
-        const posterAliasesInState = [
-          { main: 'Sam', aliases: ['Sam', 'Sam (Work)'] },
-        ];
-    
-        main: 'Ben'
-        namesToGroup: ['Ben', 'Sam']
-    */
-
-    const indexOfAliasObjIfAlreadyExists = posterAliasesInState.findIndex(obj => obj.aliases.some(e => namesToGroup.includes(e)));
-
-    if (indexOfAliasObjIfAlreadyExists === -1) {
-      const newNameGrouping = { main: main, aliases: [...namesToGroup] };
-      updatedAliasesInState = [...posterAliasesInState, newNameGrouping];
+  const handleRenameChange = (e) => {
+    const { value } = e.target;
+    console.log(value);
+    const { grouped, renamed } = lookupInState;
+    const posterInTally = tallied.find(e => e.poster === value.trim());
+    const posterInGrouped = grouped && grouped.find(e => e.poster === value.trim());
+    const posterInRenamed = renamed && renamed.find(e => e.poster === value.trim());
+    if (posterInTally || posterInGrouped || posterInRenamed) {
+      return setRenaming({ ...renaming, newName: value, error: true });
     } else {
-      const targetPosterAliasesObj = posterAliasesInState[indexOfAliasObjIfAlreadyExists];
-      const newNameGrouping = { main: main, aliases: _.uniq([...namesToGroup, ...targetPosterAliasesObj.aliases]) };
+      return setRenaming({ ...renaming, newName: value, error: false });
+    }
+  };
 
+  const handleRenameSave = () => {
+    const { grouped, renamed } = lookupInState;
+    const { currentName, newName } = renaming;
+    let targetPoster = currentName;
+    let updatedRenamed = renamed ? [...renamed] : [];
+    // wait - first, check if this contributor has already been renamed
+    if (renamed) {
+      const objInRenamed = renamed.find(e => e.to === currentName);
+      if (objInRenamed) {
+        targetPoster = objInRenamed.poster;
+        updatedRenamed = updatedRenamed.filter(e => e.to !== currentName);
+      }
     }
 
-    let updatedAliasesInState = [];
+    const newRenamedObj = { poster: targetPoster, to: newName };
+    updatedRenamed.push(newRenamedObj);
 
-    /*
-    Do any objects with .main === main (in state here) exist in posterAliasesInState?
-    If not, create a new obj with this .main, attach namesToGroup on .aliases, spread into updatedAliasesInState + set
-    If YES, push all names to group that aren't our main (in state) into that object's .aliases array
-    */
-
-    console.log(updatedAliasesInState)
-    setPosterAliasesInState(updatedAliasesInState);
-    setMain(null);
-    setNamesToGroup([]);
-    setEditView(null);
-    setEditing(false);
-    // }
+    const updatedLookup = { ...lookupInState, renamed: updatedRenamed };
+    console.log(updatedLookup)
+    // FINAL ACTION
+    setLookupInState(updatedLookup);
   };
 
+  const handleCheckbox = (e) => {
+    const { value } = e.target;
+    const alreadyInGrouping = grouping.groupees.findIndex(e => e === value) !== -1;
+    let updatedGrouping;
+    if (alreadyInGrouping) updatedGrouping = [...grouping.groupees.filter(e => e !== value)];
+    if (!alreadyInGrouping) updatedGrouping = [...grouping.groupees, value];
+    setGrouping({ ...grouping, groupees: updatedGrouping });
+  }
+
+  const handleConfirmGroupCheckboxes = () => {
+    setEditView('edit_radios');
+  }
+
+  const handleRadio = (e) => {
+    const { value } = e.target;
+    const updatedGroupOn = value;
+    console.log({ ...grouping, groupOn: updatedGroupOn })
+    setGrouping({ ...grouping, groupOn: updatedGroupOn })
+  }
+
+  const handleConfirmGroupOn = () => {
+    console.log(lookupInState);
+    const { grouped, renamed } = lookupInState;
+    console.log(grouping)
+    const { groupees, groupOn } = grouping;
+
+    // set the groupOn value for new groupee 'grouped' arr objects,
+    // firstly checking if the groupOn in question has been renamed
+    let targetOn = groupOn;
+
+    if (renamed) {
+      const groupOnObjInRenamed = renamed.find(e => e.poster === groupOn);
+      // if (!groupOnObjInRenamed) targetOn = groupOn;
+      if (groupOnObjInRenamed) targetOn = groupOnObjInRenamed.poster;
+    }
+
+    // filter groupees to not include the groupOn value
+    const onlyGroupees = groupees.filter(e => e !== groupOn);
+
+    let updatedGrouped = grouped ? [...grouped] : [];
+    let updatedRenamed = renamed ? [...renamed] : [];
+
+    // then, make up new 'grouped' arr objects for each of these groupees
+    onlyGroupees.forEach(groupee => {
+      let targetPoster = groupee;
+      // decide the new obj's .poster value, firstly checking if this groupee has been renamed
+      if (renamed) {
+        const objInRenamed = renamed.find(e => e.to === groupee);
+        if (objInRenamed) {
+          targetPoster = objInRenamed.poster;
+          // and remove this obj from renamed
+          updatedRenamed = updatedRenamed.filter(e => e.to !== groupee);
+        }
+        // else {
+        //   targetPoster = groupee;
+        // }
+      }
+
+
+
+      const newGroupeeObj = { poster: targetPoster, on: targetOn };
+
+      // next, check if this groupee has groupees (in 'grouped' arr) TOO -
+      // if so, re-group THEM to the new targetOn (groupOn)
+      const indexesOfObjsInGrouped = updatedGrouped.reduce((acc, e, i) => {
+        if (e.on === targetPoster) acc.push(i);
+        return acc;
+      }, []);
+
+      if (indexesOfObjsInGrouped.length) {
+        indexesOfObjsInGrouped.forEach(objIndex => updatedGrouped[objIndex] = { ...updatedGrouped[objIndex], on: targetOn });
+      }
+
+      updatedGrouped.push(newGroupeeObj);
+    })
+
+
+    const updatedLookup = { grouped: updatedGrouped, renamed: updatedRenamed };
+    console.log(updatedLookup)
+    // FINAL ACTION
+    setLookupInState(updatedLookup);
+  }
+
+
   const editScreenRender = () => {
+
+    if (editView === 'edit_options') {
+      return (
+        <div className="EditOptions Flex Column">
+          <button type="button" onClick={handleRevertStart}>Revert</button>
+          <button type="button" onClick={handleRenameStart}>Rename</button>
+          <button type="button" onClick={handleGroupStart}>Group</button>
+        </div>
+      );
+    };
+
+    if (editView === 'edit_rename') {
+      return (
+        <div className="EditRename">
+          <h5>RENAME</h5>
+          {tallied.map(tallyObj => {
+            const errorOnThisField = renaming.currentName === tallyObj.poster && renaming.error;
+            return (
+              <div className="RenameInputContainer Flex">
+                {renaming.currentName === tallyObj.poster ?
+                  // <div className="RenameInputActiveControls">
+                  <input type="text" value={renaming.newName} onChange={handleRenameChange} placeholder={tallyObj.poster} />
+                  // </div>
+                  : <button type="button" value={tallyObj.poster} onClick={(event) => handleRenameClick(event)}>
+                    {tallyObj.poster}
+                  </button>
+                }
+                <button
+                  type="button"
+                  onClick={handleRenameSave}
+                  disabled={errorOnThisField}
+                  style={{ visibility: renaming.currentName === tallyObj.poster ? 'visible' : 'hidden' }}
+                >Save</button>
+                {errorOnThisField ? <span>(Error)</span> : null}
+              </div>
+            )
+          })}
+        </div>
+      );
+    };
+
+
     if (editView === 'edit_checkboxes') {
       return (
         <div className="EditCheckboxes">
-          <h5>Select names to group</h5>
-          {contributors.map((contributor, i) => (
-            <div className="CheckBoxOptionCard Flex Row">
-              <input type="checkbox" id="checkbox" value={contributor.poster} onClick={handleCheckbox} />
-              <span>{contributor.poster}</span>
-            </div>
-          ))}
-          <button type="button" onClick={handleUngroup} disabled={!posterAliasesInState.length}>Ungroup</button>
-          <button type="button" onClick={handleConfirmGroupOptions} disabled={namesToGroup.length < 2}>Group</button>
+          {tallied.map(tallyObj => {
+            return (
+              <div className="CheckBoxOptionCard Flex Row">
+                <input type="checkbox" id="checkbox" value={tallyObj.poster} onClick={handleCheckbox} />
+                <span>{tallyObj.poster}</span>
+              </div>
+            )
+          })}
+          <button type="button" onClick={handleConfirmGroupCheckboxes} disabled={grouping.groupees.length < 2}>Group</button>
         </div>
       )
     }
@@ -129,14 +225,15 @@ function ContributorsSection({ contributors, posterAliasesInState, setPosterAlia
     if (editView === 'edit_radios') {
       return (
         <div className="EditRadios">
-          <h5>Pick name to group by</h5>
-          {namesToGroup.map(name => (
-            <div className="CheckBoxOptionCard Flex Row">
-              <input type="radio" id="radio" name="group_by_name" value={name} onClick={handleRadio} />
-              <span>{name}</span>
-            </div>
-          ))}
-          <button type="button" onClick={handleConfirmAndSaveGroup}>Confirm</button>
+          {grouping.groupees.map(groupee => {
+            return (
+              <div className="CheckBoxOptionCard Flex Row">
+                <input type="radio" id="radio" name="group_by_name" value={groupee} onClick={handleRadio} checked={groupee === grouping.groupOn} />
+                <span>{groupee}</span>
+              </div>
+            )
+          })}
+          <button type="button" onClick={handleConfirmGroupOn} disabled={!grouping.groupOn}>Confirm Group</button>
         </div>
       )
     }
@@ -154,11 +251,11 @@ function ContributorsSection({ contributors, posterAliasesInState, setPosterAlia
             </button>
           </div>
           <div className="ContributorsList Flex Column">
-            {contributors.map((contributor, i) => {
+            {tallied.map((contributor, i) => {
               return (
                 <div className="ContributorCard Flex Row">
                   <div className="ContributorName">
-                    {h.equalSpacedPosters(contributors, contributor.poster)}
+                    {h.equalSpacedPosters(tallied, contributor.poster)}
                   </div>
                   <div className="ContributorHyphen">
                     <span>-</span>

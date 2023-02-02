@@ -61,8 +61,7 @@ function Update() {
 
         const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
         // determine new posts by comparing input text's posts with .rawPosts
-        const newPostsRaw = h.findInputTextNe
-        wPosts(inputText, rawPostsLog);
+        const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
         console.log(newPostsRaw, ' <-- newPostsRaw')
 
         // if there ARE no new posts found from the input text, feedback to user.

@@ -60,7 +60,7 @@
   color: white;
   border: 1px solid white;
   align-items: center;
-  height: 20px;
+  /* height: 30px; */
 }
 
 .CheckBoxOptionCard #checkbox {
@@ -71,3 +71,32 @@
 .EditRadios {
   border: 2px dashed red;
 }
+
+.RenameOptionCard {
+  color: white;
+  border: 1px solid white;
+  align-items: center;
+  /* height: 35px; */
+  align-items: flex-start;
+}
+
+
+.RenameContainer {
+  border: 1px solid blue;
+}
+
+.RenameInputContainer {
+  border: 1px solid green;
+  align-items: center;
+}
+
+.RenameInputContainer span {
+  font-size: 8px;
+}
+
+.RenameInputContainer input {
+  height: 18px;
+  border: none;
+}
+
+.RenameInputActiveControls {}

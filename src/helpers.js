@@ -130,23 +130,86 @@ export const equalSpacedPosters = (arr, string) => {
   return nameSpaced;
 };
 
-export const accountForAliases = (contributorsTally, posterAliases) => {
-  console.log(posterAliases)
-  const res = contributorsTally.reduce((acc, e) => {
-    const indexOfPosterAliasObjWithAliasInArr = posterAliases.findIndex(obj => obj.aliases.includes(e.poster));
-    if (indexOfPosterAliasObjWithAliasInArr !== -1) {
-      const targetMain = posterAliases[indexOfPosterAliasObjWithAliasInArr].main;
-      const indexOfAccObjWithTargetMain = acc.findIndex(obj => obj.poster === targetMain);
-      if (indexOfAccObjWithTargetMain !== -1) {
-        acc[indexOfAccObjWithTargetMain].totalPosts += e.totalPosts;
-      } else {
-        acc.push({ poster: targetMain, totalPosts: e.totalPosts })
+// export const contributorsTallied = (processedPostsLog) => {
+//   return processedPostsLog.reduce((acc, e) => {
+//     if (!acc.some(obj => obj.poster === e.poster)) acc.push({ poster: e.poster, totalPosts: 0 });
+//     const indexOfPoster = acc.findIndex(obj => obj.poster === e.poster);
+//     acc[indexOfPoster].totalPosts++;
+//     return acc;
+//   }, []).sort((a, b) => (a.totalPosts < b.totalPosts) ? 1 : -1);
+// };
+
+export const tallyContributions = (processedPostsLog, lookup) => {
+  const { grouped, renamed } = lookup;
+  return processedPostsLog.reduce((acc, post) => {
+
+    // let targetPoster;
+    let targetPoster = post.poster
+
+    if (grouped) {
+      // check if this poster has been grouped
+      const objInGrouped = grouped.find(e => e.poster === post.poster);
+      if (objInGrouped) {
+        const objInRenamed = renamed.find(e => e.poster === objInGrouped.on);
+        targetPoster = objInRenamed ? objInRenamed.to : objInGrouped.on;
       }
-    } else {
-      acc.push(e)
+    };
+
+    if (renamed) {
+      // if not, and renamed arr exists, check if this poster has been renamed
+      const objInRenamed = renamed.find(e => e.poster === post.poster);
+      if (objInRenamed) targetPoster = objInRenamed.to;
     }
+
+    // finally, check if acc obj already exist for this poster - if yes, update, if not add new
+    const indexInAcc = acc.findIndex(e => e.poster === targetPoster);
+    if (indexInAcc === -1) {
+      acc.push({ poster: targetPoster, totalPosts: 1 });
+    } else {
+      acc[indexInAcc].totalPosts++;
+    }
+
     return acc;
   }, [])
-  console.log(res);
-  return res;
+};
+
+
+
+
+
+
+
+export const tallyContributionsDRAFTONE_____ = (processedPostsLog, lookup) => {
+  const { grouped, renamed } = lookup;
+  return processedPostsLog.reduce((acc, post) => {
+    // let targetPoster;
+    let targetPoster;
+
+    // check if this poster has been grouped
+    const objInGrouped = grouped.find(e => e.poster === post.poster);
+    if (!objInGrouped) { // if this poster cant be found in grouped, or grouped arr doesnt exist / is empty
+      targetPoster = post.poster
+    } else {
+      const objInRenamed = renamed.find(e => e.poster === objInGrouped.on);
+      targetPoster = objInRenamed ? objInRenamed.to : objInGrouped.on;
+    }
+
+    // if not, check if this poster has been renamed
+    const objInRenamed = renamed.find(e => e.poster === post.poster);
+    if (!objInRenamed) {
+      targetPoster = post.poster;
+    } else {
+      targetPoster = objInRenamed.to;
+    }
+
+    // finally, check if acc obj already exist for this poster - if yes, update, if not add new
+    const indexInAcc = acc.findIndex(e => e.poster = targetPoster);
+    if (indexInAcc === -1) {
+      acc.push({ poster: targetPoster, totalPosts: 1 })
+    } else {
+      acc[indexInAcc].totalPosts++;
+    }
+
+    return acc;
+  }, [])
 };
