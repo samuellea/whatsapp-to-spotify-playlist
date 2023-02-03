@@ -2,14 +2,12 @@ import './styles/CreatePlaylistCard.css';
 import React, { useState, useEffect } from 'react';
 import * as u from './utils';
 
-function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess, token, firebaseUserId }) {
+function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess, firebaseUserId }) {
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [cardMode, setCardMode] = useState('newMode');
   const [creatingNewPlaylist, setCreatingNewPlaylist] = useState(false);
 
-  // useEffect(() => {
-  //   // Component did mount
-  // }, []);
+  const token = localStorage.getItem('token');
 
   const handleStartCreate = () => {
     setCardMode('namePlaylistMode')

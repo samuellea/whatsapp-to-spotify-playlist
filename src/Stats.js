@@ -1,57 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import Spinner from './Spinner';
+import axios from 'axios';
 import * as h from './helpers';
 import * as u from './utils';
 import './styles/Stats.css';
 import ContributorsSection from './ContributorsSection';
+import usePrevious from './customHooks/usePrevious';
+import _ from 'lodash';
+import toast, { Toaster } from 'react-hot-toast';
+import { Redirect, useHistory } from 'react-router-dom';
 
-function Stats({ userPlaylistMetas }) {
+function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading }) {
+  const history = useHistory();
   const params = new URLSearchParams(window.location.search);
   const spotifyPlaylistId = params.get('spotifyPlaylistId');
+  const firebaseMetaId = params.get('firebaseMetaId');
+
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
 
-  const metaObj = userPlaylistMetas.filter(meta => meta.spotifyPlaylistId === spotifyPlaylistId);
-
-  const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
   const [firebasePlaylist, setFirebasePlaylist] = useState({ id: null, obj: {} });
   const [spotifyArtwork, setSpotifyArtwork] = useState(null);
-  const [lookupInState, setLookupInState] = useState(null);
-  const [tallied, setTallied] = useState([]); // 'contributos' has accounted for aliases in the init useEffect
+  const [tallied, setTallied] = useState([]);
+  const [lookupInState, setLookupInState] = useState({});
 
-  useEffect(() => {
-    // get the firebase playlist object
-    u.getFirebasePlaylist(spotifyPlaylistId, token).then((firebaseRes) => {
-      // get the spotify playlist artwork
-      u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(async (spotifyRes) => {
-        setSpotifyArtwork(spotifyRes.data.images[0].url)
-        const { status, data } = firebaseRes;
-        const firebasePlaylistId = Object.entries(data)[0][0];
-        const firebasePlaylistObj = Object.entries(data)[0][1];
-        setFirebasePlaylist({
-          id: firebasePlaylistId,
-          obj: firebasePlaylistObj,
-        });
-        setLookupInState(metaObj.lookupInState || {})
-      });
-    });
-  }, []);
-
-  const { processedPostsLog, spotifyPlaylistName } = firebasePlaylist.obj;
-
+  // When metas update, set .lookup in state, tally / re-tally contributors
   useEffect(() => {
     if (firebasePlaylist.id !== null) {
-      const contributions = h.tallyContributions(processedPostsLog, lookupInState);
-      console.log(contributions)
+      const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+      const lookupOnFB = playlistMetaInAppState.lookup || {};
+      setLookupInState('lookup' in playlistMetaInAppState ? lookupOnFB : {});
+      const contributions = h.tallyContributions(firebasePlaylist.obj.processedPostsLog, lookupInState);
       setTallied(contributions);
-      setLoading(false);
     }
-  }, [lookupInState])
+  }, [userPlaylistMetas]);
+
+  // When stats loads, get FB playlist data, spotify playlist artwork and trigger fetch of metas
+  useEffect(() => {
+    setPageLoading(true);
+    u.getFirebasePlaylist(spotifyPlaylistId, token).then((firebasePlaylistRes) => {
+      u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(async (spotifyRes) => {
+        setSpotifyArtwork(spotifyRes.data.images[0].url)
+        const { data } = firebasePlaylistRes;
+        const firebasePlaylistId = Object.entries(data)[0][0];
+        const firebasePlaylistObj = Object.entries(data)[0][1];
+        setFirebasePlaylist({ id: firebasePlaylistId, obj: firebasePlaylistObj });
+        setPageLoading(false);
+        fetchAndSetFirebasePlaylistMetas();
+      });
+    }).catch(e => console.log(e));
+  }, []);
+
+  // If lookupInState changes to be different from the FB .lookup, post this updated lookup
+  // and trigger refetch of metas
+  useEffect(() => {
+    const postLookupThenRefetchMetas = async () => {
+      const updateLookupResponse = await u.updatePlaylistMetaLookup(lookupInState, firebaseMetaId, token);
+      if ([200, 204].includes(updateLookupResponse.status)) {
+        fetchAndSetFirebasePlaylistMetas();
+      };
+    };
+
+    const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+    const lookupOnFB = playlistMetaInAppState.lookup || {};
+    if (!_.isEqual(lookupOnFB, lookupInState)) {
+      // console.log('LOOKUPINSTATE DIFFERENT FROM LOOKUP ON FB!');
+      postLookupThenRefetchMetas();
+    };
+  }, [lookupInState]);
+
+
+  const { processedPostsLog, spotifyPlaylistName } = firebasePlaylist.obj;
 
   return (
     <div className="StatsContainer">
       {
-        !loading ?
+        !pageLoading ?
           <div className="Stats">
             <h4>Stats</h4>
             <img src={spotifyArtwork} className="SpotifyPlaylistArtwork" alt="Spotify Artwork" />
@@ -59,11 +84,13 @@ function Stats({ userPlaylistMetas }) {
             <h2>{processedPostsLog.length} tracks</h2>
 
             <div className="ContributorsContainer">
-              <ContributorsSection
-                tallied={tallied}
-                lookupInState={lookupInState}
-                setLookupInState={setLookupInState}
-              />
+              {!userPlaylistsLoading ?
+                <ContributorsSection
+                  tallied={tallied}
+                  lookupInState={lookupInState}
+                  setLookupInState={setLookupInState}
+                />
+                : <Spinner />}
             </div>
 
             <div className="OverviewSection Flex Column">
@@ -81,6 +108,7 @@ function Stats({ userPlaylistMetas }) {
           </ div>
           : <Spinner />
       }
+      <Toaster />
     </div >
   );
 

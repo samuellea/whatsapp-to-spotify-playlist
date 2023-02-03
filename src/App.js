@@ -1,21 +1,24 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import PrivateRoute from './PrivateRoute';
 import Home from './Home';
 import Auth from './Auth';
 import Signup from './Signup';
 import Update from './Update';
 import axios from 'axios';
 import Stats from './Stats';
+import * as u from './utils';
+import Spinner from './Spinner';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [token, setToken] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [userEmail, setUserEmail] = useState(null);
-  const [spotifyTokenInState, setSpotifyTokenInState] = useState(null);
   const [spotifyUserInfo, setSpotifyUserInfo] = useState({ id: '', displayName: '' });
+  const [welcome, setWelcome] = useState(false);
+  const [token, setToken] = useState(null);
   const [userPlaylistMetas, setUserPlaylistMetas] = useState([]);
+  const [userPlaylistsLoading, setUserPlaylistsLoading] = useState(false);
 
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
@@ -28,13 +31,11 @@ function App() {
   const authLink = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}`;
 
   useEffect(() => {
-    const hash = window.location.hash;
-    console.log(hash, ' <-- hash')
     let spotifyToken = window.localStorage.getItem('spotifyToken');
+    const hash = window.location.hash;
     if (!spotifyToken && hash) {
       spotifyToken = hash.substring(1).split('&').find(e => e.startsWith('access_token')).split('=')[1];
       window.localStorage.setItem('spotifyToken', spotifyToken);
-      setSpotifyTokenInState(spotifyToken);
       window.location.hash = '';
 
       const getSpotifyUserId = async (spotifyToken) => {
@@ -47,120 +48,122 @@ function App() {
           window.localStorage.setItem('spotifyUserDisplayName', data.display_name);
           const spotifyUserId = window.localStorage.getItem('spotifyUserId');
           const spotifyUserDisplayName = window.localStorage.getItem('spotifyUserDisplayName');
-          setSpotifyUserInfo({ id: spotifyUserId, displayName: spotifyUserDisplayName })
+          setSpotifyUserInfo({ id: spotifyUserId, displayName: spotifyUserDisplayName });
+          setLoggedIn(true);
         });
       };
+
       getSpotifyUserId(spotifyToken);
 
     };
-    if (spotifyToken && !spotifyTokenInState) setSpotifyTokenInState(spotifyToken);
   }, []);
 
-  useEffect(() => {
-    const spotifyUserId = window.localStorage.getItem('spotifyUserId');
-    const spotifyUserDisplayName = window.localStorage.getItem('spotifyUserDisplayName');
-    setSpotifyUserInfo({ id: spotifyUserId, displayName: spotifyUserDisplayName })
-  }, []);
-
-
-  const handleLogout = () => {
-    console.log('handleLogout');
-    // localStorage.removeItem('token');
-    // localStorage.removeItem('expirationDate');
-    // localStorage.removeItem('userId');
-    // localStorage.removeItem('spotifyToken');
-    // localStorage.removeItem('spotifyUserId');
-    // localStorage.removeItem('spotifyUserDisplayName');
-    localStorage.clear();
-    setLoggedIn(false);
-    setToken(null);
-    setUserId(null);
-    setUserEmail(null);
-    setSpotifyUserInfo({ id: '', displayName: '' });
-  }
-
-  const updateLoggedIn = (data) => {
-    const { idToken, localId, expiresIn, email } = data; // idToken is the FB token, localId is the FB user id
-    setLoggedIn(true);
-    setToken(idToken);
-    setUserId(localId);
-    setUserEmail(email);
-
-    setTimeout(() => {
-      handleLogout();
-    }, expiresIn * 3600000)
+  const fetchAndSetFirebasePlaylistMetas = async () => {
+    setUserPlaylistsLoading(true);
+    const token = localStorage.getItem('token');
+    const firebaseUserId = localStorage.getItem('firebaseUserId');
+    return await u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(({ data, status }) => {
+      if (status === 200) {
+        if (data) {
+          const userPlaylistMetas = Object.entries(data).map(e => ({ metaId: e[0], ...e[1] }));
+          console.log(userPlaylistMetas, ' < App.js')
+          setUserPlaylistMetas(userPlaylistMetas);
+          setUserPlaylistsLoading(false);
+        }
+      }
+    });
   };
 
-
   useEffect(() => {
-    // Component did mount
     const token = localStorage.getItem('token');
-    if (!token) {
-      handleLogout()
-    } else {
-      const expirationDate = new Date(localStorage.getItem('expirationDate'));
-      const firebaseUserId = localStorage.getItem('firebaseUserId');
-      const timeRemaining = ((expirationDate.getTime() - new Date().getTime()));
-      if (expirationDate <= new Date()) { // HAD a valid token, but it has since expired
-        handleLogout()
-      } else { // HAD a valid token, AND the current time is still less than the expirationDate
-        setLoggedIn(true);
-        setToken(token);
-        setUserId(firebaseUserId)
-      }
+    if (token) {
+      setLoggedIn(true);
+      fetchAndSetFirebasePlaylistMetas();
     };
   }, []);
 
-  const spotifyLoginScreen = () => ( // TO DO - turn into seperate component
-    <div>
-      <h1>Auth</h1>
-      <a href={authLink}>Login to Spotify</a>
-    </div>
-  );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (loggedIn) {
+        const expirationDate = localStorage.getItem('expirationDate');
+        const expirationTime = new Date(expirationDate);
+        // console.log(expirationTime)
+        // console.log(new Date())
+        if (expirationTime <= new Date()) {
+          handleLogout();
+        };
+      };
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [loggedIn]);
+
+  const handleLogout = () => {
+    console.log('handleLogout!')
+    localStorage.clear();
+    setLoggedIn(false);
+    setSpotifyUserInfo({ id: '', displayName: '' });
+  }
+
+  const updateLoggedIn = async () => {
+    setLoggedIn(true);
+  };
+
+  const spotifyLoginScreen = () => { // TO DO - turn into seperate component
+    let spotifyToken = window.localStorage.getItem('spotifyToken');
+    // console.log(spotifyToken);
+    return (
+      <div className="SpotifyLoginContainer">
+        {!spotifyToken ?
+          <div className="SpotifyLoginScreen">
+            <h1>Auth</h1>
+            <a href={authLink}>Login to Spotify</a>
+          </div>
+          :
+          <Redirect to='/' />}
+      </div>
+    )
+  };
+
+  let spotifyToken = window.localStorage.getItem('spotifyToken');
 
   return (
     <div className="App">
       <Router>
-        <Route exact path="/">
-          <Home
-            handleLogout={handleLogout}
-            userId={userId} // ?
-            userEmail={userEmail} // ?
-            token={token}
-            spotifyUserInfo={spotifyUserInfo}
-            userPlaylistMetas={userPlaylistMetas}
-            setUserPlaylistMetas={setUserPlaylistMetas}
-          />
-        </Route>
         <Route path="/login">
-          <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
+          {!loggedIn ?
+            <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
+            : !spotifyToken ? <Redirect to='/spotifylogin' /> : <Redirect to='/' />
+          }
         </Route>
         <Route path="/signup">
           <Signup updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
         </Route>
-        <Route path="/spotifylogin">
+        <PrivateRoute exact path="/">
+          <Home
+            loggedIn={loggedIn}
+            handleLogout={handleLogout}
+            spotifyUserInfo={spotifyUserInfo}
+            userPlaylistMetas={userPlaylistMetas}
+            fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+          />
+        </PrivateRoute>
+        <Route path="/spotifylogin" >
           {spotifyLoginScreen()}
         </Route>
-        <Route path="/update">
+        <PrivateRoute path="/update">
           <Update />
-        </Route>
-        <Route path="/stats">
-          <Stats userPlaylistMetas={userPlaylistMetas} />
-        </Route>
+        </PrivateRoute>
+        <PrivateRoute path="/stats">
+          <Stats
+            userPlaylistMetas={userPlaylistMetas}
+            fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+            userPlaylistsLoading={userPlaylistsLoading}
+          />
+        </PrivateRoute>
       </Router>
     </div >
   );
 }
 
 export default App;
-
-/*
-
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location }
-            }}
-          />
-
-*/

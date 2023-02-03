@@ -30,6 +30,10 @@ function Update() {
   const spotifyToken = localStorage.getItem('spotifyToken');
 
   useEffect(() => {
+    if (!spotifyPlaylistId || !firebasePlaylistId) return history.push('/');
+  }, []);
+
+  useEffect(() => {
     const inputTextIsValid = h.inputTextIsValid(inputText);
     setValidInputText(inputTextIsValid);
   }, [inputText]);

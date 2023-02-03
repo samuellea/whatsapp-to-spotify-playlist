@@ -3,13 +3,13 @@ import * as h from './helpers';
 import _ from 'lodash';
 import './styles/ContributorsSection.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/free-solid-svg-icons'
+import { faPen, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import Spinner from './Spinner';
 
 function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
   const contributorsRef = useRef();
 
   // const [height, setHeight] = useState();
-  const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [editView, setEditView] = useState(null);
   const [renaming, setRenaming] = useState({ currentName: '', newName: '', error: false });
@@ -27,7 +27,13 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
     setEditing(false);
   };
 
-  const handleRevertStart = () => { };
+  const handleRevertStart = () => {
+    let r = window.confirm(`Revert all names / groupings of posters? Cannot undo`);
+    if (r == true) {
+      const updatedLookup = { grouped: [], renamed: [] };
+      setLookupInState(updatedLookup);
+    }
+  };
 
   const handleRenameStart = () => {
     setEditView('edit_rename');
@@ -44,7 +50,7 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
 
   const handleRenameChange = (e) => {
     const { value } = e.target;
-    console.log(value);
+    // console.log(value);
     const { grouped, renamed } = lookupInState;
     const posterInTally = tallied.find(e => e.poster === value.trim());
     const posterInGrouped = grouped && grouped.find(e => e.poster === value.trim());
@@ -74,8 +80,9 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
     updatedRenamed.push(newRenamedObj);
 
     const updatedLookup = { ...lookupInState, renamed: updatedRenamed };
-    console.log(updatedLookup)
+    // console.log(updatedLookup)
     // FINAL ACTION
+    setEditing(false);
     setLookupInState(updatedLookup);
   };
 
@@ -95,14 +102,13 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
   const handleRadio = (e) => {
     const { value } = e.target;
     const updatedGroupOn = value;
-    console.log({ ...grouping, groupOn: updatedGroupOn })
     setGrouping({ ...grouping, groupOn: updatedGroupOn })
   }
 
   const handleConfirmGroupOn = () => {
-    console.log(lookupInState);
+    // console.log(lookupInState);
     const { grouped, renamed } = lookupInState;
-    console.log(grouping)
+    // console.log(grouping)
     const { groupees, groupOn } = grouping;
 
     // set the groupOn value for new groupee 'grouped' arr objects,
@@ -110,7 +116,9 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
     let targetOn = groupOn;
 
     if (renamed) {
-      const groupOnObjInRenamed = renamed.find(e => e.poster === groupOn);
+      // const groupOnObjInRenamed = renamed.find(e => e.poster === groupOn); // 🚧 🚧 🚧
+      const groupOnObjInRenamed = renamed.find(e => e.to === groupOn);
+
       // if (!groupOnObjInRenamed) targetOn = groupOn;
       if (groupOnObjInRenamed) targetOn = groupOnObjInRenamed.poster;
     }
@@ -132,9 +140,6 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
           // and remove this obj from renamed
           updatedRenamed = updatedRenamed.filter(e => e.to !== groupee);
         }
-        // else {
-        //   targetPoster = groupee;
-        // }
       }
 
 
@@ -157,20 +162,27 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
 
 
     const updatedLookup = { grouped: updatedGrouped, renamed: updatedRenamed };
-    console.log(updatedLookup)
+    // console.log(updatedLookup)
     // FINAL ACTION
+    setEditing(false);
     setLookupInState(updatedLookup);
   }
 
+  const handleShowGroups = () => {
+    setEditView('edit_see_groups');
+  };
 
   const editScreenRender = () => {
 
     if (editView === 'edit_options') {
+      const { grouped = [], renamed = [] } = lookupInState;
+      const revertDisabled = !grouped.length && !renamed.length;
       return (
         <div className="EditOptions Flex Column">
-          <button type="button" onClick={handleRevertStart}>Revert</button>
+          <button type="button" onClick={handleRevertStart} disabled={revertDisabled}>Revert All Names / Groups</button>
           <button type="button" onClick={handleRenameStart}>Rename</button>
           <button type="button" onClick={handleGroupStart}>Group</button>
+          <button type="button" onClick={handleShowGroups} disabled={!lookupInState.grouped}>See Groups</button>
         </div>
       );
     };
@@ -237,6 +249,29 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
         </div>
       )
     }
+
+    if (editView === 'edit_see_groups') {
+      const { grouped, renamed } = lookupInState;
+      const groupTally = h.calcGroupTally(grouped, renamed);
+      // console.log(groupTally);
+      return (
+        <div className="EditSeeGroups">
+          {groupTally.map(group => (
+            <div className="GroupContainer">
+              <div className="GroupName">
+                <span>{group.groupName}</span>
+              </div>
+              <div className="GroupGroupees Flex Column">
+                {group.groupees.map(groupee => (
+                  <span>{groupee}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    }
+
   }
 
   return (
@@ -254,8 +289,12 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
             {tallied.map((contributor, i) => {
               return (
                 <div className="ContributorCard Flex Row">
+                  <div className="ContributorGroupIcon Flex">
+                    {!h.isContributorAGroup(lookupInState, contributor.poster) ?
+                      null : <FontAwesomeIcon icon={faUserGroup} />}
+                  </div>
                   <div className="ContributorName">
-                    {h.equalSpacedPosters(tallied, contributor.poster)}
+                    <span>{h.equalSpacedPosters(tallied, contributor.poster)}</span>
                   </div>
                   <div className="ContributorHyphen">
                     <span>-</span>
@@ -263,7 +302,7 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
                   <div className="ContributorTotal">
                     {contributor.totalPosts}
                   </div>
-                  <div className="ContributorTotal">
+                  <div className="ContributorTrophy">
                     {i === 0 ? <span><i class="fas fa-trophy"></i></span> : null}
                   </div>
                 </div>

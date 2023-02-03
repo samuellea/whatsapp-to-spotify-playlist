@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Redirect, Link } from "react-router-dom";
 import axios from 'axios';
-// import { apiKey } from './firebaseConfig';
 import Spinner from './Spinner';
 import './styles/Auth.css';
 
@@ -20,14 +19,13 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
   const performLogIn = () => {
     const authData = { email, password, returnSecureToken: true };
     axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_API_KEY}`, authData)
-      .then(({ data }) => {
-        console.log(data, ' <--- data in .then of Auth')
-        const expirationDate = new Date(new Date().getTime() + (data.expiresIn * 1000))
+      .then(async ({ data }) => {
+        const expirationDate = new Date(new Date().getTime() + (1800000)) // auto logout in 30 mins (ms)
         localStorage.setItem('token', data.idToken);
         localStorage.setItem('firebaseUserId', data.localId);
         localStorage.setItem('expirationDate', expirationDate);
         setLoginPending(false);
-        updateLoggedIn(data);
+        updateLoggedIn();
       })
       .catch(err => {
         console.log(err);
@@ -42,9 +40,10 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
     performLogIn();
   };
 
-  if (loggedIn) {
+  let spotifyToken = window.localStorage.getItem('spotifyToken');
+  if (loggedIn && !spotifyToken) {
     return <Redirect to='/spotifylogin' />
-  }
+  };
 
   return (
     <div className="Auth">

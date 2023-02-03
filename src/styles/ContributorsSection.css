@@ -39,11 +39,22 @@
 }
 
 .ContributorCard div {
-  /* border: 1px dashed blue; */
   margin: 0px 10px;
+  /* border: 1px dashed blue; */
 }
 
-.ContributorName {}
+.ContributorGroupIcon {
+  /* border: 1px solid red; */
+  width: 20px;
+  margin-right: 0px !important;
+  font-size: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.ContributorName {
+  /* margin: 0px 10px; */
+}
 
 .ContributorTotal {}
 
@@ -100,3 +111,21 @@
 }
 
 .RenameInputActiveControls {}
+
+.EditSeeGroups {
+  border: 2px solid orange;
+}
+
+.GroupContainer {}
+
+.GroupName {}
+
+.GroupName span {
+  text-decoration: underline;
+}
+
+.GroupGroupees {}
+
+.GroupGroupees span {
+  font-size: 12px;
+}

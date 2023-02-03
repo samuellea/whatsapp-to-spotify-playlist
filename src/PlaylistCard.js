@@ -7,7 +7,7 @@ function PlaylistCard({ metaObj, }) {
   let history = useHistory();
 
   const handleStats = () => {
-    history.push(`/stats?spotifyPlaylistId=${metaObj.spotifyPlaylistId}`);
+    history.push(`/stats?spotifyPlaylistId=${metaObj.spotifyPlaylistId}&firebaseMetaId=${metaObj.metaId}`);
   };
 
   const handleUpdate = () => {

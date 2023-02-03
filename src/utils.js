@@ -26,16 +26,20 @@ export const createOrUpdateFirebasePlaylistMetadata = async (
   method,
   firebasePlaylistId,
   playlistData,
-  userId,
+  firebaseUserId,
   token
 ) => {
   let url = `${firebaseUrl}/playlistMetas.json?auth=${token}`;
+
+  let lookup = { grouped: [], renamed: [] };
 
   if (method === 'PATCH') {
     console.log('🧵')
     const { data } = await axios.get(`${firebaseUrl}/playlistMetas.json?orderBy="firebasePlaylistId"&equalTo="${firebasePlaylistId}"&auth=${token}`)
     const playlistMetaId = Object.entries(data)[0][0];
     console.log(playlistMetaId)
+    const existingMetaData = Object.entries(data)[0][1];
+    if (existingMetaData.lookup) lookup = existingMetaData.lookup;
     url = `${firebaseUrl}/playlistMetas/${playlistMetaId}.json?auth=${token}`
   } else {
     console.log('🌱');
@@ -43,11 +47,12 @@ export const createOrUpdateFirebasePlaylistMetadata = async (
 
   const { spotifyPlaylistId, spotifyPlaylistName, processedPostsLog } = playlistData;
   const playlistMetadata = {
-    userId: userId,
+    userId: firebaseUserId,
     firebasePlaylistId: firebasePlaylistId,
     spotifyPlaylistId: spotifyPlaylistId,
     spotifyPlaylistName: spotifyPlaylistName,
     totalTracks: processedPostsLog.length,
+    lookup: lookup,
   };
 
   return axios({
@@ -375,3 +380,33 @@ export const getGenresForSpotifyTracks = async (tracksArr, spotifyToken) => {
     return null;
   };
 };
+
+export const updatePlaylistMetaLookup = async (lookupInState, metaId, token) => {
+  // console.log(metaId, ' <--- metaId')
+  try {
+    return await axios({
+      url: `${firebaseUrl}/playlistMetas/${metaId}/lookup.json?auth=${token}`,
+      method: 'PATCH',
+      data: JSON.stringify(lookupInState),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    return e;
+  }
+
+};
+
+// export const getPlaylistMetaByMetaId = async (metaId, token) => {
+//   const response = await axios({
+//     url: `${firebaseUrl}/playlistMetas/${metaId}.json?auth=${token}`,
+//     method: 'GET',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     }
+//   });
+//   const { data } = response;
+//   return data;
+// };
