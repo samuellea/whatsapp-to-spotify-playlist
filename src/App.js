@@ -66,7 +66,6 @@ function App() {
       if (status === 200) {
         if (data) {
           const userPlaylistMetas = Object.entries(data).map(e => ({ metaId: e[0], ...e[1] }));
-          console.log(userPlaylistMetas, ' < App.js')
           setUserPlaylistMetas(userPlaylistMetas);
           setUserPlaylistsLoading(false);
         }

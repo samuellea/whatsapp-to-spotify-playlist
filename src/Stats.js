@@ -5,10 +5,12 @@ import * as h from './helpers';
 import * as u from './utils';
 import './styles/Stats.css';
 import ContributorsSection from './ContributorsSection';
+import OverviewSection from './OverviewSection';
 import usePrevious from './customHooks/usePrevious';
 import _ from 'lodash';
 import toast, { Toaster } from 'react-hot-toast';
 import { Redirect, useHistory } from 'react-router-dom';
+import ByYearSection from './ByYearSection';
 
 function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading }) {
   const history = useHistory();
@@ -23,16 +25,28 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   const [firebasePlaylist, setFirebasePlaylist] = useState({ id: null, obj: {} });
   const [spotifyArtwork, setSpotifyArtwork] = useState(null);
   const [tallied, setTallied] = useState([]);
+  const [overview, setOverview] = useState([]);
+  const [byYear, setByYear] = useState([]);
   const [lookupInState, setLookupInState] = useState({});
 
   // When metas update, set .lookup in state, tally / re-tally contributors
   useEffect(() => {
     if (firebasePlaylist.id !== null) {
+      console.log(firebasePlaylist.obj, ' <<<<<')
+      const { processedPostsLog } = firebasePlaylist.obj;
       const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
       const lookupOnFB = playlistMetaInAppState.lookup || {};
       setLookupInState('lookup' in playlistMetaInAppState ? lookupOnFB : {});
-      const contributions = h.tallyContributions(firebasePlaylist.obj.processedPostsLog, lookupInState);
+      const contributions = h.tallyContributions(processedPostsLog, lookupInState);
       setTallied(contributions);
+      const postsGroupedByYear = h.groupPostsByYear(processedPostsLog);
+      setOverview(postsGroupedByYear);
+
+      // we actually need to pass this a processedPostsLog
+      // that has had all its objects' .poster key updated to account
+      // for the lookup!!!!
+      const postsByYear = h.groupPostsByPosterYearAndMonth(processedPostsLog)
+      setByYear(postsByYear);
     }
   }, [userPlaylistMetas]);
 
@@ -48,6 +62,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
         setFirebasePlaylist({ id: firebasePlaylistId, obj: firebasePlaylistObj });
         setPageLoading(false);
         fetchAndSetFirebasePlaylistMetas();
+
+        h.groupPostsByYear(processedPostsLog);
       });
     }).catch(e => console.log(e));
   }, []);
@@ -63,7 +79,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
     };
 
     const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
-    const lookupOnFB = playlistMetaInAppState.lookup || {};
+    const lookupOnFB = playlistMetaInAppState?.lookup || {};
     if (!_.isEqual(lookupOnFB, lookupInState)) {
       // console.log('LOOKUPINSTATE DIFFERENT FROM LOOKUP ON FB!');
       postLookupThenRefetchMetas();
@@ -93,15 +109,19 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
                 : <Spinner />}
             </div>
 
-            <div className="OverviewSection Flex Column">
-              <h4 className="SectionHeader">Overview</h4>
+            <div className="OverviewContainer Flex Column">
+              {!userPlaylistsLoading ?
+                <OverviewSection overview={overview} />
+                : <Spinner />}
             </div>
 
-            <div className="ByYearSection Flex Column">
-              <h4 className="SectionHeader">By Year</h4>
+            <div className="ByYearContainer Flex Column">
+              <h4 className="SectionHeader">
+                <ByYearSection byYear={byYear} />
+              </h4>
             </div>
 
-            <div className="ByGenreSection Flex Column">
+            <div className="ByGenreContainer Flex Column">
               <h4 className="SectionHeader">By Genre</h4>
             </div>
 

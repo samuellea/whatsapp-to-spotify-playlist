@@ -124,6 +124,9 @@ export const mockSleep = async (milliseconds) => {
 };
 
 export const equalSpacedPosters = (arr, string) => {
+  console.log(arr);
+  console.log(string);
+  console.log('---')
   const longestNameLength = Math.max(...(arr.map(e => e.poster.length)));
   const diff = longestNameLength - string.length;
   const nameSpaced = string + new Array(diff + 1).join('\u00a0');
@@ -160,7 +163,7 @@ export const tallyContributions = (processedPostsLog, lookup) => {
     } else {
       acc[indexInAcc].totalPosts++;
     }
-
+    console.log(acc)
     return acc;
   }, [])
 };
@@ -190,4 +193,158 @@ export const calcGroupTally = (grouped = [], renamed = []) => {
 export const isContributorAGroup = (lookupInState, poster) => {
   const { grouped = [], renamed = [] } = lookupInState;
   return calcGroupTally(grouped, renamed).find(e => e.groupName === poster);
-}
+};
+
+export const groupPostsByYear = (posts = []) => {
+  console.log(posts);
+
+  // 🚨 🚨 🚨
+  const postsPlusMyFakesForTesting = [
+    ...posts,
+    { poster: 'Sam', time: { year: '2022', month: '12' } },
+    { poster: 'Ben Belward', time: { year: '2022', month: '11' } },
+    { poster: 'Ben Belward', time: { year: '2022', month: '10' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Johnny Ratcliffe', time: { year: '2021', month: '01' } },
+  ]
+
+  // const res = posts.reduce((acc, e) => {  // 🚨 🚨 🚨
+  const res = postsPlusMyFakesForTesting.reduce((acc, e) => {
+    const indexOfYearObjInAcc = acc.findIndex(obj => obj.year === e.time.year);
+    if (indexOfYearObjInAcc === -1) {
+      const newYearObj = { year: e.time.year, posts: [e] }
+      acc.push(newYearObj);
+    } else {
+      acc[indexOfYearObjInAcc].posts.push(e);
+    }
+    return acc;
+  }, []);
+  return res.sort((a, b) => (+a.year > +b.year) ? 1 : -1)
+};
+
+export const groupPostsByPosterYearAndMonth = (posts = []) => {
+
+  // 🚨 🚨 🚨
+  const postsPlusMyFakesForTesting = [
+    ...posts,
+    { poster: 'Sam', time: { year: '2022', month: '12' } },
+    { poster: 'Ben Belward', time: { year: '2022', month: '11' } },
+    { poster: 'Ben Belward', time: { year: '2022', month: '10' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Johnny Ratcliffe', time: { year: '2021', month: '01' } },
+  ]
+
+  // const res = posts.reduce((acc, post) => { // 🚨 🚨 🚨
+  const res = postsPlusMyFakesForTesting.reduce((acc, post) => {
+    const { year, month } = post.time;
+    const { poster } = post;
+    // create a year object in the acc if doesn't yet exist, or find its index if it does
+    const yearObjInAcc = acc.find(e => e.year === year);
+    if (!yearObjInAcc) acc.push({ year: year, months: [], posters: [] });
+    const yearAccIndex = acc.findIndex(e => e.year === year);
+
+    // update the months arr objects for this year object (creating if dont yet exist)
+    const monthObjInYearMonths = acc[yearAccIndex].months.find(e => e.month === month);
+    if (!monthObjInYearMonths) acc[yearAccIndex].months.push({ month: month, posts: [] });
+    const monthYearAccIndex = acc[yearAccIndex].months.findIndex(e => e.month === month);
+
+    const posterObjInMonthPosters = acc[yearAccIndex].months[monthYearAccIndex].posts.find(e => e.poster === poster);
+    if (!posterObjInMonthPosters) acc[yearAccIndex].months[monthYearAccIndex].posts.push({ poster: poster, monthlyTotal: 0 });
+
+    const postsMonthYearAccIndex = acc[yearAccIndex].months[monthYearAccIndex].posts.findIndex(e => e.poster === poster);
+    acc[yearAccIndex].months[monthYearAccIndex].posts[postsMonthYearAccIndex].monthlyTotal++;
+
+    // update the posters arr objects for this year object (creating if dont yet exist)
+    const posterObjInYearPosters = acc[yearAccIndex].posters.find(e => e.poster === poster);
+    if (!posterObjInYearPosters) acc[yearAccIndex].posters.push({ poster: poster, total: 0 })
+    const posterYearAccIndex = acc[yearAccIndex].posters.findIndex(e => e.poster === poster);
+    acc[yearAccIndex].posters[posterYearAccIndex].total++;
+    return acc;
+  }, []);
+
+
+  const sortedByYear = [...res].sort((a, b) => (+a.year > +b.year) ? 1 : -1);
+  const monthsAndPostersSorted = sortedByYear.map(e => ({
+    year: e.year,
+    months: [...e.months].sort((a, b) => (+a.month > +b.month) ? 1 : -1).map(f => ({ ...f, posts: [...f.posts].sort((a, b) => (+a.monthlyTotal > +b.monthlyTotal) ? 1 : -1) })),
+    posters: [...e.posters].sort((a, b) => (+a.total < +b.total) ? 1 : -1)
+  }))
+
+  console.log(monthsAndPostersSorted)
+  return monthsAndPostersSorted;
+
+};
+
+
+/*
+BY GENRE
+[
+
+  {
+    timespan: allTime,
+    posters: [
+      {
+        poster: allPosters,
+        genresRanked: [ {count: 10, genre: Rock}, {count: 7, genre: Hip-Hop}... ]
+      },
+      {
+        poster: Ben,
+        genresRanked: [ {count: 4, genre: Soft-Rock}, {count: 3, genre: Disco }...]
+      },
+      ...
+    ]
+  },
+
+    {
+    timespan: 2020,
+    posters: [
+      {
+        poster: allPosters,
+        genresRanked: [ {count: 3, genre: Pop}, {count: 2, genre: Rock}... ]
+      },
+      {
+        poster: Ben,
+        genresRanked: [ {count: 2, genre: Rock}, {count: 1, genre: Dance }...]
+      },
+      ...
+    ]
+  },
+
+]
+
+*/
+
+
+
+
+
+
+
+
+
+/*
+BY YEAR
+[
+  { year: 2020,
+    months: [
+      { 
+        month: 01,
+        posts: [ // sorted by monthlyTotal
+          { poster: Johnny, monthlyTotal: 20 },
+          { poster: Ben, monthlyTotal: 12 },
+          ...
+        ],
+      },
+      ...
+    ],
+
+    posters: [
+      {
+        poster: Johnny,
+        total: 29,
+      }
+    ],
+
+  },
+]
+*/

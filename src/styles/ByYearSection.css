@@ -1,0 +1,133 @@
+.ByYearSection {
+  height: 30vh;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed hotpink;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.LeftNavContainer {
+  border: 5px solid rgb(114, 114, 255);
+  height: 100%;
+}
+
+.RightNavContainer {
+  border: 5px solid rgb(255, 109, 109);
+  height: 100%;
+}
+
+.TranspButton button {
+  background: none;
+  border: none;
+  color: white;
+}
+
+.ShowButton {
+  visibility: visible;
+}
+
+.HideButton {
+  visibility: hidden;
+}
+
+.DisplayArea {
+  border: 2px dotted wheat;
+  height: 90%;
+  max-height: 90%;
+  width: 80%;
+  max-width: 80%;
+  display: grid;
+  grid-template: 50% 50% / 1fr;
+}
+
+.GraphHalf {
+  grid-area: 1/1/2/2;
+  border: 1px solid lime;
+}
+
+.ListHalf {
+  grid-area: 2/1/3/2;
+  border: 1px solid salmon;
+  position: relative;
+}
+
+.YearSlide {
+  border: 2px dashed white;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  opacity: 0
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0
+  }
+
+  50% {
+    opacity: 0
+  }
+
+  100% {
+    opacity: 1
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1
+  }
+
+  50% {
+    opacity: 0
+  }
+
+  100% {
+    opacity: 0
+  }
+}
+
+.SlideVisible {
+  /* visibility: visible; */
+  opacity: 1;
+  animation: fadeIn 0.5s linear;
+}
+
+.SlideHidden {
+  /* visibility: hidden; */
+  opacity: 0;
+  animation: fadeOut 0.5s linear;
+}
+
+.ListContainer {
+  width: 90%;
+  height: 80%;
+  border: 1px dashed lime;
+}
+
+.PosterCard {
+  border: 1px solid red;
+  flex-direction: row;
+  height: 20px;
+  font-family: monospace, monospace;
+  font-size: 14px;
+  align-items: center;
+  justify-content: space-between;
+  /* padding-left: 5%; */
+}
+
+
+.PosterTrophy {
+  /* border: 1px solid cyan; */
+  width: 15px;
+  height: 15px;
+  /* margin-left: 10px; */
+}

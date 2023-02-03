@@ -1,6 +1,7 @@
 .StatsContainer {
   border: 4px dashed blue;
   height: 99vh;
+  overflow-y: scroll;
 }
 
 .Stats {
@@ -33,16 +34,16 @@
   border: 2px solid black;
 }
 
-.OverviewSection {
+.OverviewContainer {
   border: 2px solid gray;
 }
 
-.ByYearSection {
+.ByYearContainer {
   border: 2px solid greenyellow;
 
 }
 
-.ByGenreSection {
+.ByGenreContainer {
   border: 2px solid purple;
 }
 

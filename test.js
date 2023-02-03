@@ -1,8 +1,6 @@
-const dataObjectEntries = [
-  ['-idblah1234', { id: 1, name: 'apple' }],
-  ['-xzblah5678', { id: 2, name: 'apple' }],
-];
+const acc = [
+  { year: 1999, months: [{ month: 1, posts: [{ poster: 'Sam', monthlyTotal: 1 }] }] }
+]
 
-
-const res = dataObjectEntries.map(e => ({ metaId: e[0], ...e[1] }));
+const res = acc.find(e => e.year === 1999)
 console.log(res)
