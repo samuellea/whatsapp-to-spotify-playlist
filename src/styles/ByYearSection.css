@@ -2,7 +2,7 @@
   height: 30vh;
   align-items: center;
   justify-content: center;
-  border: 2px dashed hotpink;
+  /* border: 2px dashed hotpink; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,7 +35,7 @@
 }
 
 .DisplayArea {
-  border: 2px dotted wheat;
+  /* border: 2px dotted wheat; */
   height: 90%;
   max-height: 90%;
   width: 80%;
@@ -46,39 +46,79 @@
 
 .GraphHalf {
   grid-area: 1/1/2/2;
-  border: 1px solid lime;
+  /* border: 1px solid lime; */
   display: grid;
   grid-template: 80% 20% / 1fr;
 }
 
 .GraphArea {
   grid-area: 1/1/2/2;
-  background-color: rgb(255, 201, 201);
+  background-color: rgb(172, 172, 172);
   height: 100%;
   justify-content: center;
   align-items: center;
+  /* border: 1px solid red; */
 }
 
 .MonthBarsContainer {
-  border: 1px solid black;
-  height: 100%;
+  /* border: 1px solid lime; */
+  height: 96%;
   width: 90%;
-}
-
-.MonthBarContainer {
-  height: 100%;
-  width: 8.333%;
-  border: 1px solid orange;
-  justify-content: center;
   align-items: flex-end;
 }
 
+@keyframes growIn {
+  0% {
+    height: 0%;
+  }
+
+  100% {
+    height: 99%;
+  }
+}
+
+.MonthBarContainer {
+  height: 99%;
+  width: 8.333%;
+  /* padding: 1px; */
+  /* border: 1px solid black; */
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* .MonthBarDigit {
+  font-size: 8px;
+  color: black;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-bottom: 0px;
+  height: 10%;
+} */
+
 .MonthBar {
-  border: 1px solid black;
+  /* border: 1px solid black; */
   height: 100%;
   width: 30%;
   justify-content: flex-end;
+  animation: growIn 2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
+
+/* .MonthSubBar {
+  border-radius: 150px;
+} */
+
+.MonthSubBar:first-child {
+  border-radius: 150px 150px 0px 0px;
+}
+
+.MonthSubBar:last-child {
+  border-radius: 0px 0px 150px 150px;
+}
+
+.MonthSubBar:only-child {
+  border-radius: 150px;
+}
+
 
 /* .MonthlyTotalBar {
   background-color: black;
@@ -88,13 +128,14 @@
 
 .GraphFooter {
   grid-area: 2/1/3/2;
-  background-color: rgb(180, 187, 251);
+  /* background-color: rgb(180, 187, 251) */
+  background-color: rgb(172, 172, 172);
   justify-content: center;
   align-items: center;
 }
 
 .MonthLabelsContainer {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   width: 90%;
   font-size: 12px;
   text-decoration: none;
@@ -102,18 +143,19 @@
 }
 
 .MonthLabel {
-  border: 1px solid rgb(146, 161, 190);
+  /* border: 1px solid rgb(146, 161, 190); */
   width: 8.333%;
+  font-weight: 400;
 }
 
 .ListHalf {
   grid-area: 2/1/3/2;
-  border: 1px solid salmon;
+  /* border: 1px solid salmon; */
   position: relative;
 }
 
 .YearSlide {
-  border: 2px dashed white;
+  /* border: 2px dashed white; */
   height: 100%;
   width: 100%;
   max-width: 100%;
@@ -170,22 +212,36 @@
   width: 90%;
   max-width: 90%;
   height: 80%;
-  border: 1px dashed lime;
+  /* border: 1px dashed lime; */
   display: inline;
 }
 
 .PosterCard {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   /* flex-direction: row; */
+  /* justify-content: space-between; */
   height: 20px;
   /* padding-left: 5%; */
   display: grid;
-  grid-template: 1fr / 10% 90%;
+  grid-template: 1fr / 88% 12%;
 }
 
+.ByYearGroupIcon {
+  /* border: 1px solid white; */
+  width: 10px;
+  margin: 0;
+}
+
+.ByYearGroupIcon {
+  font-size: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+
 .ColourBoxColumn {
-  border: 1px solid white;
-  grid-area: 1/1/2/2;
+  /* border: 1px solid white; */
+  grid-area: 1/2/2/3;
   justify-content: center;
   align-items: center;
 }
@@ -196,7 +252,7 @@
 }
 
 .InfoColumn {
-  grid-area: 1/2/2/3;
+  grid-area: 1/1/2/2;
   /* border: 1px solid yellow; */
   height: 100%;
   font-family: monospace, monospace;
@@ -214,7 +270,7 @@
 
 
 .PosterTrophy {
-  border: 1px solid cyan;
+  /* border: 1px solid cyan; */
   width: 15px;
   height: 15px;
   /* margin-left: 10px; */

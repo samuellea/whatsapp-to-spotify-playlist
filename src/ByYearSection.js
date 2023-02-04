@@ -35,7 +35,7 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
               {Array(12).fill(0).map((e, i) => {
                 const { monthlyTotalOverall, totalsByPoster } = h.calcTotalForMonth(i, byYear, slide);
                 return (
-                  <div className="MonthBarContainer Flex">
+                  <div className="MonthBarContainer Flex Column">
                     {totalsByPoster ?
                       <div className="MonthBar Flex Column">
                         {totalsByPoster.map(e => {
@@ -69,16 +69,15 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
                   const { poster } = posterObj;
                   const posterColour = h.pickPosterColour(poster, lookupInState, colourMap);
                   return (
-                    <div className="PosterCard">
-
-                      <div className="ColourBoxColumn Flex">
-                        <div className="ColourBox" style={{ backgroundColor: `#${posterColour}` }} >
-                        </div>
-                      </div>
+                    <div className="PosterCard Flex">
 
                       <div className="InfoColumn Flex Row">
-                        <div className="ContributorGroupIcon Flex">
-                          <FontAwesomeIcon icon={faUserGroup} />
+                        <div className="ByYearGroupIcon Flex">
+                          {/* <FontAwesomeIcon icon={faUserGroup} /> */}
+
+                          {!h.isContributorAGroup(lookupInState, poster) ?
+                            null : <FontAwesomeIcon icon={faUserGroup} />}
+
                         </div>
                         <div className="PosterName">
                           <span>{h.curtailString(h.equalSpacedPosters(year.posters, poster), 12)}</span>
@@ -91,6 +90,11 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
                         </div>
                         <div className="PosterTrophy">
                           {i === 0 ? <span><i class="fas fa-trophy"></i></span> : null}
+                        </div>
+                      </div>
+
+                      <div className="ColourBoxColumn Flex">
+                        <div className="ColourBox" style={{ backgroundColor: `#${posterColour}` }} >
                         </div>
                       </div>
 

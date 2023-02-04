@@ -61,6 +61,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       const contributions = h.tallyContributions(processedPostsPlusFakes, lookupInState);
       setTallied(contributions);
 
+      console.log(contributions);
+
       const postsGroupedByYear = h.groupPostsByYear(processedPostsPlusFakes);
       setOverview(postsGroupedByYear);
 

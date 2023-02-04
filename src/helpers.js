@@ -193,7 +193,9 @@ export const tallyContributions = (processedPostsLog, lookup) => {
     }
     return acc;
   }, [])
-  return res;
+  const tallySorted = res.sort((a, b) => (+a.totalPosts < +b.totalPosts) ? 1 : -1)
+
+  return tallySorted;
 };
 
 export const calcGroupTally = (grouped = [], renamed = []) => {
@@ -361,7 +363,7 @@ export const calcTotalForMonth = (index, byYear, slide) => {
 
   if (monthObjIndex !== -1) {
     monthlyTotalOverall = byYear[slide - 1]?.months[monthObjIndex].posts.reduce((acc, e) => {
-      acc += e.monthlyTotalOverall;
+      acc += e.monthlyTotal;
       return acc;
     }, 0);
 
