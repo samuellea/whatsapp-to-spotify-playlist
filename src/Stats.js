@@ -28,25 +28,48 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   const [overview, setOverview] = useState([]);
   const [byYear, setByYear] = useState([]);
   const [lookupInState, setLookupInState] = useState({});
+  const [colourMap, setColourMap] = useState([]);
+
+  const fakes = [
+    { poster: 'Sam', time: { year: '2022', month: '12' } },
+    { poster: 'Ben Belward', time: { year: '2022', month: '11' } },
+    { poster: 'Ben Belward', time: { year: '2022', month: '10' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Matt', time: { year: '2021', month: '08' } },
+    { poster: 'Johnny Ratcliffe', time: { year: '2021', month: '01' } },
+  ];
 
   // When metas update, set .lookup in state, tally / re-tally contributors
   useEffect(() => {
     if (firebasePlaylist.id !== null) {
-      console.log(firebasePlaylist.obj, ' <<<<<')
       const { processedPostsLog } = firebasePlaylist.obj;
       const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
       const lookupOnFB = playlistMetaInAppState.lookup || {};
       setLookupInState('lookup' in playlistMetaInAppState ? lookupOnFB : {});
-      const contributions = h.tallyContributions(processedPostsLog, lookupInState);
+
+      const processedPostsPlusFakes = [...processedPostsLog, ...fakes];
+
+      // 🚨 🚨 🚨 ---> processedPostsPlusFakes should be processedPostsLog!
+      const contributions = h.tallyContributions(processedPostsPlusFakes, lookupInState);
       setTallied(contributions);
-      const postsGroupedByYear = h.groupPostsByYear(processedPostsLog);
+
+      const postsGroupedByYear = h.groupPostsByYear(processedPostsPlusFakes);
       setOverview(postsGroupedByYear);
 
-      // we actually need to pass this a processedPostsLog
-      // that has had all its objects' .poster key updated to account
-      // for the lookup!!!!
-      const postsByYear = h.groupPostsByPosterYearAndMonth(processedPostsLog)
+      const postsByYear = h.groupPostsByPosterYearAndMonth(processedPostsPlusFakes, lookupInState)
+      console.log(postsByYear, '<<<<')
       setByYear(postsByYear);
+      // 🚨 🚨 🚨 ---> processedPostsPlusFakes should be processedPostsLog!
+
+
     }
   }, [userPlaylistMetas]);
 
@@ -60,10 +83,27 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
         const firebasePlaylistId = Object.entries(data)[0][0];
         const firebasePlaylistObj = Object.entries(data)[0][1];
         setFirebasePlaylist({ id: firebasePlaylistId, obj: firebasePlaylistObj });
+
+        // create colourmap
+        const { processedPostsLog } = firebasePlaylistObj;
+        const processedPostsPlusFakes = [...processedPostsLog, ...fakes];
+        console.log('');
+        console.log('');
+        console.log('');
+        console.log('');
+        // console.log(processedPostsPlusFakes);
+
+        const originalPosters = h.listAllPosters(processedPostsPlusFakes, lookupInState);
+        const originalPostersColourMap = h.createColourMap(originalPosters);
+        setColourMap(originalPostersColourMap);
+
+        const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+        const lookupOnFB = playlistMetaInAppState?.lookup || {};
+        console.log(lookupOnFB)
         setPageLoading(false);
         fetchAndSetFirebasePlaylistMetas();
 
-        h.groupPostsByYear(processedPostsLog);
+        h.groupPostsByYear(processedPostsLog, lookupInState);
       });
     }).catch(e => console.log(e));
   }, []);
@@ -84,7 +124,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       // console.log('LOOKUPINSTATE DIFFERENT FROM LOOKUP ON FB!');
       postLookupThenRefetchMetas();
     };
-  }, [lookupInState]);
+  }, [lookupInState]); const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+  const lookupOnFB = playlistMetaInAppState?.lookup || {};
 
 
   const { processedPostsLog, spotifyPlaylistName } = firebasePlaylist.obj;
@@ -117,7 +158,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
 
             <div className="ByYearContainer Flex Column">
               <h4 className="SectionHeader">
-                <ByYearSection byYear={byYear} />
+                <ByYearSection byYear={byYear} lookupInState={lookupInState} colourMap={colourMap} />
               </h4>
             </div>
 

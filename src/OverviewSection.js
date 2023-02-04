@@ -5,13 +5,9 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import './styles/OverviewSection.css';
 
 function OverviewSection({ overview }) {
-  console.log(overview)
   const yearTotals = overview.map(e => e.posts.length);
   const maxPostsInAYear = Math.max(...yearTotals);
   const divisor = 100 / maxPostsInAYear;
-  console.log(maxPostsInAYear, ' < maxPostsInAYear'); // = 9
-  // 100 / 9 = 11.11 <-- thats how high we need each 'dot box' to be
-  console.log(100 / maxPostsInAYear, ' %')
 
   return (
     <div className="OverviewSection Flex">

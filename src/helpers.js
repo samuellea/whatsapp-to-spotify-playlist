@@ -124,37 +124,65 @@ export const mockSleep = async (milliseconds) => {
 };
 
 export const equalSpacedPosters = (arr, string) => {
-  console.log(arr);
-  console.log(string);
-  console.log('---')
   const longestNameLength = Math.max(...(arr.map(e => e.poster.length)));
   const diff = longestNameLength - string.length;
   const nameSpaced = string + new Array(diff + 1).join('\u00a0');
   return nameSpaced;
 };
 
-export const tallyContributions = (processedPostsLog, lookup) => {
-  // console.log(processedPostsLog, ' <--- processedPostsLog')
+export const curtailString = (string, limit) => {
+  let ender = '…';
+  if (string.slice(-1) === '\u00a0') ender = '\u00a0';
+  if (string.length > limit) return string.slice(0, limit - 1).concat(ender);
+  return string;
+}
+
+// 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 
+export const determineTargetPoster = (poster, lookup) => {
   const { grouped = [], renamed = [] } = lookup;
-  return processedPostsLog.reduce((acc, post) => {
+  let targetPoster = poster;
 
-    // let targetPoster;
-    let targetPoster = post.poster
-
-    if (grouped) {
-      // check if this poster has been grouped
-      const objInGrouped = grouped.find(e => e.poster === post.poster);
-      if (objInGrouped) {
-        const objInRenamed = renamed.find(e => e.poster === objInGrouped.on);
-        targetPoster = objInRenamed ? objInRenamed.to : objInGrouped.on;
-      }
-    };
-
-    if (renamed) {
-      // if not, and renamed arr exists, check if this poster has been renamed
-      const objInRenamed = renamed.find(e => e.poster === post.poster);
-      if (objInRenamed) targetPoster = objInRenamed.to;
+  if (grouped) {
+    // check if this poster has been grouped
+    const objInGrouped = grouped.find(e => e.poster === poster);
+    if (objInGrouped) {
+      const objInRenamed = renamed.find(e => e.poster === objInGrouped.on);
+      targetPoster = objInRenamed ? objInRenamed.to : objInGrouped.on;
     }
+  };
+
+  if (renamed) {
+    // if not, and renamed arr exists, check if this poster has been renamed
+    const objInRenamed = renamed.find(e => e.poster === poster);
+    if (objInRenamed) targetPoster = objInRenamed.to;
+  }
+  return targetPoster;
+};
+// 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 
+
+
+
+export const tallyContributions = (processedPostsLog, lookup) => {
+  const res = processedPostsLog.reduce((acc, post) => {
+    const { poster } = post;
+    const targetPoster = determineTargetPoster(poster, lookup);
+    // // let targetPoster;
+    // let targetPoster = post.poster
+
+    // if (grouped) {
+    //   // check if this poster has been grouped
+    //   const objInGrouped = grouped.find(e => e.poster === post.poster);
+    //   if (objInGrouped) {
+    //     const objInRenamed = renamed.find(e => e.poster === objInGrouped.on);
+    //     targetPoster = objInRenamed ? objInRenamed.to : objInGrouped.on;
+    //   }
+    // };
+
+    // if (renamed) {
+    //   // if not, and renamed arr exists, check if this poster has been renamed
+    //   const objInRenamed = renamed.find(e => e.poster === post.poster);
+    //   if (objInRenamed) targetPoster = objInRenamed.to;
+    // }
 
     // finally, check if acc obj already exist for this poster - if yes, update, if not add new
     const indexInAcc = acc.findIndex(e => e.poster === targetPoster);
@@ -163,9 +191,9 @@ export const tallyContributions = (processedPostsLog, lookup) => {
     } else {
       acc[indexInAcc].totalPosts++;
     }
-    console.log(acc)
     return acc;
   }, [])
+  return res;
 };
 
 export const calcGroupTally = (grouped = [], renamed = []) => {
@@ -196,20 +224,8 @@ export const isContributorAGroup = (lookupInState, poster) => {
 };
 
 export const groupPostsByYear = (posts = []) => {
-  console.log(posts);
 
-  // 🚨 🚨 🚨
-  const postsPlusMyFakesForTesting = [
-    ...posts,
-    { poster: 'Sam', time: { year: '2022', month: '12' } },
-    { poster: 'Ben Belward', time: { year: '2022', month: '11' } },
-    { poster: 'Ben Belward', time: { year: '2022', month: '10' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Johnny Ratcliffe', time: { year: '2021', month: '01' } },
-  ]
-
-  // const res = posts.reduce((acc, e) => {  // 🚨 🚨 🚨
-  const res = postsPlusMyFakesForTesting.reduce((acc, e) => {
+  const res = posts.reduce((acc, e) => {
     const indexOfYearObjInAcc = acc.findIndex(obj => obj.year === e.time.year);
     if (indexOfYearObjInAcc === -1) {
       const newYearObj = { year: e.time.year, posts: [e] }
@@ -222,22 +238,20 @@ export const groupPostsByYear = (posts = []) => {
   return res.sort((a, b) => (+a.year > +b.year) ? 1 : -1)
 };
 
-export const groupPostsByPosterYearAndMonth = (posts = []) => {
+/* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
+/* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
+/* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
+/* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
+/* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
+/* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
 
-  // 🚨 🚨 🚨
-  const postsPlusMyFakesForTesting = [
-    ...posts,
-    { poster: 'Sam', time: { year: '2022', month: '12' } },
-    { poster: 'Ben Belward', time: { year: '2022', month: '11' } },
-    { poster: 'Ben Belward', time: { year: '2022', month: '10' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Johnny Ratcliffe', time: { year: '2021', month: '01' } },
-  ]
 
-  // const res = posts.reduce((acc, post) => { // 🚨 🚨 🚨
-  const res = postsPlusMyFakesForTesting.reduce((acc, post) => {
+export const groupPostsByPosterYearAndMonth = (posts = [], lookup) => {
+
+  const res = posts.reduce((acc, post) => {
     const { year, month } = post.time;
     const { poster } = post;
+    const targetPoster = determineTargetPoster(poster, lookup);
     // create a year object in the acc if doesn't yet exist, or find its index if it does
     const yearObjInAcc = acc.find(e => e.year === year);
     if (!yearObjInAcc) acc.push({ year: year, months: [], posters: [] });
@@ -248,33 +262,114 @@ export const groupPostsByPosterYearAndMonth = (posts = []) => {
     if (!monthObjInYearMonths) acc[yearAccIndex].months.push({ month: month, posts: [] });
     const monthYearAccIndex = acc[yearAccIndex].months.findIndex(e => e.month === month);
 
-    const posterObjInMonthPosters = acc[yearAccIndex].months[monthYearAccIndex].posts.find(e => e.poster === poster);
-    if (!posterObjInMonthPosters) acc[yearAccIndex].months[monthYearAccIndex].posts.push({ poster: poster, monthlyTotal: 0 });
+    const posterObjInMonthPosters = acc[yearAccIndex].months[monthYearAccIndex].posts.find(e => e.poster === targetPoster);
+    if (!posterObjInMonthPosters) acc[yearAccIndex].months[monthYearAccIndex].posts.push({ poster: targetPoster, monthlyTotal: 0 });
 
-    const postsMonthYearAccIndex = acc[yearAccIndex].months[monthYearAccIndex].posts.findIndex(e => e.poster === poster);
+    const postsMonthYearAccIndex = acc[yearAccIndex].months[monthYearAccIndex].posts.findIndex(e => e.poster === targetPoster);
     acc[yearAccIndex].months[monthYearAccIndex].posts[postsMonthYearAccIndex].monthlyTotal++;
 
     // update the posters arr objects for this year object (creating if dont yet exist)
-    const posterObjInYearPosters = acc[yearAccIndex].posters.find(e => e.poster === poster);
-    if (!posterObjInYearPosters) acc[yearAccIndex].posters.push({ poster: poster, total: 0 })
-    const posterYearAccIndex = acc[yearAccIndex].posters.findIndex(e => e.poster === poster);
+    const posterObjInYearPosters = acc[yearAccIndex].posters.find(e => e.poster === targetPoster);
+    if (!posterObjInYearPosters) acc[yearAccIndex].posters.push({ poster: targetPoster, total: 0 })
+    const posterYearAccIndex = acc[yearAccIndex].posters.findIndex(e => e.poster === targetPoster);
     acc[yearAccIndex].posters[posterYearAccIndex].total++;
     return acc;
   }, []);
 
-
+  // finally, sort various arrays and subarrays
   const sortedByYear = [...res].sort((a, b) => (+a.year > +b.year) ? 1 : -1);
   const monthsAndPostersSorted = sortedByYear.map(e => ({
     year: e.year,
     months: [...e.months].sort((a, b) => (+a.month > +b.month) ? 1 : -1).map(f => ({ ...f, posts: [...f.posts].sort((a, b) => (+a.monthlyTotal > +b.monthlyTotal) ? 1 : -1) })),
     posters: [...e.posters].sort((a, b) => (+a.total < +b.total) ? 1 : -1)
   }))
-
-  console.log(monthsAndPostersSorted)
   return monthsAndPostersSorted;
-
 };
 
+export const listAllPosters = (posts, lookup) => {
+  const res = posts.reduce((acc, e) => {
+    let targetPoster = determineTargetPoster(e.poster, lookup);
+    const posterInAcc = acc.some(f => f === targetPoster);
+    if (!posterInAcc) acc.push(targetPoster);
+    return acc;
+  }, []);
+  console.log(res);
+  return res;
+};
+
+export const createColourMap = (posters) => {
+  // TO-DO: handle more than 24 posters / colours!
+  const colourChoices = [
+    'e74c3c',
+    '3498db',
+    'f1c40f',
+    '2ecc71',
+    'e67e22',
+    'f5b7b1',
+    'aed6f1',
+    '9b59b6',
+    'e6b0aa',
+    '7fb3d5',
+    'f9e79f',
+    'abebc6',
+    'f8c471',
+    'fadbd8',
+    'd1f2eb',
+    'd2b4de',
+    '78281f',
+    '154360',
+    'b7950b',
+    '196f3d',
+    '9c640c',
+    '17a589',
+    '1f618d',
+    '4a235a',
+  ];
+  return posters.map((poster, i) => ({ poster: poster, colour: colourChoices[i] }))
+};
+
+export const pickPosterColour = (poster, lookup, colourMap) => {
+  let targetPoster = poster;
+  if (lookup.renamed) {
+    const { renamed } = lookup;
+    const renamedPosterIndex = renamed.findIndex(e => e.to === poster);
+    targetPoster = renamedPosterIndex !== -1 ? renamed[renamedPosterIndex] : targetPoster;
+  }
+  const colour = colourMap.find(e => e.poster === targetPoster).colour;
+  return colour;
+};
+
+export const determineMostPostsInAMonth = (byYear) => {
+  const monthlyTotals = byYear.reduce((acc, yearObj) => {
+    yearObj.months.forEach(monthObj => {
+      let monthlyTotalAllPosters = 0;
+      monthObj.posts.forEach(postObj => monthlyTotalAllPosters += postObj.monthlyTotal);
+      acc.push(monthlyTotalAllPosters);
+    })
+    return acc;
+  }, []);
+
+  const highestMonthlyPosts = Math.max(...monthlyTotals);
+  return highestMonthlyPosts;
+};
+
+export const calcTotalForMonth = (index, byYear, slide) => {
+  const monthObjIndex = byYear[slide - 1]?.months.findIndex(e => +e.month === index + 1);
+
+  let monthlyTotalOverall = null;
+  let totalsByPoster = null;
+
+  if (monthObjIndex !== -1) {
+    monthlyTotalOverall = byYear[slide - 1]?.months[monthObjIndex].posts.reduce((acc, e) => {
+      acc += e.monthlyTotalOverall;
+      return acc;
+    }, 0);
+
+    totalsByPoster = byYear[slide - 1]?.months[monthObjIndex].posts
+  };
+
+  return { monthlyTotalOverall, totalsByPoster };
+};
 
 /*
 BY GENRE
@@ -347,4 +442,37 @@ BY YEAR
 
   },
 ]
+*/
+
+/*
+RED e74c3c
+BLUE 3498db
+YELLOW f1c40f
+GREEN 2ecc71
+ORANGE e67e22
+PINK f5b7b1
+CYAN aed6f1
+PURPLE 9b59b6
+
+pale---
+RED e6b0aa
+BLUE 7fb3d5
+YELLOW f9e79f
+GREEN abebc6
+ORANGE f8c471
+PINK fadbd8
+CYAN d1f2eb
+PURPLE d2b4de
+
+dark---
+RED 78281f
+BLUE 154360
+YELLOW b7950b
+GREEN 196f3d
+ORANGE 9c640c
+PINK 17a589
+CYAN 1f618d
+PURPLE 4a235a
+
+
 */
