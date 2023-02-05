@@ -11,6 +11,7 @@ import _ from 'lodash';
 import toast, { Toaster } from 'react-hot-toast';
 import { Redirect, useHistory } from 'react-router-dom';
 import ByYearSection from './ByYearSection';
+import ByGenreSection from './ByGenreSection';
 
 function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading }) {
   const history = useHistory();
@@ -29,6 +30,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   const [byYear, setByYear] = useState([]);
   const [lookupInState, setLookupInState] = useState({});
   const [colourMap, setColourMap] = useState([]);
+  const [genresTallied, setGenresTallied] = useState({});
 
   const fakes = [
     { poster: 'Sam', time: { year: '2022', month: '12' } },
@@ -57,6 +59,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
 
       const processedPostsPlusFakes = [...processedPostsLog, ...fakes];
 
+      console.log(processedPostsLog)
+
       // 🚨 🚨 🚨 ---> processedPostsPlusFakes should be processedPostsLog!
       const contributions = h.tallyContributions(processedPostsPlusFakes, lookupInState);
       setTallied(contributions);
@@ -67,11 +71,11 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       setOverview(postsGroupedByYear);
 
       const postsByYear = h.groupPostsByPosterYearAndMonth(processedPostsPlusFakes, lookupInState)
-      console.log(postsByYear, '<<<<')
       setByYear(postsByYear);
+
+      const genresTalliedObj = h.tallyGenres(processedPostsPlusFakes, lookupInState);
+      setGenresTallied(genresTalliedObj);
       // 🚨 🚨 🚨 ---> processedPostsPlusFakes should be processedPostsLog!
-
-
     }
   }, [userPlaylistMetas]);
 
@@ -165,7 +169,9 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
             </div>
 
             <div className="ByGenreContainer Flex Column">
-              <h4 className="SectionHeader">By Genre</h4>
+              <h4 className="SectionHeader">
+                <ByGenreSection genresTallied={genresTallied} />
+              </h4>
             </div>
 
           </ div>

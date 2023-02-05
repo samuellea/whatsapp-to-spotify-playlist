@@ -1,5 +1,3 @@
-const mynum = '02';
-
-console.log((
-  +mynum
-).toString().split(''))
+const obj = { num: 0 };
+obj.num++;
+console.log(obj)

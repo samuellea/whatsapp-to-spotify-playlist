@@ -373,78 +373,66 @@ export const calcTotalForMonth = (index, byYear, slide) => {
   return { monthlyTotalOverall, totalsByPoster };
 };
 
-/*
-BY GENRE
-[
+export const tallyGenres = (posts, lookup) => {
 
-  {
-    timespan: allTime,
-    posters: [
-      {
-        poster: allPosters,
-        genresRanked: [ {count: 10, genre: Rock}, {count: 7, genre: Hip-Hop}... ]
-      },
-      {
-        poster: Ben,
-        genresRanked: [ {count: 4, genre: Soft-Rock}, {count: 3, genre: Disco }...]
-      },
-      ...
-    ]
-  },
+  const tallyObj = posts.reduce((acc, post) => {
 
-    {
-    timespan: 2020,
-    posters: [
-      {
-        poster: allPosters,
-        genresRanked: [ {count: 3, genre: Pop}, {count: 2, genre: Rock}... ]
-      },
-      {
-        poster: Ben,
-        genresRanked: [ {count: 2, genre: Rock}, {count: 1, genre: Dance }...]
-      },
-      ...
-    ]
-  },
+    const { poster, time: { year }, genres } = post;
+    if (!genres || !genres.length) return acc;
+    const tPoster = determineTargetPoster(poster, lookup);
 
-]
+    // handle creation of keys if they dont yet exist
+    if (!acc.allPosters[year]) acc.allPosters[year] = [];
+    if (!acc[tPoster]) acc[tPoster] = { allTime: [] };
+    if (!acc[tPoster][year]) acc[tPoster][year] = [];
 
-*/
-
+    // iterate over post's genres arr
+    genres.forEach(genre => {
+      // allPosters.allTime
+      const genreObjInAllPostersAllTime = acc.allPosters.allTime.find(e => e.genre === genre);
+      if (!genreObjInAllPostersAllTime) acc.allPosters.allTime.push({ genre: genre, count: 0 });
+      const indexOfGenreObjInAllPostersAllTime = acc.allPosters.allTime.findIndex(e => e.genre === genre);
+      acc.allPosters.allTime[indexOfGenreObjInAllPostersAllTime].count++;
+      // allPosters[year]
+      const genreObjInAllPostersYear = acc.allPosters[year].find(e => e.genre === genre);
+      if (!genreObjInAllPostersYear) acc.allPosters[year].push({ genre: genre, count: 0 });
+      const indexOfGenreObjInAllPostersYear = acc.allPosters[year].findIndex(e => e.genre === genre);
+      acc.allPosters[year][indexOfGenreObjInAllPostersYear].count++;
+      // [tPoster].allTime
+      const genreObjInPosterAllTime = acc[tPoster].allTime.find(e => e.genre === genre);
+      if (!genreObjInPosterAllTime) acc[tPoster].allTime.push({ genre: genre, count: 0 });
+      const indexOfGenreObjInPosterAllTime = acc[tPoster].allTime.findIndex(e => e.genre === genre);
+      acc[tPoster].allTime[indexOfGenreObjInPosterAllTime].count++;
+      // [tPoster][year]
+      const genreObjInPosterYear = acc[tPoster][year].find(e => e.genre === genre);
+      if (!genreObjInPosterYear) acc[tPoster][year].push({ genre: genre, count: 0 });
+      const indexOfGenreObjInPosterYear = acc[tPoster][year].findIndex(e => e.genre === genre);
+      acc[tPoster][year][indexOfGenreObjInPosterYear].count++;
+    });
 
 
+    return acc;
+  }, { allPosters: { allTime: [] } });
 
+  const tallyObjGenresRanked = { ...tallyObj };
+  for (const key in tallyObjGenresRanked) {
+    const obj = tallyObjGenresRanked[key];
+    for (let subKey in obj) {
+      obj[subKey] = obj[subKey].sort((a, b) => {
+        // if counts are equal, sort alphabetically on genre, else sort by count in desc.
+        if (+a.count === +b.count) {
+          return a.genre < b.genre ? -1 : 1
+        } else {
+          return +a.count < +b.count ? 1 : -1
+        }
+      })
+    }
+  }
 
+  // console.log(tallyObjGenresRanked);
+  return tallyObjGenresRanked;
+};
 
-
-
-
-/*
-BY YEAR
-[
-  { year: 2020,
-    months: [
-      { 
-        month: 01,
-        posts: [ // sorted by monthlyTotal
-          { poster: Johnny, monthlyTotal: 20 },
-          { poster: Ben, monthlyTotal: 12 },
-          ...
-        ],
-      },
-      ...
-    ],
-
-    posters: [
-      {
-        poster: Johnny,
-        total: 29,
-      }
-    ],
-
-  },
-]
-*/
 
 /*
 RED e74c3c

@@ -1,6 +1,7 @@
 import {
   newMsgsNotInChatLog,
   accountForAliases,
+  tallyGenres,
 } from './helpers';
 import _ from 'lodash';
 
@@ -126,275 +127,516 @@ describe('newMsgsNotInChatLog()', () => {
   });
 });
 
-describe.only('accountForAliases()', () => {
+describe.only('tallyGenres()', () => {
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 5 },
-      { poster: 'Ben Belward', totalPosts: 2 },
-      { poster: 'Sam (Work)', totalPosts: 1 },
-      { poster: 'Johnny Ratcliffe', totalPosts: 1 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      }
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 6 },
-      { poster: 'Ben Belward', totalPosts: 2 },
-      { poster: 'Johnny Ratcliffe', totalPosts: 1 },
-    ];
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'rock', count: 1 }],
+      },
+      sam: {
+        2020: [{ genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'rock', count: 1 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 5 },
-      { poster: 'Sam (Work)', totalPosts: 1 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock', 'pop']
+      }
     ];
-
-    const posterAliases = [];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 5 },
-      { poster: 'Sam (Work)', totalPosts: 1 },
-    ];
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+      },
+      sam: {
+        2020: [{ genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 5 },
-      { poster: 'Sam (Work)', totalPosts: 1 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['pop']
+      }
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 6 },
-    ];
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+      },
+      sam: {
+        2020: [{ genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 5 },
-      { poster: 'Sam (Work)', totalPosts: 1 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['pop']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['pop']
+      }
     ];
-
-    const posterAliases = [
-      { main: 'Sam (Work)', aliases: ['Sam', 'Sam (Work)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam (Work)', totalPosts: 6 },
-    ];
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'pop', count: 2 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'pop', count: 2 }, { genre: 'rock', count: 1 }],
+      },
+      sam: {
+        2020: [{ genre: 'pop', count: 2 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'pop', count: 2 }, { genre: 'rock', count: 1 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['rock']
+      },
     ];
-
-    const posterAliases = [];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
-    ];
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'rock', count: 1 }],
+        2021: [{ genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'rock', count: 2 }],
+      },
+      sam: {
+        2020: [{ genre: 'rock', count: 1 }],
+        2021: [{ genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'rock', count: 2 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['rock']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 3 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
-    ];
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'rock', count: 1 }],
+        2021: [{ genre: 'rock', count: 2 }],
+        allTime: [{ genre: 'rock', count: 3 }],
+      },
+      sam: {
+        2020: [{ genre: 'rock', count: 1 }],
+        2021: [{ genre: 'rock', count: 2 }],
+        allTime: [{ genre: 'rock', count: 3 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 4 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['dance']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Sam (Work)', aliases: ['Sam', 'Sam (Work)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam (Work)', totalPosts: 6 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
-    ];
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'rock', count: 1 }],
+        2021: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'rock', count: 2 }, { genre: 'dance', count: 1 }],
+      },
+      sam: {
+        2020: [{ genre: 'rock', count: 1 }],
+        2021: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'rock', count: 2 }, { genre: 'dance', count: 1 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['dance']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['dance']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)', 'Sam (Abroad)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 6 },
-    ];
-    console.log(res)
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        2021: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'dance', count: 2 }, { genre: 'rock', count: 2 }],
+      },
+      sam: {
+        2020: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        2021: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'dance', count: 2 }, { genre: 'rock', count: 2 }],
+      },
+    }
+    console.log(JSON.stringify(res));
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 2 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['dance']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: []
+      },
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['dance']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Bingo', aliases: ['Sam', 'Sam (Work)', 'Sam (Abroad)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Bingo', totalPosts: 7 },
-    ];
-    console.log(res)
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        2021: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'dance', count: 2 }, { genre: 'rock', count: 2 }],
+      },
+      sam: {
+        2020: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        2021: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'dance', count: 2 }, { genre: 'rock', count: 2 }],
+      },
+    }
+    console.log(JSON.stringify(res));
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
-      { poster: 'Ben', totalPosts: 1 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['dance']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['rock']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['dance']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)', 'Sam (Abroad)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 6 },
-      { poster: 'Ben', totalPosts: 1 },
-    ];
-    console.log(res)
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        2021: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'dance', count: 2 }, { genre: 'rock', count: 2 }],
+      },
+      sam: {
+        2020: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        2021: [{ genre: 'dance', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'dance', count: 2 }, { genre: 'rock', count: 2 }],
+      },
+    }
+    console.log(JSON.stringify(res));
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
-      { poster: 'Ben', totalPosts: 1 },
-      { poster: 'Ben (Work)', totalPosts: 2 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['dance']
+      },
+      {
+        poster: 'ben',
+        time: { year: 2020 },
+        genres: ['dance']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)', 'Sam (Abroad)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 6 },
-      { poster: 'Ben', totalPosts: 1 },
-      { poster: 'Ben (Work)', totalPosts: 2 },
-    ];
-    console.log(res)
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'dance', count: 2 }],
+        allTime: [{ genre: 'dance', count: 2 }],
+      },
+      sam: {
+        2020: [{ genre: 'dance', count: 1 }],
+        allTime: [{ genre: 'dance', count: 1 }],
+      },
+      ben: {
+        2020: [{ genre: 'dance', count: 1 }],
+        allTime: [{ genre: 'dance', count: 1 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
-      { poster: 'Ben', totalPosts: 1 },
-      { poster: 'Ben (Work)', totalPosts: 2 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['dance']
+      },
+      {
+        poster: 'ben',
+        time: { year: 2020 },
+        genres: ['pop']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)', 'Sam (Abroad)'] },
-      { main: 'Ben', aliases: ['Ben', 'Ben (Work)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 6 },
-      { poster: 'Ben', totalPosts: 3 },
-    ];
-    console.log(res)
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'dance', count: 1 }, { genre: 'pop', count: 1 }],
+        allTime: [{ genre: 'dance', count: 1 }, { genre: 'pop', count: 1 }],
+      },
+      sam: {
+        2020: [{ genre: 'dance', count: 1 }],
+        allTime: [{ genre: 'dance', count: 1 }],
+      },
+      ben: {
+        2020: [{ genre: 'pop', count: 1 }],
+        allTime: [{ genre: 'pop', count: 1 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
-      { poster: 'Ben', totalPosts: 1 },
-      { poster: 'Ben (Work)', totalPosts: 2 },
-      { poster: 'Johnny Ratcliffe', totalPosts: 1 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['dance']
+      },
+      {
+        poster: 'ben',
+        time: { year: 2021 },
+        genres: ['pop']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)', 'Sam (Abroad)'] },
-      { main: 'Ben', aliases: ['Ben', 'Ben (Work)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 6 },
-      { poster: 'Ben', totalPosts: 3 },
-      { poster: 'Johnny Ratcliffe', totalPosts: 1 },
-    ];
-    console.log(res)
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'dance', count: 1 }],
+        2021: [{ genre: 'pop', count: 1 }],
+        allTime: [{ genre: 'dance', count: 1 }, { genre: 'pop', count: 1 }],
+      },
+      sam: {
+        2020: [{ genre: 'dance', count: 1 }],
+        allTime: [{ genre: 'dance', count: 1 }],
+      },
+      ben: {
+        2021: [{ genre: 'pop', count: 1 }],
+        allTime: [{ genre: 'pop', count: 1 }],
+      },
+    }
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
   it('', () => {
-    const contributorsTally = [
-      { poster: 'Sam', totalPosts: 1 },
-      { poster: 'Sam (Work)', totalPosts: 2 },
-      { poster: 'Sam (Abroad)', totalPosts: 3 },
-      { poster: 'Ben', totalPosts: 1 },
-      { poster: 'Ben (Work)', totalPosts: 2 },
-      { poster: 'Johnny Ratcliffe', totalPosts: 1 },
+    const lookup = { renamed: [], grouped: [] };
+    const processedPosts = [
+      {
+        poster: 'sam',
+        time: { year: 2020 },
+        genres: ['dance']
+      },
+      {
+        poster: 'ben',
+        time: { year: 2021 },
+        genres: ['pop']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['dance']
+      },
+      {
+        poster: 'ben',
+        time: { year: 2021 },
+        genres: ['jazz']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['pop', 'jazz']
+      },
+      {
+        poster: 'sam',
+        time: { year: 2021 },
+        genres: ['rock', 'blues']
+      },
+      {
+        poster: 'jon',
+        time: { year: 2021 },
+        genres: ['rock', 'jazz', 'blues', 'flamenco']
+      },
+      {
+        poster: 'jon',
+        time: { year: 2022 },
+        genres: ['flamenco', 'classical']
+      },
     ];
-
-    const posterAliases = [
-      { main: 'Sam', aliases: ['Sam', 'Sam (Work)', 'Sam (Abroad)'] },
-      { main: 'Mando', aliases: ['Ben', 'Ben (Work)'] },
-    ];
-
-    const res = accountForAliases(contributorsTally, posterAliases);
-    const expected = [
-      { poster: 'Sam', totalPosts: 6 },
-      { poster: 'Mando', totalPosts: 3 },
-      { poster: 'Johnny Ratcliffe', totalPosts: 1 },
-    ];
-    console.log(res)
+    const res = tallyGenres(processedPosts, lookup);
+    const expected = {
+      allPosters: {
+        2020: [{ genre: 'dance', count: 1 }],
+        2021: [{ genre: 'jazz', count: 3 }, { genre: 'blues', count: 2 }, { genre: 'pop', count: 2 }, { genre: 'rock', count: 2 }, { genre: 'dance', count: 1 }, { genre: 'flamenco', count: 1 }],
+        2022: [{ genre: 'classical', count: 1 }, { genre: 'flamenco', count: 1 }],
+        allTime: [{ genre: 'jazz', count: 3 }, { genre: 'blues', count: 2 }, { genre: 'dance', count: 2 }, { genre: 'flamenco', count: 2 }, { genre: 'pop', count: 2 }, { genre: 'rock', count: 2 }, { genre: 'classical', count: 1 }],
+      },
+      sam: {
+        2020: [{ genre: 'dance', count: 1 }],
+        2021: [{ genre: 'blues', count: 1 }, { genre: 'dance', count: 1 }, { genre: 'jazz', count: 1 }, { genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+        allTime: [{ genre: 'dance', count: 2 }, { genre: 'blues', count: 1 }, { genre: 'jazz', count: 1 }, { genre: 'pop', count: 1 }, { genre: 'rock', count: 1 }],
+      },
+      ben: {
+        2021: [{ genre: 'jazz', count: 1 }, { genre: 'pop', count: 1 }],
+        allTime: [{ genre: 'jazz', count: 1 }, { genre: 'pop', count: 1 }],
+      },
+      jon: {
+        2021: [{ genre: 'blues', count: 1 }, { genre: 'flamenco', count: 1 }, { genre: 'jazz', count: 1 }, { genre: 'rock', count: 1 },],
+        2022: [{ genre: 'classical', count: 1 }, { genre: 'flamenco', count: 1 }],
+        allTime: [{ genre: 'flamenco', count: 2 }, { genre: 'blues', count: 1 }, { genre: 'classical', count: 1 }, { genre: 'jazz', count: 1 }, { genre: 'rock', count: 1 }],
+      },
+    }
+    console.log(JSON.stringify(res))
     expect(_.isEqual(res, expected)).toEqual(true);
   });
+
+
 });
 
 
@@ -404,3 +646,29 @@ describe.only('accountForAliases()', () => {
     ];
 
 */
+
+
+
+/*
+
+{"allPosters":
+  {
+    "2020":[{"genre":"dance","count":1}],
+    "2021":[{"genre":"jazz","count":3},{"genre":"blues","count":2},{"genre":"pop","count":2},   
+      {"genre":"rock","count":2},{"genre":"dance","count":1},{"genre":"flamenco","count":1}],
+    "2022":[{"genre":"classical","count":1},{"genre":"flamenco","count":1}],
+    "allTime":[{"genre":"jazz","count":3},{"genre":"blues","count":2},{"genre":"dance","count":2},{"genre":"flamenco","count":2},{"genre":"pop","count":2},{"genre":"rock","count":2},{"genre":"classical","count":1}]
+  },
+  "sam":
+    {"2020":[{"genre":"dance","count":1}],
+    "2021":[{"genre":"blues","count":1},{"genre":"dance","count":1},{"genre":"jazz","count":1},{"genre":"pop","count":1},{"genre":"rock","count":1}],
+    "allTime":[{"genre":"dance","count":2},{"genre":"blues","count":1},{"genre":"jazz","count":1},{"genre":"pop","count":1},{"genre":"rock","count":1}]
+  },
+  "ben":{
+    "2021":[{"genre":"jazz","count":1},{"genre":"pop","count":1}],"allTime":[{"genre":"jazz","count":1},{"genre":"pop","count":1}]
+  },
+  "jon":{
+    "2021":[{"genre":"blues","count":1},{"genre":"flamenco","count":1},{"genre":"jazz","count":1},{"genre":"rock","count":1}],
+    "2022":[{"genre":"classical","count":1},{"genre":"flamenco","count":1}],"allTime":[{"genre":"flamenco","count":2},{"genre":"blues","count":1},{"genre":"classical","count":1},{"genre":"jazz","count":1},{"genre":"rock","count":1}]}}
+
+    */

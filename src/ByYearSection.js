@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import { faUserGroup, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import * as h from './helpers';
 import './styles/ByYearSection.css';
 
@@ -26,7 +26,9 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
     <div className="ByYearSection Flex">
 
       <div className="LeftNavContainer Flex TranspButton">
-        <button type="button" onClick={handleLeft} disabled={slide === 1} className={`${slide !== 1 ? 'ShowButton' : 'HideButton'}`}>LEFT</button>
+        <button type="button" onClick={handleLeft} disabled={slide === 1} className={`${slide !== 1 ? 'ShowButton' : 'HideButton'}`}>
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </button>
       </div>
       <div className="DisplayArea">
         <div className="GraphHalf">
@@ -108,7 +110,11 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
       </div >
 
       <div className="RightNavContainer Flex TranspButton">
-        <button type="button" onClick={handleRight} className={`${slide !== byYear.length ? 'ShowButton' : 'HideButton'}`}>RIGHT</button>
+        <button type="button" onClick={handleRight} className={`${slide !== byYear.length ? 'ShowButton' : 'HideButton'}`}>
+
+          <FontAwesomeIcon icon={faChevronRight} />
+
+        </button>
       </div>
 
     </div >
