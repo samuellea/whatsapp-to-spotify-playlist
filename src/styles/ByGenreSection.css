@@ -1,1 +1,14 @@
-.ByGenreSection {}
+.ByGenreSection {
+  height: 30vh;
+}
+
+path {
+  margin: 5px;
+  border: 5px solid white;
+}
+
+text {
+  font-weight: 200;
+  fill: black !important;
+  font-size: 8px;
+}

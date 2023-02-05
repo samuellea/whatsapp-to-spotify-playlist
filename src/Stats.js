@@ -163,15 +163,11 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
             </div>
 
             <div className="ByYearContainer Flex Column">
-              <h4 className="SectionHeader">
-                <ByYearSection byYear={byYear} lookupInState={lookupInState} colourMap={colourMap} />
-              </h4>
+              <ByYearSection byYear={byYear} lookupInState={lookupInState} colourMap={colourMap} />
             </div>
 
             <div className="ByGenreContainer Flex Column">
-              <h4 className="SectionHeader">
-                <ByGenreSection genresTallied={genresTallied} />
-              </h4>
+              <ByGenreSection genresTallied={genresTallied} />
             </div>
 
           </ div>
