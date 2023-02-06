@@ -5,12 +5,27 @@ import * as h from './helpers';
 import './styles/ByYearSection.css';
 
 function ByYearSection({ byYear, lookupInState, colourMap }) {
-  console.log(byYear, ' < byYear')
+  console.log('*****************')
+  console.log(colourMap);
+  console.log('*****************')
+  // console.log(byYear, ' < byYear')
+
+  // const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   console.log('LOOKUPINSTATE CHANGED! BYEARS')
+  //   const myWaiter = async () => {
+  //     await h.mockSleep(1000);
+  //     setLoading(false);
+  //   }
+  //   setLoading(true);
+  //   myWaiter();
+  // }, [lookupInState])
 
   const highestMonthlyPosts = h.determineMostPostsInAMonth(byYear);
-  console.log(`highestMonthlyPosts: ${highestMonthlyPosts}`);
+  // console.log(`highestMonthlyPosts: ${highestMonthlyPosts}`);
   const divisor = 100 / highestMonthlyPosts;
-  console.log(`divisor: ${divisor}`);
+  // console.log(`divisor: ${divisor}`);
 
   const [slide, setSlide] = useState(1);
 
@@ -22,12 +37,14 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
     if (slide !== byYear.length) setSlide(slide + 1);
   };
 
+  // if (loading) return null;
+  // if (!loading) return (
   return (
     <div className="ByYearSection Flex">
 
       <div className="LeftNavContainer Flex TranspButton">
         <button type="button" onClick={handleLeft} disabled={slide === 1} className={`${slide !== 1 ? 'ShowButton' : 'HideButton'}`}>
-          <FontAwesomeIcon icon={faChevronLeft} />
+          <FontAwesomeIcon icon={faChevronLeft} pointerEvents="none" />
         </button>
       </div>
       <div className="DisplayArea">
@@ -35,7 +52,15 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
           <div className="GraphArea Flex">
             <div className="MonthBarsContainer Flex Row">
               {Array(12).fill(0).map((e, i) => {
+                // totalsByPoster has been processed to return poster keys transformed to
+                // account for aliases / groupings.
                 const { monthlyTotalOverall, totalsByPoster } = h.calcTotalForMonth(i, byYear, slide);
+
+                if (totalsByPoster !== null) {
+                  console.log('[TOTALS BY POSTER]');
+                  console.log(totalsByPoster)
+                  console.log('[TOTALS BY POSTER]');
+                }
                 return (
                   <div className="MonthBarContainer Flex Column">
                     {totalsByPoster ?
@@ -69,7 +94,7 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
                 {year.posters.map((posterObj, i) => {
 
                   const { poster } = posterObj;
-                  const posterColour = h.pickPosterColour(poster, lookupInState, colourMap);
+                  // const posterColour = h.pickPosterColour(poster, lookupInState, colourMap);
                   return (
                     <div className="PosterCard Flex">
 
@@ -96,8 +121,7 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
                       </div>
 
                       <div className="ColourBoxColumn Flex">
-                        <div className="ColourBox" style={{ backgroundColor: `#${posterColour}` }} >
-                        </div>
+                        {/* <div className="ColourBox" style={{ backgroundColor: `#${posterColour}` }} /> */}
                       </div>
 
                     </div>
@@ -111,9 +135,7 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
 
       <div className="RightNavContainer Flex TranspButton">
         <button type="button" onClick={handleRight} className={`${slide !== byYear.length ? 'ShowButton' : 'HideButton'}`}>
-
-          <FontAwesomeIcon icon={faChevronRight} />
-
+          <FontAwesomeIcon icon={faChevronRight} pointerEvents="none" />
         </button>
       </div>
 
@@ -121,7 +143,4 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
   )
 };
 
-export default ByYearSection
-  ;
-
-
+export default ByYearSection;

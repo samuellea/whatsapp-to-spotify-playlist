@@ -12,6 +12,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Redirect, useHistory } from 'react-router-dom';
 import ByYearSection from './ByYearSection';
 import ByGenreSection from './ByGenreSection';
+import ByPosterSection from './ByPosterSection';
 
 function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading }) {
   const history = useHistory();
@@ -93,10 +94,10 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
         // create colourmap
         const { processedPostsLog } = firebasePlaylistObj;
         const processedPostsPlusFakes = [...processedPostsLog, ...fakes];
-        console.log('');
-        console.log('');
-        console.log('');
-        console.log('');
+        // console.log('');
+        // console.log('');
+        // console.log('');
+        // console.log('');
         // console.log(processedPostsPlusFakes);
 
         const originalPosters = h.listAllPosters(processedPostsPlusFakes, lookupInState);
@@ -107,7 +108,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
         const lookupOnFB = playlistMetaInAppState?.lookup || {};
         console.log(lookupOnFB)
         setPageLoading(false);
-        fetchAndSetFirebasePlaylistMetas();
+        await fetchAndSetFirebasePlaylistMetas();
 
         h.groupPostsByYear(processedPostsLog, lookupInState);
       });
@@ -120,19 +121,25 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
     const postLookupThenRefetchMetas = async () => {
       const updateLookupResponse = await u.updatePlaylistMetaLookup(lookupInState, firebaseMetaId, token);
       if ([200, 204].includes(updateLookupResponse.status)) {
-        fetchAndSetFirebasePlaylistMetas();
+        await fetchAndSetFirebasePlaylistMetas();
+        // setPageLoading(false)
       };
     };
 
     const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
     const lookupOnFB = playlistMetaInAppState?.lookup || {};
     if (!_.isEqual(lookupOnFB, lookupInState)) {
+      // setPageLoading(true);
       // console.log('LOOKUPINSTATE DIFFERENT FROM LOOKUP ON FB!');
       postLookupThenRefetchMetas();
-    };
-  }, [lookupInState]); const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
-  const lookupOnFB = playlistMetaInAppState?.lookup || {};
+    } else {
+      // setPageLoading(false)
+    }
+  }, [lookupInState]);
 
+
+  const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+  const lookupOnFB = playlistMetaInAppState?.lookup || {};
 
   const { processedPostsLog, spotifyPlaylistName } = firebasePlaylist.obj;
 
@@ -167,8 +174,21 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
             </div>
 
             <div className="ByGenreContainer Flex Column">
-              <ByGenreSection genresTallied={genresTallied} />
+              {JSON.stringify(genresTallied) !== '{}' ?
+                <ByGenreSection genresTallied={genresTallied} />
+                : null
+              }
             </div>
+
+            <div className="ByPosterContainer Flex Column">
+              <ByPosterSection
+                posters={tallied.map(e => e.poster).sort()}
+                posts={firebasePlaylist.obj.processedPostsLog}
+                lookup={lookupInState}
+                playlistMetaInAppState={userPlaylistMetas.find(e => e.metaId === firebaseMetaId)}
+              />
+            </div>
+
 
           </ div>
           : <Spinner />

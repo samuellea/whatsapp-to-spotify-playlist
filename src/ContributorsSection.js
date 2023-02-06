@@ -282,7 +282,7 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
           <div className="HeaderAndEditButton Flex Row">
             <h4 className="SectionHeader">Contributors</h4>
             <button type="button" onClick={handleEditStart}>
-              <FontAwesomeIcon icon={faPen} />
+              <FontAwesomeIcon icon={faPen} pointerEvents="none" />
             </button>
           </div>
           <div className="ContributorsList Flex Column">

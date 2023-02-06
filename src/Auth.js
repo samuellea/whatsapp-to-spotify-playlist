@@ -20,7 +20,7 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
     const authData = { email, password, returnSecureToken: true };
     axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_API_KEY}`, authData)
       .then(async ({ data }) => {
-        const expirationDate = new Date(new Date().getTime() + (1800000)) // auto logout in 30 mins (ms)
+        const expirationDate = new Date(new Date().getTime() + (3480000)) // auto logout in 58 mins (ms)
         localStorage.setItem('token', data.idToken);
         localStorage.setItem('firebaseUserId', data.localId);
         localStorage.setItem('expirationDate', expirationDate);

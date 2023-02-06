@@ -1,0 +1,147 @@
+.ByPosterSection {
+  border: 2px solid coral;
+  height: 60vh;
+}
+
+.ByPosterPendingScreen {
+  height: 100%;
+  border: 1px solid red;
+  align-items: center;
+  justify-content: center;
+}
+
+.ByPosterCreationFeedback {
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.ByPosterCreationFeedback .GreenCircleContainer {
+  margin-bottom: 10px;
+}
+
+
+.ByPosterCreationFeedback h4 {
+  margin: 10px 0px 5px 0px;
+  padding: 0;
+  font-weight: 200;
+  line-height: 22px;
+  /* border: 1px solid green; */
+  width: 90%;
+}
+
+.ByPosterCreationFeedback h1 {
+  margin: 0px 0px 0px 0px;
+  padding: 0;
+  font-weight: 200;
+}
+
+.ByPosterPendingScreen span {
+  margin-top: 50px;
+}
+
+.ByPosterButtonBig {
+  border: 1px solid white;
+  color: white;
+  background: none;
+  font-size: 20px;
+  padding: 12px 50px;
+  border-radius: 15px;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 300;
+}
+
+.ByPosterCreationFeedback a {
+  color: white;
+  text-decoration: none;
+}
+
+.ByPosterCreationFeedback button {
+  margin-top: 20px;
+}
+
+
+.ByPosterSectionContentWrapper {
+  /* border: 2px solid coral; */
+  height: 60vh;
+}
+
+.PosterOptionContainer {
+  font-size: 30px;
+  /* font-family: 'Lucida Sans', */
+  font-weight: 200;
+  height: 75px;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.OptionButtonsContainer {}
+
+.OptionButtonsContainer button {
+  height: 25px;
+  width: 25px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  background: none;
+  border: none;
+  color: white;
+}
+
+.OptionButtonsContainer button:last-child {
+  float: left;
+  margin-left: 45px;
+}
+
+.PosterPlaylistContainer {
+  height: 70%;
+  overflow-y: scroll;
+  /* border: 1px solid green; */
+  border: 1px solid white;
+}
+
+.PosterPlaylistCard {
+  height: 70px;
+  border: 1px solid rgb(85, 85, 85);
+  border-top: none;
+  padding: 10px;
+  align-items: center;
+}
+
+.PosterPlaylistCardInfo {
+  /* border: 1px solid yellow; */
+  margin-left: 15px;
+  justify-content: center;
+  align-items: flex-start;
+  color: white;
+  text-align: left;
+}
+
+.PosterPlaylistCard img {
+  height: 60px;
+  width: 60px;
+}
+
+.PosterPlaylistCardInfo span:nth-child(1) {
+  font-size: 16px;
+  /* color: red; */
+  margin-bottom: 5px;
+}
+
+.PosterPlaylistCardInfo span:nth-child(2) {
+  font-size: 12px;
+  /* color: blue; */
+}
+
+
+
+.PosterMakeButtonContainer {
+  /* border: 1px solid yellow; */
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  font-weight: 100;
+}

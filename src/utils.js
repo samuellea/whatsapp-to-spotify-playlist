@@ -16,6 +16,9 @@ export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) =>
       'description': 'Created and maintained using whatsapp-to-spotify-playlist',
       'public': true,
     }
+  }).catch(e => {
+    console.log(e);
+    return { error: { msg: 'Unable to create playlist. Please try again later' } };
   });
 };
 
@@ -137,7 +140,10 @@ export const postToSpotifyPlaylist = (targetPlaylistID, spotifyToken, trackIDs) 
       'uris': [...spotifyLinksFormatted],
       'position': 0,
     }
-  }).then(({ status }) => status).catch(e => console.log(e));
+  }).then(({ status }) => status).catch(e => {
+    console.log(e);
+    return { error: { msg: 'Unable to create playlist. Please try again later' } }
+  });
 };
 
 export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedPlaylistObj) => {
@@ -399,14 +405,51 @@ export const updatePlaylistMetaLookup = async (lookupInState, metaId, token) => 
 
 };
 
-// export const getPlaylistMetaByMetaId = async (metaId, token) => {
-//   const response = await axios({
-//     url: `${firebaseUrl}/playlistMetas/${metaId}.json?auth=${token}`,
-//     method: 'GET',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     }
-//   });
-//   const { data } = response;
-//   return data;
-// };
+export const searchForUsersPlaylistByName = async (newPosterPlaylistName, spotifyToken, spotifyUserId) => {
+  console.log(newPosterPlaylistName)
+  const result = { error: false };
+
+  const searchResponse = await axios({
+    url: `https://api.spotify.com/v1/users/${spotifyUserId}/playlists`,
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${spotifyToken}`
+    }
+  }).catch(e => {
+    console.log(e);
+    result.error = { msg: 'Unable to create playlist. Please try again later' }
+    return result
+  });
+  const { status, data } = searchResponse;
+
+  if (status !== 200 || !data) {
+    result.error = { msg: 'Unable to create playlist. Please try again later' }
+  } else if (data.items.length) {
+    console.log(data)
+    const playlistWithThisNameAlreadyExists = data.items.find(e => {
+      return e.name === newPosterPlaylistName && e.owner.id === spotifyUserId;
+    });
+    if (playlistWithThisNameAlreadyExists) {
+      result.error = { msg: 'You have already created this playlist today. Please delete it on Spotify before trying again' }
+    } else {
+      return result;
+    }
+  }
+  // if 200 but data.playlists.items is empty, result will be alreadyExists false, error false...
+  return result;
+};
+
+export const createPosterPlaylist = async (newPosterPlaylistName, spotifyToken, spotifyUserId, posterTrackIDs) => {
+  const searchResponse = await searchForUsersPlaylistByName(newPosterPlaylistName, spotifyToken, spotifyUserId);
+  if (searchResponse.error) return searchResponse;
+  console.log(searchResponse)
+  const createResponse = await createSpotifyPlaylist(spotifyUserId, spotifyToken, newPosterPlaylistName);
+  if (createResponse.error) return createResponse;
+  const { data } = createResponse;
+  const newPlaylistId = data.id;
+  const newPlaylistName = data.name;
+  const addTracksResponse = await postToSpotifyPlaylist(newPlaylistId, spotifyToken, posterTrackIDs)
+  if (addTracksResponse.error) return addTracksResponse;
+  const newPlaylistInfo = { id: newPlaylistId, name: newPlaylistName };
+  return { error: false, newPlaylistInfo };
+};

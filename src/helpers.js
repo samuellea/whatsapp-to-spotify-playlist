@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { constant } from "lodash";
 
 export const spotiOrYTRegex = () => {
   const spotiYTRegexPattern = /(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)/g
@@ -36,9 +36,6 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
       const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())].map(arrEl => arrEl[0].trim());
       // const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())];
 
-
-      // console.log('-----')
-      // console.log(spotiOrYTLinks);
       // iterate over all Spoti or YT links in this message, and compose a postObj for each link found
       spotiOrYTLinks.forEach(link => {
         const decideLinkType = (urlString) => {
@@ -46,14 +43,6 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
           if (/youtu.*/g.test(urlString)) linkType = 'youtube';
           return linkType;
         };
-
-        /*
-        [
-          {id: 1a, aliases: ['+447595', 'Matthew (Work)'], displayName: 'Matt S.'},
-          {id: 2b, aliases: ['Sam'], displayName: 'Sam' // default},
-          {id: 3c, aliases: ['Jonny', 'Johnny Ratcliffe'], displayName: 'Jonny'},
-        ]
-        */
 
         const linkType = decideLinkType(link);
         let linkID;
@@ -138,7 +127,9 @@ export const curtailString = (string, limit) => {
 }
 
 // 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 
-export const determineTargetPoster = (poster, lookup) => {
+// this determines the key to use when a poster has been renamed or grouped
+// NOT FOR determining the ORIGINAL poster!
+export const determineTargetPoster = (poster, lookup, findOriginal = false) => {
   const { grouped = [], renamed = [] } = lookup;
   let targetPoster = poster;
 
@@ -155,6 +146,7 @@ export const determineTargetPoster = (poster, lookup) => {
     // if not, and renamed arr exists, check if this poster has been renamed
     const objInRenamed = renamed.find(e => e.poster === poster);
     if (objInRenamed) targetPoster = objInRenamed.to;
+    // if (objInRenamed) targetPoster = objInRenamed.poster;
   }
   return targetPoster;
 };
@@ -282,20 +274,29 @@ export const groupPostsByPosterYearAndMonth = (posts = [], lookup) => {
   const sortedByYear = [...res].sort((a, b) => (+a.year > +b.year) ? 1 : -1);
   const monthsAndPostersSorted = sortedByYear.map(e => ({
     year: e.year,
-    months: [...e.months].sort((a, b) => (+a.month > +b.month) ? 1 : -1).map(f => ({ ...f, posts: [...f.posts].sort((a, b) => (+a.monthlyTotal > +b.monthlyTotal) ? 1 : -1) })),
+    months: [...e.months].sort((a, b) => (+a.month > +b.month) ? 1 : -1).map(f => ({
+      ...f, posts: [...f.posts].sort(function (a, b) {
+        if (a.monthlyTotal > b.monthlyTotal) return 1;
+        if (a.monthlyTotal < b.monthlyTotal) return -1;
+        return (a.poster < b.poster) ? 1 : -1;
+      }),
+    })),
     posters: [...e.posters].sort((a, b) => (+a.total < +b.total) ? 1 : -1)
-  }))
+  }));
   return monthsAndPostersSorted;
+};
+
+export const determineOriginalPoster = () => {
+
 };
 
 export const listAllPosters = (posts, lookup) => {
   const res = posts.reduce((acc, e) => {
-    let targetPoster = determineTargetPoster(e.poster, lookup);
+    let targetPoster = e.poster;
     const posterInAcc = acc.some(f => f === targetPoster);
     if (!posterInAcc) acc.push(targetPoster);
     return acc;
   }, []);
-  console.log(res);
   return res;
 };
 
@@ -335,9 +336,11 @@ export const pickPosterColour = (poster, lookup, colourMap) => {
   if (lookup.renamed) {
     const { renamed } = lookup;
     const renamedPosterIndex = renamed.findIndex(e => e.to === poster);
-    targetPoster = renamedPosterIndex !== -1 ? renamed[renamedPosterIndex] : targetPoster;
+    targetPoster = renamedPosterIndex !== -1 ? renamed[renamedPosterIndex].poster : targetPoster;
   }
-  const colour = colourMap.find(e => e.poster === targetPoster).colour;
+  const colour = colourMap.find(e => {
+    return e.poster === targetPoster
+  })?.colour || 'black';
   return colour;
 };
 
@@ -369,7 +372,6 @@ export const calcTotalForMonth = (index, byYear, slide) => {
 
     totalsByPoster = byYear[slide - 1]?.months[monthObjIndex].posts
   };
-
   return { monthlyTotalOverall, totalsByPoster };
 };
 
@@ -383,26 +385,27 @@ export const tallyGenres = (posts, lookup) => {
 
     // handle creation of keys if they dont yet exist
     if (!acc.allPosters[year]) acc.allPosters[year] = [];
-    if (!acc[tPoster]) acc[tPoster] = { allTime: [] };
+    if (!acc[tPoster]) acc[tPoster] = { allYears: [] };
     if (!acc[tPoster][year]) acc[tPoster][year] = [];
 
     // iterate over post's genres arr
-    genres.forEach(genre => {
-      // allPosters.allTime
-      const genreObjInAllPostersAllTime = acc.allPosters.allTime.find(e => e.genre === genre);
-      if (!genreObjInAllPostersAllTime) acc.allPosters.allTime.push({ genre: genre, count: 0 });
-      const indexOfGenreObjInAllPostersAllTime = acc.allPosters.allTime.findIndex(e => e.genre === genre);
-      acc.allPosters.allTime[indexOfGenreObjInAllPostersAllTime].count++;
+    genres.forEach(lowercaseGenre => {
+      const genre = lowercaseGenre.split(' ').map(e => _.capitalize(e)).join(' ');
+      // allPosters.allYears
+      const genreObjInAllPostersAllYears = acc.allPosters.allYears.find(e => e.genre === genre);
+      if (!genreObjInAllPostersAllYears) acc.allPosters.allYears.push({ genre: genre, count: 0 });
+      const indexOfGenreObjInAllPostersAllYears = acc.allPosters.allYears.findIndex(e => e.genre === genre);
+      acc.allPosters.allYears[indexOfGenreObjInAllPostersAllYears].count++;
       // allPosters[year]
       const genreObjInAllPostersYear = acc.allPosters[year].find(e => e.genre === genre);
       if (!genreObjInAllPostersYear) acc.allPosters[year].push({ genre: genre, count: 0 });
       const indexOfGenreObjInAllPostersYear = acc.allPosters[year].findIndex(e => e.genre === genre);
       acc.allPosters[year][indexOfGenreObjInAllPostersYear].count++;
-      // [tPoster].allTime
-      const genreObjInPosterAllTime = acc[tPoster].allTime.find(e => e.genre === genre);
-      if (!genreObjInPosterAllTime) acc[tPoster].allTime.push({ genre: genre, count: 0 });
-      const indexOfGenreObjInPosterAllTime = acc[tPoster].allTime.findIndex(e => e.genre === genre);
-      acc[tPoster].allTime[indexOfGenreObjInPosterAllTime].count++;
+      // [tPoster].allYears
+      const genreObjInPosterAllYears = acc[tPoster].allYears.find(e => e.genre === genre);
+      if (!genreObjInPosterAllYears) acc[tPoster].allYears.push({ genre: genre, count: 0 });
+      const indexOfGenreObjInPosterAllYears = acc[tPoster].allYears.findIndex(e => e.genre === genre);
+      acc[tPoster].allYears[indexOfGenreObjInPosterAllYears].count++;
       // [tPoster][year]
       const genreObjInPosterYear = acc[tPoster][year].find(e => e.genre === genre);
       if (!genreObjInPosterYear) acc[tPoster][year].push({ genre: genre, count: 0 });
@@ -412,7 +415,7 @@ export const tallyGenres = (posts, lookup) => {
 
 
     return acc;
-  }, { allPosters: { allTime: [] } });
+  }, { allPosters: { allYears: [] } });
 
   const tallyObjGenresRanked = { ...tallyObj };
   for (const key in tallyObjGenresRanked) {
@@ -429,8 +432,67 @@ export const tallyGenres = (posts, lookup) => {
     }
   }
 
-  // console.log(tallyObjGenresRanked);
+  // sort object keys alphabetically
+  const sortedKeys = Object.entries(tallyObjGenresRanked).sort((a, b) => (a[0].toLowerCase() > b[0].toLowerCase()) ? 1 : -1);
+
+  const finalTallyObj = sortedKeys.reduce((acc, e) => {
+    acc[e[0]] = e[1];
+    return acc;
+  }, {})
   return tallyObjGenresRanked;
+  // return finalTallyObj;
+};
+
+export const rgbFromLetters = (word) => {
+  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
+  const wordSplit = word.split('').slice(0, 3);
+  const rgbVals = wordSplit.map(letter => {
+    if (letters.indexOf(letter.toLowerCase()) === -1) return 0;
+    return Math.trunc(letters.indexOf(letter.toLowerCase()) * 9.8);
+  });
+  return `rgb(${rgbVals[0]}, ${rgbVals[0]}, ${rgbVals[0]})`;
+};
+
+export const stringToColour = (str) => {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  var colour = '#';
+  for (var i = 0; i < 3; i++) {
+    var value = (hash >> (i * 8)) & 0xFF;
+    colour += ('00' + value.toString(16)).substr(-2);
+  }
+  return colour;
+}
+
+export const formatForPie = (genresArray) => {
+  const res = genresArray.map(e => ({
+    title: e.genre, value: e.count, color: stringToColour(e.genre)
+  }))
+  return res;
+};
+
+export const groupPostsByPoster = (poster, posts, lookup) => {
+  const aliasGroupsMappedToPosts = posts.map(post => {
+    const { poster } = post;
+    const tPoster = determineTargetPoster(poster, lookup);
+    return { ...post, poster: tPoster };
+  }, []);
+  return aliasGroupsMappedToPosts.filter(e => e.poster === poster);
+};
+
+export const dateTodayDdMmYyyy = () => {
+  const date = new Date(); // today's date
+  const format = 'dd/mm/yyyy';
+  const map = {
+    mm: date.getMonth() + 1,
+    dd: date.getDate(),
+    yy: date.getFullYear().toString().slice(-2),
+    yyyy: date.getFullYear()
+  }
+  return format.replace(/dd|mm|yyyy/gi, matched => map[matched])
 };
 
 

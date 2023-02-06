@@ -1,9 +1,11 @@
 import React from 'react';
 import './styles/Spinner.css';
 
-const Spinner = ({ spinnerType }) => {
+const Spinner = ({ size }) => {
   return (
-    <div className={`loader ${spinnerType}`}> Loading...</div >
+    <div className="SpinnerContainer">
+      <div className={`loader ${size}`}> Loading...</div >
+    </div>
   )
 };
 
