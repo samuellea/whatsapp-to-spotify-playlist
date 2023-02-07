@@ -3,25 +3,49 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 // import _ from 'lodash';
 import * as h from './helpers';
 import * as u from './utils';
+import usePrevious from './customHooks/usePrevious';
 import './styles/ByPosterSection.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Oval } from 'react-loading-icons';
+import Preview from './Preview';
 
 function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
 
+  // useEffect(() => {
+  //   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ')
+  // }, []);
+
+
+  // const initPosterPosts = h.groupPostsByPoster(posters[0], posts, lookup);
+  // console.log(initPosterPosts, ' 🐙🐙🐙🐙🐙🐙🐙🐙🐙')
+  // console.log(posters)
+  // console.log(posts)
+  // console.log(lookup)
+
   const [posterIndex, setPosterIndex] = useState(0);
-  const [posterPosts, setPosterPosts] = useState(null);
+  const [posterPosts, setPosterPosts] = useState([]);
   const [creation, setCreation] = useState({
     success: false,
     error: false,
     pending: false,
   })
+  const [indexPlaying, setIndexPlaying] = useState(null);
+
+  const prevPosters = usePrevious(posters);
 
   useEffect(() => {
+    console.log('💡 💡 💡 💡 ')
+    console.log(posters)
+    if (posters !== prevPosters) {
+      // reset the posterIndex to zero
+      setPosterIndex(0);
+    }
     const postsByPoster = h.groupPostsByPoster(posters[posterIndex], posts, lookup);
     console.log(postsByPoster)
     setPosterPosts(postsByPoster);
-  }, [posterIndex]);
+    setIndexPlaying(null);
+    // if (prevIndex !== posterIndex) { }
+  }, [posterIndex, posters]);
 
   const handleOptionClick = (e) => {
     const atStart = posterIndex === 0;
@@ -135,13 +159,14 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
           </div>
 
           <div className="PosterPlaylistContainer">
-            {posterPosts.map(post => (
+            {posterPosts.map((post, i) => (
               <div className="PosterPlaylistCard Flex Row">
                 <img src={post.thumbnail} />
                 <div className="PosterPlaylistCardInfo Flex Column">
                   <span>{post.title}</span>
                   <span>{post.artists.join(', ')}</span>
                 </div>
+                <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} />
               </div>
             ))}
           </div>

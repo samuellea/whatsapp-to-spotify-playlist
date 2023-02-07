@@ -34,28 +34,28 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   const [genresTallied, setGenresTallied] = useState({});
 
   const fakes = [
-    { poster: 'Sam', time: { year: '2022', month: '12' } },
-    { poster: 'Ben Belward', time: { year: '2022', month: '11' } },
-    { poster: 'Ben Belward', time: { year: '2022', month: '10' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Matt', time: { year: '2021', month: '08' } },
-    { poster: 'Johnny Ratcliffe', time: { year: '2021', month: '01' } },
+    // { poster: 'Sam', time: { year: '2022', month: '12' } },
+    // { poster: 'Ben Belward', time: { year: '2022', month: '11' } },
+    // { poster: 'Ben Belward', time: { year: '2022', month: '10' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Matt', time: { year: '2021', month: '08' } },
+    // { poster: 'Johnny Ratcliffe', time: { year: '2021', month: '01' } },
   ];
 
   // When metas update, set .lookup in state, tally / re-tally contributors
   useEffect(() => {
-    if (firebasePlaylist.id !== null) {
+    if (firebasePlaylist.id !== null && playlistMetaInAppState) {
       const { processedPostsLog } = firebasePlaylist.obj;
       const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
-      const lookupOnFB = playlistMetaInAppState.lookup || {};
+      const lookupOnFB = playlistMetaInAppState?.lookup || {};
       setLookupInState('lookup' in playlistMetaInAppState ? lookupOnFB : {});
 
       const processedPostsPlusFakes = [...processedPostsLog, ...fakes];

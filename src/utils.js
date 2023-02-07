@@ -167,8 +167,6 @@ export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedP
   });
 };
 
-
-
 export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, youtubeApiKey, spotifyToken) => {
   // HANDLE ANY YOUTUBE LINKS
   const youtubeApiBaseURL1 = 'https://content-youtube.googleapis.com/youtube/v3/videos?id=';
@@ -265,6 +263,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
       spotifyTrackData.spotifyTrackID = el?.id || null;
       spotifyTrackData.include = el ? true : false;
       spotifyTrackData.artistIDs = el?.artists.map(artist => artist.id);
+      spotifyTrackData.previewURL = el?.preview_url || null;
       return spotifyTrackData;
     });
     // console.log('🍿 --------------------');
@@ -314,7 +313,8 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
         artists: obj.artists.map(artist => artist.name),
         spotifyTrackID: obj.id,
         thumbnail: obj.album.images[1].url,
-        artistIDs: obj.artists.map(artist => artist.id)
+        artistIDs: obj.artists.map(artist => artist.id),
+        previewURL: obj.preview_url,
       }))
       return acc;
     }, []);
@@ -330,7 +330,6 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
 
 
 };
-
 
 export const getGenresForSpotifyTracks = async (tracksArr, spotifyToken) => {
 

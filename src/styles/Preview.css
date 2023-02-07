@@ -1,0 +1,32 @@
+.Preview {
+  font-family: sans-serif;
+  text-align: center;
+  /* border: 1px solid red; */
+  margin-left: auto;
+}
+
+.Preview button {
+  /* height: 50px;
+  width: 50px;
+  border-radius: 150px;
+  border: none;
+  background-color: gainsboro;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: gray;
+  box-shadow: 2px 3px 0px rgba(255, 255, 255, 0.3); */
+  height: 40px;
+  width: 40px;
+  border-radius: 150px;
+  border: 1px solid white;
+  background: none;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  /* color: gray; */
+  /* box-shadow: 2px 3px 0px rgba(255, 255, 255, 0.3); */
+}
