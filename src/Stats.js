@@ -52,7 +52,11 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
 
   // When metas update, set .lookup in state, tally / re-tally contributors
   useEffect(() => {
+    console.log(firebasePlaylist.id, ' 🚨')
+    console.log(playlistMetaInAppState, ' <-- playlistMetaInAppState')
+
     if (firebasePlaylist.id !== null && playlistMetaInAppState) {
+      console.log('Got All We Need! 🚨 🚨 🚨🚨 🚨 🚨')
       const { processedPostsLog } = firebasePlaylist.obj;
       const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
       const lookupOnFB = playlistMetaInAppState?.lookup || {};
@@ -105,12 +109,14 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
         setColourMap(originalPostersColourMap);
 
         const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+        console.log(playlistMetaInAppState, ' <--- playlistMetaInAppState ! ! ! !! !')
         const lookupOnFB = playlistMetaInAppState?.lookup || {};
         console.log(lookupOnFB)
-        setPageLoading(false);
         await fetchAndSetFirebasePlaylistMetas();
 
         h.groupPostsByYear(processedPostsLog, lookupInState);
+        setPageLoading(false);
+        // what
       });
     }).catch(e => console.log(e));
   }, []);

@@ -11,6 +11,7 @@ function FinalReviewInterface({
   newPosts,
   handleFinalSubmission,
   submissionSuccess,
+  firebaseMetaId,
 }) {
   let history = useHistory();
 
@@ -21,7 +22,7 @@ function FinalReviewInterface({
   useEffect(() => {
     if (submissionSuccess !== null && submissionSuccess) {
       setSubmissionFeedback('success')
-      mockSleep(2500).then(() => history.push(`/stats?spotifyPlaylistId=${spotifyPlaylistId}`));
+      mockSleep(2500).then(() => history.push(`/stats?spotifyPlaylistId=${spotifyPlaylistId}&firebaseMetaId=${firebaseMetaId}`)); // NEED FIREBASEMETAID!
     };
     if (submissionSuccess !== null && !submissionSuccess) {
       setSubmissionFeedback('failure')

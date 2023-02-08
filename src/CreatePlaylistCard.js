@@ -24,15 +24,16 @@ function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess,
 
   const handleSubmitNewPlaylist = () => {
     setCreatingNewPlaylist(true)
+    const spotifyUserId = window.localStorage.getItem('spotifyUserId');
     // create spotify playlist
-    u.createSpotifyPlaylist(spotifyUserInfo.id, spotifyToken, newPlaylistName).then(({ status, data }) => {
+    u.createSpotifyPlaylist(spotifyUserId, spotifyToken, newPlaylistName).then(({ status, data }) => {
       if ([200, 201].includes(status)) {
         const { id: spotifyPlaylistId, name: spotifyPlaylistName } = data;
         // create playlist object on the FB /playlists endpoint - doing this, if successful, should then trigger creation of metadata object
         const playlistData = {
           rawPostsLog: [],
           processedPostsLog: [],
-          spotifyUserId: spotifyUserInfo.id,
+          spotifyUserId: spotifyUserId,
           spotifyPlaylistId: spotifyPlaylistId,
           spotifyPlaylistName: spotifyPlaylistName,
         };

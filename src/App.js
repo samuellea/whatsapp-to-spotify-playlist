@@ -11,10 +11,11 @@ import axios from 'axios';
 import Stats from './Stats';
 import * as u from './utils';
 import Spinner from './Spinner';
+import { mockSleep } from './helpers';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [spotifyUserInfo, setSpotifyUserInfo] = useState({ id: '', displayName: '' });
+  // const [spotifyUserInfo, setSpotifyUserInfo] = useState({ id: '', displayName: '' });
   const [welcome, setWelcome] = useState(false);
   const [token, setToken] = useState(null);
   const [userPlaylistMetas, setUserPlaylistMetas] = useState([]);
@@ -26,7 +27,7 @@ function App() {
   const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
-  const SCOPES = 'playlist-modify-private playlist-modify-public'
+  const SCOPES = 'playlist-modify-private playlist-modify-public';
 
   const authLink = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}`;
 
@@ -46,9 +47,9 @@ function App() {
         }).then(({ data }) => {
           window.localStorage.setItem('spotifyUserId', data.id);
           window.localStorage.setItem('spotifyUserDisplayName', data.display_name);
-          const spotifyUserId = window.localStorage.getItem('spotifyUserId');
-          const spotifyUserDisplayName = window.localStorage.getItem('spotifyUserDisplayName');
-          setSpotifyUserInfo({ id: spotifyUserId, displayName: spotifyUserDisplayName });
+          // const spotifyUserId = window.localStorage.getItem('spotifyUserId');
+          // const spotifyUserDisplayName = window.localStorage.getItem('spotifyUserDisplayName');
+          // setSpotifyUserInfo({ id: spotifyUserId, displayName: spotifyUserDisplayName });
           setLoggedIn(true);
         });
       };
@@ -62,8 +63,10 @@ function App() {
     setUserPlaylistsLoading(true);
     const token = localStorage.getItem('token');
     const firebaseUserId = localStorage.getItem('firebaseUserId');
-    return await u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(({ data, status }) => {
+    return await u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(async ({ data, status }) => {
       if (status === 200) {
+        console.log(status, ' <-- fetchAndSetFirebasePlaylistMetasStatus!');
+        // await mockSleep(5000) // ❓ ❓ ❓ ❓
         if (data) {
           const userPlaylistMetas = Object.entries(data).map(e => ({ metaId: e[0], ...e[1] }));
           setUserPlaylistMetas(userPlaylistMetas);
@@ -101,7 +104,7 @@ function App() {
     console.log('handleLogout!')
     localStorage.clear();
     setLoggedIn(false);
-    setSpotifyUserInfo({ id: '', displayName: '' });
+    // setSpotifyUserInfo({ id: '', displayName: '' });
   }
 
   const updateLoggedIn = async () => {
@@ -142,16 +145,16 @@ function App() {
           <Home
             loggedIn={loggedIn}
             handleLogout={handleLogout}
-            spotifyUserInfo={spotifyUserInfo}
             userPlaylistMetas={userPlaylistMetas}
             fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+            userPlaylistsLoading={userPlaylistsLoading}
           />
         </PrivateRoute>
         <Route path="/spotifylogin" >
           {spotifyLoginScreen()}
         </Route>
         <PrivateRoute path="/update">
-          <Update />
+          <Update userPlaylistMetas={userPlaylistMetas} fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas} />
         </PrivateRoute>
         <PrivateRoute path="/stats">
           <Stats

@@ -8,12 +8,19 @@ import * as u from './utils';
 import * as h from './helpers';
 import NoNew from './NoNew';
 
-function Update() {
+function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // ❓ this prop
   let history = useHistory();
   const params = new URLSearchParams(window.location.search);
 
   const spotifyPlaylistId = params.get('spotifyPlaylistId');
   const firebasePlaylistId = params.get('firebasePlaylistId');
+
+  console.log(userPlaylistMetas, ' <-- userPlaylistMetas')
+  const playlistMetaInAppState = userPlaylistMetas.find(e => e.spotifyPlaylistId === spotifyPlaylistId);
+  const firebaseMetaId = playlistMetaInAppState.metaId;
+  console.log(firebaseMetaId, ' 🔥 🔥 🔥 firebaseMetaId');
+
+
 
   const [spotifyPlaylistInState, setSpotifyPlaylistInState] = useState(null);
   const [inputText, setInputText] = useState('');
@@ -115,6 +122,7 @@ function Update() {
   }
 
   const handleFinalSubmission = async (trackIDs) => {
+    setInfoLoading(true);
     const { firebasePlaylistId, playlistObj } = firebasePlaylistObj;
     const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
 
@@ -139,18 +147,20 @@ function Update() {
     console.log(updatedPlaylistObj)
 
     // POST our updatedPlaylistObj off to FB.
-
-
-
-
     const firebaseStatus = await u.createOrUpdateFirebasePlaylist('PATCH', firebaseUserId, token, updatedPlaylistObj, firebasePlaylistId);
     // POST our new tracks to the Spotify playlist.
     const spotifyStatus = await u.postToSpotifyPlaylist(spotifyPlaylistId, spotifyToken, trackIDs) // <--- POSTING TRACKS TO SPOTIFY!!
 
+    // h.mockSleep(5000) // ❓ ❓ ❓ ❓
+    // const metasStatus = await fetchAndSetFirebasePlaylistMetas(); // ❓ ❓ ❓ ❓
+    // console.log(metasStatus, ' < metasStatus') // ❓ ❓ ❓ ❓
+
     if ([200, 201].includes(firebaseStatus) && [200, 201].includes(spotifyStatus)) {
+      setInfoLoading(false);
       console.log('SUCCESS!')
       setSubmissionSuccess(true);
     } else {
+      setInfoLoading(false);
       setSubmissionSuccess(false);
       console.log('failure updating playlist - firebase or spotify')
     }
@@ -190,7 +200,7 @@ function Update() {
           newPosts={newPostsInState}
           handleFinalSubmission={handleFinalSubmission}
           submissionSuccess={submissionSuccess}
-          firebasePlaylistId={firebasePlaylistId}
+          firebaseMetaId={firebaseMetaId}
         />
       )
     }

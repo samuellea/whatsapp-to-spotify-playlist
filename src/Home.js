@@ -5,19 +5,21 @@ import toast, { Toaster } from 'react-hot-toast';
 import * as u from './utils';
 import PlaylistCard from './PlaylistCard';
 import CreatePlaylistCard from './CreatePlaylistCard';
+import { Oval } from 'react-loading-icons';
 import './styles/Home.css';
 
 function Home({
   loggedIn,
   handleLogout,
-  spotifyUserInfo,
   userPlaylistMetas,
   fetchAndSetFirebasePlaylistMetas,
+  userPlaylistsLoading,
 }) {
   const history = useHistory();
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
+  const spotifyUserDisplayName = localStorage.getItem('spotifyUserDisplayName');
 
   const newPlaylistSuccess = (status) => {
     console.log(status, ' <--- status')
@@ -38,20 +40,25 @@ function Home({
 
   return (
     <div className="HomeScreenLoggedInSpotify">
-      <div className="HomeScreen">
-        <button type="button" onClick={logoutClicked}>Logout</button>
-        <p>logged in: {spotifyUserInfo.displayName}</p>
-        {userPlaylistMetas?.length > 0 ?
-          userPlaylistMetas.map((metaObj, i) => <PlaylistCard metaObj={metaObj} key={`card-${i}`} />)
-          : null}
-        <CreatePlaylistCard
-          spotifyToken={spotifyToken}
-          spotifyUserInfo={spotifyUserInfo}
-          newPlaylistSuccess={newPlaylistSuccess}
-          firebaseUserId={firebaseUserId}
-        />
-        <Toaster />
-      </div>
+      {userPlaylistsLoading ?
+        <Oval stroke="#07eda8" height={100} width={100} strokeWidth={4} />
+        :
+        <div className="HomeScreen">
+          <button type="button" onClick={logoutClicked}>Logout</button>
+          <p>logged in: {spotifyUserDisplayName}</p>
+          {userPlaylistMetas?.length > 0 ?
+            userPlaylistMetas.map((metaObj, i) => <PlaylistCard metaObj={metaObj} key={`card-${i}`} />)
+            : null}
+          <CreatePlaylistCard
+            spotifyToken={spotifyToken}
+            newPlaylistSuccess={newPlaylistSuccess}
+            firebaseUserId={firebaseUserId}
+          />
+          <Toaster />
+        </div>
+      }
+
+
     </div >
   );
 
