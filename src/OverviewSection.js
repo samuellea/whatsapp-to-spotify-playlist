@@ -5,16 +5,23 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import './styles/OverviewSection.css';
 
 function OverviewSection({ overview }) {
-  const yearTotals = overview.map(e => e.posts.length);
+  const myOverview = [...overview,
+    // { posts: [{ id: 1 }, { id: 1 }, { id: 1 }, { id: 1 }], year: '2022' },
+    // { posts: [{ id: 1 }, { id: 1 }, { id: 1 }, { id: 1 }], year: '2021' },
+    // { posts: [{ id: 1 }, { id: 1 }, { id: 1 }, { id: 1 }], year: '2020' },
+  ]
+
+  const yearTotals = myOverview.map(e => e.posts.length);
   const maxPostsInAYear = Math.max(...yearTotals);
   const divisor = 100 / maxPostsInAYear;
 
   return (
-    <div className="OverviewSection Flex">
-      {overview ?
-        <div className="OverviewGraphBox">
+    <div className="OverviewSection Flex Column">
+      <h4 className="SectionHeader">Total by year</h4>
+      {myOverview ?
+        <div className="OverviewGraphBox Flex">
           <div className="GraphChartContainer Flex Row">
-            {overview.map(yearObj => {
+            {myOverview.map(yearObj => {
               const desiredHeight = divisor * yearObj.posts.length;
               return (
                 <div className="ChartBarContainer Flex Row">
@@ -27,8 +34,8 @@ function OverviewSection({ overview }) {
             })}
           </div>
           <div className="GraphFooterContainer Flex Row">
-            {overview.map(yearObj => (
-              <div className="FooterYearContainer Flex">{`'` + yearObj.year.slice(2)}</div>
+            {myOverview.map(yearObj => (
+              <div className="FooterYearContainer Flex">{yearObj.year}</div>
             ))}
           </div>
         </div>

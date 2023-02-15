@@ -5,6 +5,7 @@ import _ from 'lodash';
 import Spinner from './Spinner';
 import { mockSleep } from './helpers';
 import * as h from './helpers';
+import Oval from 'react-loading-icons/dist/esm/components/oval';
 
 function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyResult }) {
   const spotifyToken = localStorage.getItem('spotifyToken');
@@ -82,7 +83,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
     let r = window.confirm(`Sure you want to replace using this track?`);
     if (r == true) {
       setReplaceSuccess(true);
-      await mockSleep(1200);
+      await mockSleep(1500);
       handleCorrectASpotifyResult(spotifyObj);
     }
   };
@@ -102,18 +103,56 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
 
   const replaceSuccessMessage = () => {
     return (
-      <div className="ReplaceSuccessMessage">
+      <div className="ReplaceSuccessMessage Flex Column">
         <div className="GreenCircle">
           <span><i class="fa fa-check"></i></span>
         </div>
+        <span>Successfully replaced</span>
       </div>
     )
   }
 
   const trackInfo = () => {
     return (
-      <div className="TrackInfo">
+      <div className="TrackInfo Flex Column">
+        {/* <div className="ChangeModalInfoContainer Flex Column"> */}
+
         <div className="TrackArtContainer">
+          <img className="SpotifyArtwork" src={thumbnail} alt="Spotify Thumbnail" />
+        </div>
+
+        <div className="TitleArtistsContainer Flex Column">
+          <div className="TitleContainer CurtailText Curtail3">
+            {title}
+          </div>
+          <div className="ArtistsContainer TitleContainer CurtailText Curtail3">
+            {artists.join(', ')}
+          </div>
+
+          {/* </div> */}
+
+        </div>
+
+
+        <div className="ChangeModalControlsContainer">
+
+          <input className={`InputBarError-${inputBarError}`} type="text" placeholder="Paste a link to a Spotify track" onChange={(event) => handleInputBarChange(event)} />
+
+          <div className="ErrorAndSearchContainer Flex Row">
+            <div className="ErrorContainer Flex">
+              <span className={`InputErrorMsg-${inputBarError}`}>{inputBarErrorMsg}</span>
+            </div>
+            <button type="button" onClick={handleInputBarSearch} disabled={disableSearchButton()}><i id="Search" className="fas fa-search" /></button>
+          </div>
+
+          <button type="button" onClick={handleCancel}>Cancel</button>
+          <button type="button" onClick={handleSubmit} disabled={trackIsUnchanged()}>Replace</button>
+
+        </div>
+
+
+
+        {/* <div className="TrackArtContainer">
           <img className="SpotifyArtwork" src={thumbnail} alt="Spotify Thumbnail" />
         </div>
 
@@ -147,18 +186,19 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
         <div className="Buttons">
           <button type="button" onClick={handleCancel}>Cancel</button>
           <button type="button" onClick={handleSubmit} disabled={trackIsUnchanged()}>Replace</button>
-        </div>
+        </div> */}
+
       </div>
     )
   }
 
   return (
-    <div className="ChangeModal">
+    <div className={`ChangeModal ChangeSearchLoading-${searchLoading} ChangeReplaceSuccess-${replaceSuccess}`}>
       {
         !replaceSuccess ?
           !searchLoading ?
             trackInfo()
-            : <Spinner />
+            : <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
           : replaceSuccessMessage()
       }
 

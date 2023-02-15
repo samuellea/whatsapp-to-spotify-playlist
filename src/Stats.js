@@ -13,8 +13,13 @@ import { Redirect, useHistory } from 'react-router-dom';
 import ByYearSection from './ByYearSection';
 import ByGenreSection from './ByGenreSection';
 import ByPosterSection from './ByPosterSection';
+import Oval from 'react-loading-icons/dist/esm/components/oval';
 
 function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading }) {
+
+  // function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas }) {
+  // const userPlaylistsLoading = true;
+
   const history = useHistory();
   const params = new URLSearchParams(window.location.search);
   const spotifyPlaylistId = params.get('spotifyPlaylistId');
@@ -24,6 +29,9 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   const spotifyToken = localStorage.getItem('spotifyToken');
 
   const [pageLoading, setPageLoading] = useState(true);
+  // const pageLoading = true;
+  // const setPageLoading = () => console.log('bing')
+
   const [firebasePlaylist, setFirebasePlaylist] = useState({ id: null, obj: {} });
   const [spotifyArtwork, setSpotifyArtwork] = useState(null);
   const [tallied, setTallied] = useState([]);
@@ -56,6 +64,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
     console.log(playlistMetaInAppState, ' <-- playlistMetaInAppState')
 
     if (firebasePlaylist.id !== null && playlistMetaInAppState) {
+      setPageLoading(true);
       console.log('Got All We Need! 🚨 🚨 🚨🚨 🚨 🚨')
       const { processedPostsLog } = firebasePlaylist.obj;
       const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
@@ -80,6 +89,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
 
       const genresTalliedObj = h.tallyGenres(processedPostsPlusFakes, lookupInState);
       setGenresTallied(genresTalliedObj);
+      setPageLoading(false);
       // 🚨 🚨 🚨 ---> processedPostsPlusFakes should be processedPostsLog!
     }
   }, [userPlaylistMetas]);
@@ -150,14 +160,18 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   const { processedPostsLog, spotifyPlaylistName } = firebasePlaylist.obj;
 
   return (
-    <div className="StatsContainer">
+    <div className="StatsContainer Flex Column">
       {
         !pageLoading ?
           <div className="Stats">
-            <h4>Stats</h4>
-            <img src={spotifyArtwork} className="SpotifyPlaylistArtwork" alt="Spotify Artwork" />
-            <h1>{spotifyPlaylistName}</h1>
-            <h2>{processedPostsLog.length} tracks</h2>
+
+            <div className="StatsInfoPod Flex Column">
+              <img src={spotifyArtwork} className="SpotifyPlaylistArtwork" alt="Spotify Artwork" />
+              <h1>{spotifyPlaylistName}</h1>
+              <h2><span>{processedPostsLog.length}</span> tracks</h2>
+              <span>last updated</span>
+            </div>
+
 
             <div className="ContributorsContainer">
               {!userPlaylistsLoading ?
@@ -169,15 +183,23 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
                 : <Spinner />}
             </div>
 
+            <div className="ContributorsSpacer" />
+
             <div className="OverviewContainer Flex Column">
               {!userPlaylistsLoading ?
                 <OverviewSection overview={overview} />
                 : <Spinner />}
             </div>
 
+            <div className="ContributorsSpacer" />
+
             <div className="ByYearContainer Flex Column">
-              <ByYearSection byYear={byYear} lookupInState={lookupInState} colourMap={colourMap} />
+              {byYear.length ?
+                <ByYearSection byYear={byYear} lookupInState={lookupInState} colourMap={colourMap} />
+                : <Spinner />}
             </div>
+
+            <div className="ContributorsSpacer" />
 
             <div className="ByGenreContainer Flex Column">
               {JSON.stringify(genresTallied) !== '{}' ?
@@ -186,18 +208,18 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
               }
             </div>
 
-            <div className="ByPosterContainer Flex Column">
+            {/* <div className="ByPosterContainer Flex Column">
               <ByPosterSection
                 posters={tallied.map(e => e.poster).sort()}
                 posts={firebasePlaylist.obj.processedPostsLog}
                 lookup={lookupInState}
                 playlistMetaInAppState={userPlaylistMetas.find(e => e.metaId === firebaseMetaId)}
               />
-            </div>
+            </div> */}
 
 
           </ div>
-          : <Spinner />
+          : <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
       }
       <Toaster />
     </div >

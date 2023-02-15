@@ -1,20 +1,84 @@
-.PlaylistCard {
-  border: 2px dashed green;
-  height: 50px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+.HomePlaylistCard {
+  /* border: 2px dashed green; */
+  background-color: #09090D;
+  border-radius: 15px;
+  height: 140px;
+  padding: 5%;
+  margin-bottom: 5%;
+  /* width: 90%; */
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* justify-content: space-between; */
+  /* align-items: center; */
 }
 
-.PlaylistCard button {
+.HomePlaylistCard:last-child {
+  margin-bottom: 0%;
+}
+
+
+.HomePlaylistCardButtons button {
   width: 70px;
 }
 
-.PlaylistCard h4 {
-  margin: 0;
+.HomePlaylistCardInfoContainer {
+  /* border: 1px solid white; */
+  height: 50%;
+  max-height: 50%;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
-.PlaylistCard button {
-  height: 100%;
+.HomePlaylistCardInfoContainer h1 {
+  font-family: "Raleway-SemiBold";
+  font-size: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.HomePlaylistCardInfoContainer span {
+  font-size: 16px;
+}
+
+.HomePlaylistCardInfoContainer #count {
+  font-family: "Raleway-SemiBold";
+}
+
+.HomePlaylistCardInfoContainer #tracks {
+  margin-left: 5px;
+  font-family: "Raleway-Thin";
+}
+
+
+.HomePlaylistCardButtonsContainer {
+  /* border: 1px solid red; */
+  height: 50%;
+  max-height: 50%;
+  align-items: flex-end;
+}
+
+.HomePlaylistCardButtonsContainer button {
+  height: 50px;
+  width: 60px;
+  border-radius: 15px;
+  background-color: #7316C6;
+  color: white;
+  border: none;
+  margin-right: 15px;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.HomePlaylistCardButtonsContainer button:first-child {
+  font-size: 38px;
+}
+
+.HomePlaylistCardButtonsContainer span {
+  margin-left: auto;
+}
+
+.HomePlaylistCardButtonsContainer button:disabled {
+  visibility: hidden;
 }

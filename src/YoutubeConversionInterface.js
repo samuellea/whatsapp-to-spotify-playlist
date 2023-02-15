@@ -1,13 +1,16 @@
 import './styles/YoutubeConversionInterface.css';
 import React, { useState, useEffect } from 'react';
 import ChangeModal from './ChangeModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowsRotate, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import ConversionCard from './ConversionCard';
 
 function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts }) {
 
   const { youtubePosts, spotifyMatches } = convertYoutubePosts;
 
   const [changeModal, setChangeModal] = useState({ show: false, matchToChange: {}, index: null });
-  const [spotifyMatchesAfterReview, setSpotifyMatchesAfterReview] = useState([]);
+  const [spotifyMatchesAfterReview, setSpotifyMatchesAfterReview] = useState(spotifyMatches);
   const [matchInspected, setMatchInspected] = useState(null);
 
   useEffect(() => {
@@ -16,11 +19,15 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
     }
   }, [spotifyMatches]);
 
-  const handleSpotifyMatchClick = (index) => {
+  const handleConversionCardClick = (index) => {
     setMatchInspected(index);
   };
 
-  const handleCancelInspect = () => setMatchInspected(null);
+  const handleCancelInspect = () => {
+    console.log(`matchInspected before: ${matchInspected}`)
+    console.log('handleCancelInspect')
+    setMatchInspected(null)
+  };
 
   const handleChangeMatch = (spotifyMatch, index) => {
     setChangeModal({ show: true, matchToChange: spotifyMatch, index: index });
@@ -82,15 +89,53 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
     }
   };
 
+  const youtubeConversions = youtubePosts.map((youtubePost, i) => {
+    return [youtubePost, spotifyMatchesAfterReview[i]]
+  });
+  console.log(youtubeConversions);
+
   return (
-    <div className="YoutubeConversionInterface">
-      <h4>Youtube Conversion Screen</h4>
+    <div className="YoutubeConversionInterface Flex Column">
+
+      <div className="YoutubeConversionsHeader Flex Column">
+        <span>YouTube videos were found.</span>
+        <span>
+          Do they match these Spotify tracks? (Tap an item to edit)
+        </span>
+      </div>
+
+      <div className="YoutubeConversionsDisplayContainer Flex Column">
+
+        <div className="YoutubeConversionsList">
+          {youtubeConversions.map((conversion, index) => (<ConversionCard
+            conversion={conversion}
+            index={index}
+            handleCancelInspect={handleCancelInspect}
+            handleUndoMatchChanges={handleUndoMatchChanges}
+            handleChangeMatch={handleChangeMatch}
+            handleExcludeMatch={handleExcludeMatch}
+            handleConversionCardClick={handleConversionCardClick}
+            handleIncludeMatch={handleIncludeMatch}
+            matchInspected={matchInspected}
+            spotifyMatches={spotifyMatches}
+          />
+          )
+          )}
+
+        </div>
+
+        <button className="YoutubeConversionsConfirmButton" type="button" onClick={handleConfirmConversions}>Confirm</button>
+      </div>
+
+
       {changeModal.show ?
         <div className="ChangeModalContainer">
           <ChangeModal matchToChange={changeModal.matchToChange} handleCancelChange={handleCancelChange} handleCorrectASpotifyResult={handleCorrectASpotifyResult} />
         </div>
         : null}
-      <div className="YoutubeConversionColumnsContainer">
+
+      {/* <div className="YoutubeConversionColumnsContainer">
+
         <div className="YoutubeColumn">
           {youtubePosts.map(youtubePost => {
             if (!youtubePost) {
@@ -114,9 +159,11 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
             }
           })}
         </div>
+
         <div className="DividerColumn">
           {youtubePosts.map(e => <div className="DividerIcon">⮕</div>)}
         </div>
+
         <div className="SpotifyColumn">
           {spotifyMatchesAfterReview.map((spotifyMatch, index) => {
             if (!spotifyMatch.spotifyTrackID) {
@@ -126,8 +173,12 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
                 </div>
               )
             } else {
+
+
               const { include, artists, title, thumbnail } = spotifyMatch;
               const undoEnabled = spotifyMatch.spotifyTrackID !== spotifyMatches[index].spotifyTrackID;
+
+
               if (matchInspected === index && include) {
                 return (
                   <div className={`SpotifyMatchInspected Include-${include}`} key={`matchCard-${index}`}>
@@ -143,6 +194,9 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
                     <button type="button" onClick={() => handleIncludeMatch(index)}>Include</button>
                   </div>
                 )
+
+
+
               } else {
                 return (
                   <div className={`SpotifyMatch Include-${include}`} onClick={() => handleSpotifyMatchClick(index)} key={`matchCard-${index}`}>
@@ -166,10 +220,14 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
               }
             }
           })}
-        </div>
-      </div>
-      <button type="button" onClick={handleConfirmConversions}>Confirm</button>
-    </div>
+        </div> 
+        </div> 
+        
+        */}
+
+
+
+    </div >
   )
 };
 

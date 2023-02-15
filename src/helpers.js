@@ -301,18 +301,19 @@ export const listAllPosters = (posts, lookup) => {
 };
 
 export const createColourMap = (posters) => {
+  console.log(posters, ' <--- posters')
   // TO-DO: handle more than 24 posters / colours!
   const colourChoices = [
-    'e74c3c',
-    '3498db',
-    'f1c40f',
-    '2ecc71',
-    'e67e22',
-    'f5b7b1',
-    'aed6f1',
-    '9b59b6',
-    'e6b0aa',
-    '7fb3d5',
+    'F78080',
+    '9796F0',
+    'ECDF6C',
+    '66B06E',
+    'CA9F45',
+    '81DCFF',
+    'FBA8F8',
+    '96F0C4',
+    'FCFFC8',
+    'FFBCBC',
     'f9e79f',
     'abebc6',
     'f8c471',
@@ -468,10 +469,17 @@ export const stringToColour = (str) => {
 }
 
 export const formatForPie = (genresArray) => {
-  const res = genresArray.map(e => ({
-    title: e.genre, value: e.count, color: stringToColour(e.genre)
-  }))
-  return res;
+  if (genresArray) {
+    const res = genresArray.map(e => ({
+      title: e.genre, value: e.count, color: stringToColour(e.genre)
+    }))
+    return res;
+  } else {
+    const res = [{
+      title: null, value: 1, color: '#09090D',
+    }];
+    return res;
+  }
 };
 
 export const groupPostsByPoster = (poster, posts, lookup) => {

@@ -1,0 +1,250 @@
+.NullCard {
+  /* border: 1px solid orange; */
+  height: 225px;
+  max-height: 225px;
+  background-color: #4a4a6a;
+  border-radius: 15px;
+  padding: 10px;
+  margin-bottom: 17px;
+  justify-content: center;
+  align-items: center;
+  /* width: 90%; */
+  color: rgb(27, 27, 27);
+}
+
+.NullCard span {
+  /* margin: auto 0; */
+  /* border: 1px solid red; */
+}
+
+
+.YoutubeConversionCard {
+  /* border: 1px solid orange; */
+  height: 225px;
+  max-height: 225px;
+  background-color: #09090D;
+  border-radius: 15px;
+  padding: 10px;
+  margin-bottom: 17px;
+  justify-content: center;
+  align-items: center;
+  /* margin: auto 0; */
+  /* width: 90%; */
+  position: relative;
+}
+
+#caretDown {
+  /* border: 1px solid red; */
+  margin: 0;
+  font-size: 20px;
+  padding: 0px;
+  transform: scale(2, 1.3);
+}
+
+/* YOUTUBE SEGMENT */
+
+.YoutubeSegment {
+  height: 100px;
+  max-height: 100px;
+  background-color: #60294C;
+  display: grid;
+  grid-template: 50% 50% / 1fr;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.YoutubeThumbContainer {
+  grid-area: 1/1/2/2;
+  background-color: black;
+  width: 98%;
+  height: 100%;
+  margin: auto auto;
+  border: 2px solid #60294C;
+  /* border: 1px solid cyan; */
+  border-bottom: none;
+  border-radius: 10px 10px 0px 0px;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.YoutubeThumbnail {
+  object-fit: cover;
+  /* border: 1px solid cyan; */
+  width: 50%;
+}
+
+
+.YoutubeInfoContainer {
+  grid-area: 2/1/3/2;
+  font-size: 14px;
+  font-family: Arial;
+  justify-content: center;
+  align-items: center;
+}
+
+.CurtailText {
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Curtail1 {
+  -webkit-line-clamp: 1;
+}
+
+.Curtail2 {
+  -webkit-line-clamp: 2;
+}
+
+.Curtail3 {
+  -webkit-line-clamp: 3;
+}
+
+/* SPOTIFY SEGMENT */
+
+.SpotifyNullSegment {
+  height: 100px;
+  max-height: 100px;
+  background-color: gainsboro;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  color: gray;
+}
+
+.SpotifySegment {
+  height: 100px;
+  max-height: 100px;
+  background-color: #245E47;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  padding: 10px;
+  align-items: center;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.ConversionSpotifyThumbnail {
+  height: 60px;
+  width: 60px;
+}
+
+.ConversionSpotifyInfoContainer {
+  /* border: 1px solid red; */
+  height: 100%;
+  width: 100%;
+  display: grid;
+  text-align: left;
+  padding-left: 10px;
+  justify-content: center;
+}
+
+.SpotifyTitle {
+  /* border: 1px solid cyan; */
+  align-items: flex-start;
+  justify-content: flex-end;
+  font-size: 15px;
+  margin-bottom: 3px;
+}
+
+.SpotifyArtists {
+  /* border: 1px solid cyan; */
+  justify-content: flex-start;
+  align-items: flex-start;
+  font-size: 13px;
+}
+
+/* MATCH INSPECTED MENU */
+
+.MatchInspectedMenu {
+  /* border: 1px solid red; */
+  height: 100%;
+  width: 95%;
+}
+
+.MatchInspectedMenu button {
+  height: 40px;
+  width: 100%;
+  border-radius: 5px;
+  border: none;
+  background-color: #7316C6;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  /* margin-top: 24px; */
+  /* margin-top: 5%; */
+  /* margin-bottom: 20px; */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.MatchInspectedMenu button svg {
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.MatchInspectedMenu button:nth-child(4) {
+  background-color: rgb(144, 0, 0);
+}
+
+
+.MatchInspectedMenu button:nth-child(4) svg {
+  margin-left: 10px;
+  font-size: 24px;
+}
+
+.MatchInspectedMenu button:disabled {
+  opacity: 0.25;
+}
+
+
+.MatchInspectedMenuInclude {
+  /* border: 1px solid cyan; */
+  height: 100%;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.ConversionExcludeWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: none;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ConversionExcludeTint {
+  background-color: #863434;
+  opacity: 0.75;
+  height: 100%;
+  width: 100%;
+  border-radius: 15px;
+}
+
+.ConversionExcludeCrossIcon {
+  position: absolute;
+  height: 90px;
+  width: 90px;
+  background-color: #B55757;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  color: #F27A7A;
+}
+
+#ReIncludeButton {
+  background-color: #66B06E;
+}

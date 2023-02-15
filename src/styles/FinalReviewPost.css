@@ -1,49 +1,59 @@
 .FinalReviewPost {
-  /* border: 1px solid green; */
-  height: 60px;
-  display: grid;
-  grid-template: 1fr / 20% 1fr;
+  display: inline-block;
+  /* border: 1px solid red; */
+  width: 100%;
+  min-height: 80px;
+  height: 100px;
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  color: white;
 }
 
 .Odd {
-  background-color: rgb(190, 190, 190);
+  background-color: #292B3E;
 }
 
 .Even {
-  background-color: rgb(231, 231, 231);
+  background-color: #444766;
 }
 
-.ThumbContainer {
-  grid-area: 1/1/2/2;
-  /* border: 1px solid blue; */
-  display: flex;
+.FinalReviewPostThumb {
+  height: 60px;
+  width: 80px;
+  border: 1px solid white;
+}
+
+.FinalReviewPostThumb img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+
+.FinalReviewInfoContainer {
+  /* border: 1px solid cyan; */
+  height: 100%;
+  width: 100%;
+  display: grid;
+  text-align: left;
+  padding-left: 10px;
   justify-content: center;
-  align-items: center;
 }
 
-.SpotifyThumb {
-  height: 49px;
-  width: 49px;
-}
-
-.PostInfoContainer {
-  grid-area: 1/2/2/3;
-  /* border: 1px solid red; */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.FinalReviewTitle {
+  /* border: 1px solid cyan; */
   align-items: flex-start;
+  justify-content: flex-end;
+  font-size: 14px;
+  margin-bottom: 3px;
 }
 
-.PostInfoContainer p {
-  margin: 0;
-  /* border: 1px solid orange; */
-}
-
-.Title {
+.FinalReviewArtists {
+  /* border: 1px solid cyan; */
+  justify-content: flex-start;
+  align-items: flex-start;
   font-size: 12px;
-}
-
-.Artist {
-  font-size: 10px;
 }

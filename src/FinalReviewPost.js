@@ -5,14 +5,20 @@ function FinalReviewPost({ post, index }) {
   const { title, artists, thumbnail } = post;
   const bgColor = index % 2 === 0 ? 'Odd' : 'Even';
   return (
-    <div className={`FinalReviewPost ${bgColor}`}>
-      <div className="ThumbContainer">
-        <img className="SpotifyThumb" src={thumbnail} alt="Spotify Thumbnail" />
+    <div className={`FinalReviewPost ${bgColor} Flex Row`}>
+      <div className="FinalReviewPostThumb">
+        <img src={thumbnail} alt="Spotify Thumbnail" />
       </div>
-      <div className="PostInfoContainer">
 
-        <p className="Title">{title}</p>
-        <p className="Artist">{artists.join(', ')}</p>
+
+      <div className="FinalReviewInfoContainer Flex Column">
+        <div className="FinalReviewTitle Flex Column">
+          <span className="CurtailText Curtail2">{title}</span>
+        </div>
+
+        <div className="FinalReviewArtists Flex Column">
+          <span className="CurtailText Curtail2">{artists.join(', ')}</span>
+        </div>
       </div>
     </div >
   )

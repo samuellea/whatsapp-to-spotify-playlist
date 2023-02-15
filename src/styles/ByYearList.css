@@ -1,0 +1,76 @@
+.ByYearList {
+  /* border: 1px solid turquoise; */
+  width: 90%;
+  font-size: 18px;
+  /* padding: 4% 2%; */
+  /* box-sizing: border-box; */
+}
+
+.ByYearPosterCard {
+  /* border: 2px solid red; */
+  height: 32px;
+}
+
+.ByYearColourAndNameColumn {
+  /* border: 2px solid orange; */
+}
+
+.ByYearHyphenTotalStarColumn {
+  /* border: 1px solid white; */
+  margin-left: 12px;
+  flex: 1;
+}
+
+.ByYearColourAndName {
+  /* border: 1px solid red; */
+  height: 32px;
+  align-items: center;
+  font-family: "Raleway-Regular";
+  /* margin-right: 14px; */
+}
+
+.ByYearName {
+  /* border: 1px solid blue; */
+  max-width: 182px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ByYearColourBox {
+  height: 15px;
+  width: 15px;
+  margin-right: 13px;
+}
+
+.ByYearHyphenContainer {
+  /* border: 1px solid red; */
+  height: 32px;
+  justify-content: center;
+  /* padding: 8px 0px; */
+  flex: 1;
+}
+
+.ByYearHyphen {
+  height: 1px;
+  background-color: #98FFAD;
+}
+
+.ByYearTotalAndStarContainer {
+  /* border: 1px solid red; */
+  align-items: center;
+}
+
+.ByYearPosterTotal {
+  /* border: 1px solid white; */
+  height: 32px;
+  justify-content: center;
+  font-family: "Raleway-SemiBold";
+  margin-left: 12px;
+}
+
+.ByYearPosterStar {
+  margin-left: 6px;
+  color: #C8C234;
+}

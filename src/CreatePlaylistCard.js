@@ -2,7 +2,7 @@ import './styles/CreatePlaylistCard.css';
 import React, { useState, useEffect } from 'react';
 import * as u from './utils';
 
-function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess, firebaseUserId }) {
+function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess, firebaseUserId, setViewCreateModal }) {
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [cardMode, setCardMode] = useState('newMode');
   const [creatingNewPlaylist, setCreatingNewPlaylist] = useState(false);
@@ -10,7 +10,8 @@ function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess,
   const token = localStorage.getItem('token');
 
   const handleStartCreate = () => {
-    setCardMode('namePlaylistMode')
+    setCardMode('namePlaylistMode');
+    setViewCreateModal(true);
   };
 
   const handleCancelCreate = () => {
@@ -56,8 +57,7 @@ function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess,
 
   const newMode = () => {
     return (
-      <div className="newMode">
-        <p>Create +</p>
+      <div className="newMode Flex Row">
         <button onClick={handleStartCreate} type="button">Create</button>
       </div >
     )
@@ -86,7 +86,7 @@ function CreatePlaylistCard({ spotifyToken, spotifyUserInfo, newPlaylistSuccess,
   };
 
   return (
-    <div className="CreatePlaylistCard">
+    <div className="CreatePlaylistCard Flex Column">
       {cardModeLookup[cardMode]()}
     </div >
   );

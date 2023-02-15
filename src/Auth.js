@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Redirect, Link } from "react-router-dom";
 import axios from 'axios';
 import Spinner from './Spinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWarning } from '@fortawesome/free-solid-svg-icons';
 import './styles/Auth.css';
+import Oval from 'react-loading-icons/dist/esm/components/oval';
 
 function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an existing user
 
@@ -46,17 +49,39 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
   };
 
   return (
-    <div className="Auth">
+    <div className="Auth Flex Column">
+      <div className="AuthHeaders">
+        <h1 className="Raleway-SemiBold">WhatsApp to Spotify</h1>
+        <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
+      </div>
       {!loginPending ?
-        <form onSubmit={(event) => event.preventDefault()}>
-          <div><input className="emailInput" type="text" id="email" onChange={(event) => handleChange(event)}></input></div>
-          <div className="passwordInput"><input type="password" id="password" onChange={(event) => handleChange(event)}></input></div>
-          <div className="submitButtonContainer"><button className="authSubmitButton" onClick={handleClick}>Login</button></div>
-          {error ? <h3 style={{ color: "red" }}>{error}</h3> : null}
+        <form className="Flex Column" onSubmit={(event) => event.preventDefault()}>
+          <div className="InputContainer">
+            <span>Username</span>
+            <input className="emailInput" type="text" id="email" onChange={(event) => handleChange(event)}></input>
+          </div>
+          <div className="InputContainer">
+            <span>Password</span>
+            <input type="password" id="password" onChange={(event) => handleChange(event)}></input>
+          </div>
+
+          <div className="LoginErrorContainer">
+            {error ? <span className="LoginErrorMsg">
+              <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
+              Could not login - please try again</span> : null}
+          </div>
+
+          <div className="submitButtonContainer">
+            <button className="authSubmitButton" onClick={handleClick}>Login</button>
+          </div>
           <Link to="/signup">No account? Sign up here</Link>
         </form>
-        : <Spinner spinnerType="big" />
+        :
+        <div className="AuthSpinnerContainer">
+          <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
+        </div>
       }
+      <div className="InvisiBox" style={{ height: '20%' }} />
     </div>
   )
 

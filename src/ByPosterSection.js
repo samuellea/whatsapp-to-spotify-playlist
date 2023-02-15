@@ -101,7 +101,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
     if (pending) {
       return (
         <div className="ByPosterPendingScreen Flex Column">
-          <Oval stroke="#07eda8" height={100} width={100} strokeWidth={4} />
+          <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
           <span>Creating playlist...</span>
         </div>
       );

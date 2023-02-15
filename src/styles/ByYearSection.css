@@ -1,63 +1,122 @@
 .ByYearSection {
-  height: 30vh;
+  /* height: 450px; */
   align-items: center;
   justify-content: center;
-  /* border: 2px dashed hotpink; */
+  /* border: 3px dashed red; */
   display: flex;
   justify-content: center;
   align-items: center;
+  align-items: flex-start;
 }
 
-.LeftNavContainer {
-  /* border: 5px solid rgb(114, 114, 255); */
-  height: 100%;
-  width: 5%;
+.SectionHeader {
+  color: white;
+  font-family: "Raleway-SemiBold";
+  font-size: 26px;
+  margin: 0;
+  padding-bottom: 3%;
 }
 
-.RightNavContainer {
-  /* border: 5px solid rgb(255, 109, 109); */
-  height: 100%;
-  width: 5%;
+.YearAndButtonsContainer {
+  /* border: 2px solid yellow; */
+  background-color: #09090D;
+  height: 70px;
+  width: 100%;
+  align-items: center;
+  padding: 4%;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 15px 15px 0px 0px;
 }
 
-.TranspButton button {
-  background: none;
-  border: none;
+.YearAndButtonsContainer span {
+  /* border: 1px solid red; */
+  width: 75px;
+  max-width: 75px;
+  font-size: 28px;
+  font-family: "Raleway-Regular";
   color: white;
 }
 
+.YearAndButtonsSpacer {
+  height: 100%;
+  /* border: 1px solid green; */
+  flex: 1;
+}
+
+.LeftNavContainer {
+  /* border: 1px solid lightskyblue; */
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  /* width: 5%; */
+}
+
+.RightNavContainer {
+  /* border: 1px solid red; */
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-left: 40px;
+}
+
+.TranspButton button {
+  height: 80%;
+  background: none;
+  border: none;
+  /* border: 1px solid cyan; */
+  color: white;
+  font-size: 32px;
+  padding: 0;
+  /* width: 16px; */
+}
+
+.TranspButton button svg {
+  height: 100%;
+}
+
+
 .ShowButton {
   visibility: visible;
+  /* pointer-events: none; */
 }
 
 .HideButton {
   visibility: hidden;
+  /* border: 3px dashed white; */
 }
 
+
+
+
+
 .DisplayArea {
-  /* border: 2px dotted wheat; */
-  height: 90%;
-  max-height: 90%;
-  width: 80%;
-  max-width: 80%;
-  display: grid;
-  grid-template: 50% 50% / 1fr;
+  /* border: 4px dotted red; */
+  /* width: 100%; */
+  /* max-width: 100%; */
+  /* height: 205px; */
+  /* display: grid; */
+  /* grid-template: 50% 50% / 1fr; */
 }
 
 .GraphHalf {
-  grid-area: 1/1/2/2;
-  /* border: 1px solid lime; */
+  /* grid-area: 1/1/2/2; */
+  height: 205px;
+  width: 100%;
+  box-sizing: border-box;
+  /* border: 2px solid green; */
   display: grid;
   grid-template: 80% 20% / 1fr;
+  margin: 10px 0px 10px 0px;
 }
 
 .GraphArea {
   grid-area: 1/1/2/2;
-  background-color: rgb(172, 172, 172);
+  background-color: #292B3E;
   height: 100%;
   justify-content: center;
   align-items: center;
-  /* border: 1px solid red; */
+  /* border: 2px solid blue; */
 }
 
 .MonthBarsContainer {
@@ -81,7 +140,7 @@
   height: 99%;
   width: 8.333%;
   /* padding: 1px; */
-  /* border: 1px solid black; */
+  /* border: 1px solid white; */
   justify-content: flex-end;
   align-items: center;
 }
@@ -96,7 +155,7 @@
 } */
 
 .MonthBar {
-  /* border: 1px solid black; */
+  /* border: 1px solid white; */
   height: 100%;
   width: 30%;
   justify-content: flex-end;
@@ -128,8 +187,9 @@
 
 .GraphFooter {
   grid-area: 2/1/3/2;
+  /* border: 2px solid pink; */
   /* background-color: rgb(180, 187, 251) */
-  background-color: rgb(172, 172, 172);
+  background-color: #292B3E;
   justify-content: center;
   align-items: center;
 }
@@ -137,141 +197,28 @@
 .MonthLabelsContainer {
   /* border: 1px solid red; */
   width: 90%;
-  font-size: 12px;
+  font-size: 14px;
+  font-family: "Raleway-Regular";
   text-decoration: none;
-  color: black;
+  color: white;
+
 }
 
 .MonthLabel {
-  /* border: 1px solid rgb(146, 161, 190); */
+  /* border: 1px solid white; */
   width: 8.333%;
   font-weight: 400;
 }
 
 .ListHalf {
-  grid-area: 2/1/3/2;
-  /* border: 1px solid salmon; */
-  position: relative;
-}
-
-.YearSlide {
-  /* border: 2px dashed white; */
-  height: 100%;
+  /* border: 2px solid orange; */
+  /* grid-area: 2/1/3/2; */
   width: 100%;
-  max-width: 100%;
+  /* height: 100px; */
+  background-color: #09090D;
+  border-radius: 0px 0px 15px 15px;
+  /* padding: 0% 2%;
+  box-sizing: border-box; */
   justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  opacity: 0
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0
-  }
-
-  50% {
-    opacity: 0
-  }
-
-  100% {
-    opacity: 1
-  }
-}
-
-@keyframes fadeOut {
-  0% {
-    opacity: 1
-  }
-
-  50% {
-    opacity: 0
-  }
-
-  100% {
-    opacity: 0
-  }
-}
-
-.SlideVisible {
-  /* visibility: visible; */
-  opacity: 1;
-  animation: fadeIn 0.5s linear;
-}
-
-.SlideHidden {
-  /* visibility: hidden; */
-  opacity: 0;
-  animation: fadeOut 0.5s linear;
-}
-
-.ListContainer {
-  width: 90%;
-  max-width: 90%;
-  height: 80%;
-  /* border: 1px dashed lime; */
-  display: inline;
-}
-
-.PosterCard {
-  /* border: 1px solid red; */
-  /* flex-direction: row; */
-  /* justify-content: space-between; */
-  height: 20px;
-  /* padding-left: 5%; */
-  display: grid;
-  grid-template: 1fr / 88% 12%;
-}
-
-.ByYearGroupIcon {
-  /* border: 1px solid white; */
-  width: 10px;
-  margin: 0;
-}
-
-.ByYearGroupIcon {
-  font-size: 10px;
-  margin: 0;
-  padding: 0;
-}
-
-
-.ColourBoxColumn {
-  /* border: 1px solid white; */
-  grid-area: 1/2/2/3;
-  justify-content: center;
-  align-items: center;
-}
-
-.ColourBox {
-  height: 15px;
-  width: 15px;
-}
-
-.InfoColumn {
-  grid-area: 1/1/2/2;
-  /* border: 1px solid yellow; */
-  height: 100%;
-  font-family: monospace, monospace;
-  font-size: 14px;
-  align-items: center;
-  justify-content: space-around;
-  white-space: nowrap;
-  font-weight: 100;
-}
-
-
-.Gap {
-  flex: 1 0 10px;
-}
-
-
-.PosterTrophy {
-  /* border: 1px solid cyan; */
-  width: 15px;
-  height: 15px;
-  /* margin-left: 10px; */
+  padding: 4% 0%;
 }

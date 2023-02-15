@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, createRef } from 'react';
 import * as h from './helpers';
 import _ from 'lodash';
 import './styles/ContributorsSection.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faPen, faTrophy, faUserGroup, faWarning } from '@fortawesome/free-solid-svg-icons'
 import Spinner from './Spinner';
 
 function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
@@ -179,41 +179,55 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
       const revertDisabled = !grouped.length && !renamed.length;
       return (
         <div className="EditOptions Flex Column">
-          <button type="button" onClick={handleRevertStart} disabled={revertDisabled}>Revert All Names / Groups</button>
-          <button type="button" onClick={handleRenameStart}>Rename</button>
-          <button type="button" onClick={handleGroupStart}>Group</button>
-          <button type="button" onClick={handleShowGroups} disabled={!lookupInState.grouped}>See Groups</button>
+          <div className="RenameButtonsRow">
+            <button type="button" onClick={handleRenameStart}>Rename</button>
+            <button type="button" onClick={handleRevertStart} disabled={revertDisabled}>Revert All Names / Groups</button>
+          </div>
+          <div className="GroupButtonsRow">
+            <button type="button" onClick={handleGroupStart}>Group</button>
+            <button type="button" onClick={handleShowGroups} disabled={!lookupInState.grouped}>See Groups</button>
+          </div>
+
         </div>
       );
     };
 
     if (editView === 'edit_rename') {
       return (
-        <div className="EditRename">
-          <h5>RENAME</h5>
+        <div className="EditRename Flex Column">
+
+          {renaming.error ?
+            <span id="RenameError"><FontAwesomeIcon icon={faWarning} pointerEvents="none" /> name already taken</span>
+            : <div className="RenameHeaderContainer Flex Row"><span id="RenameHeader">Rename</span><div id="RenameHeaderLine" /></div>}
+
           {tallied.map(tallyObj => {
             const errorOnThisField = renaming.currentName === tallyObj.poster && renaming.error;
             return (
               <div className="RenameInputContainer Flex">
                 {renaming.currentName === tallyObj.poster ?
                   // <div className="RenameInputActiveControls">
-                  <input type="text" value={renaming.newName} onChange={handleRenameChange} placeholder={tallyObj.poster} />
+                  <input type="text" value={renaming.newName} onChange={handleRenameChange} placeholder={tallyObj.poster} className={`RenameInputError-${errorOnThisField}`} />
                   // </div>
                   : <button type="button" value={tallyObj.poster} onClick={(event) => handleRenameClick(event)}>
                     {tallyObj.poster}
                   </button>
                 }
-                <button
-                  type="button"
-                  onClick={handleRenameSave}
-                  disabled={errorOnThisField}
-                  style={{ visibility: renaming.currentName === tallyObj.poster ? 'visible' : 'hidden' }}
-                >Save</button>
-                {errorOnThisField ? <span>(Error)</span> : null}
+                {renaming.currentName === tallyObj.poster ?
+                  <button
+                    id="RenameSaveButton"
+                    type="button"
+                    onClick={handleRenameSave}
+                    disabled={errorOnThisField}
+                  >
+                    <FontAwesomeIcon icon={faCheck} pointerEvents="none" />
+                  </button>
+                  : null}
+
               </div>
             )
-          })}
-        </div>
+          })
+          }
+        </div >
       );
     };
 
@@ -241,11 +255,11 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
             return (
               <div className="CheckBoxOptionCard Flex Row">
                 <input type="radio" id="radio" name="group_by_name" value={groupee} onClick={handleRadio} checked={groupee === grouping.groupOn} />
-                <span>{groupee}</span>
+                <span className="CurtailText Curtail1">{groupee}</span>
               </div>
             )
           })}
-          <button type="button" onClick={handleConfirmGroupOn} disabled={!grouping.groupOn}>Confirm Group</button>
+          <button type="button" onClick={handleConfirmGroupOn} disabled={!grouping.groupOn}>Group Using This Name</button>
         </div>
       )
     }
@@ -258,7 +272,8 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
         <div className="EditSeeGroups">
           {groupTally.map(group => (
             <div className="GroupContainer">
-              <div className="GroupName">
+              <div className="GroupName Flex Row">
+                <FontAwesomeIcon icon={faUserGroup} pointerEvents="none" />
                 <span>{group.groupName}</span>
               </div>
               <div className="GroupGroupees Flex Column">
@@ -271,52 +286,69 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
         </div>
       )
     }
-
   }
 
   return (
     <div className="ContributorsSection Flex Column">
-      {!editing ?
-        // <div className="NotEditing" ref={contributorsRef} style={{ height: `${height}px` }}>
-        <div className="NotEditing" ref={contributorsRef}>
-          <div className="HeaderAndEditButton Flex Row">
-            <h4 className="SectionHeader">Contributors</h4>
-            <button type="button" onClick={handleEditStart}>
-              <FontAwesomeIcon icon={faPen} pointerEvents="none" />
-            </button>
-          </div>
-          <div className="ContributorsList Flex Column">
-            {tallied.map((contributor, i) => {
-              return (
-                <div className="ContributorCard Flex Row">
-                  <div className="ContributorGroupIcon Flex">
-                    {!h.isContributorAGroup(lookupInState, contributor.poster) ?
-                      null : <FontAwesomeIcon icon={faUserGroup} />}
-                  </div>
-                  <div className="ContributorName">
-                    <span>{h.equalSpacedPosters(tallied, contributor.poster)}</span>
-                  </div>
-                  <div className="ContributorHyphen">
-                    <span>-</span>
-                  </div>
-                  <div className="ContributorTotal">
-                    {contributor.totalPosts}
-                  </div>
-                  <div className="ContributorTrophy">
-                    {i === 0 ? <span><i class="fas fa-trophy"></i></span> : null}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+
+      <div className="NotEditing" ref={contributorsRef}>
+        <div className="HeaderAndEditButton Flex Row">
+          <h4 className="SectionHeader">Contributors</h4>
+          <button className={`ContribEdit-${editing}`} type="button" onClick={handleEditStart} disabled={editing}>
+            <FontAwesomeIcon icon={faPen} pointerEvents="none" />
+          </button>
         </div>
-        :
-        // <div className="Editing" style={{ height: `${height + 100}px` }}>
-        <div className="Editing">
-          <button type="button" onClick={handleEditCancel}>Cancel</button>
-          {editScreenRender()}
+
+        <div className="ContributorsList">
+
+
+          {!editing ?
+            <div className="ContributorsColumnsContainers Flex Row">
+
+              <div className="ContributorsNameColumn Flex Column">
+                {tallied.map((contributor, i) => {
+                  return (
+                    <div className="ContributorName Flex Row">
+                      <span>{contributor.poster}</span>
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div className="ContributorsHyphenAndCountColumn Flex Column">
+                {tallied.map((contributor, i) => {
+                  return (
+                    <div className="ContributorHyphenAndCountContainer Flex Row">
+                      <div className="ContributorHyphen Flex">
+                        <div />
+                      </div>
+                      <div className="ContributorTotalContainer Flex" id={`ContTotal-${i}`}>
+                        <div className="ContributorTotalOverlay" id={`ContTotalOverlay-${i}`}>
+                          {contributor.totalPosts}
+                        </div>
+                        <div className="ContributorTotal" id={`ContTotal-${i}`}>
+                          {contributor.totalPosts}
+                        </div>
+                      </div>
+                      {i === 0 ?
+                        <FontAwesomeIcon icon={faTrophy} pointerEvents="none" />
+                        : null}
+                    </div>
+                  )
+                })}
+              </div>
+
+            </div>
+            :
+            <div className="Editing">
+              <button type="button" onClick={handleEditCancel}>Cancel</button>
+              {editScreenRender()}
+            </div>
+          }
         </div>
-      }
+
+      </div>
+
     </div>
   );
 

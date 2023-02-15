@@ -1,13 +1,36 @@
-.ByGenreSection {
+.ByGenreSectionContainer {
   /* height: 30vh; */
+  /* border: 2px dashed green; */
+  /* align-items: flex-start; */
+  /* box-sizing: border-box; */
+  /* overflow: hidden; */
+  /* height: 523px; */
+  /* padding: 15px; */
+}
+
+.ByGenreSection {
   height: 523px;
   /* border: 2px dashed red; */
-  padding: 15px;
+  padding: 4%;
+  background-color: #09090D;
+  border-radius: 15px;
+  box-sizing: border-box;
+}
+
+.SectionHeader {
+  color: white;
+  font-family: "Raleway-SemiBold";
+  font-size: 26px;
+  margin: 0;
+  padding-bottom: 3%;
+  text-align: left;
+  box-sizing: border-box;
 }
 
 .ByGenreSection>div {
-  /* border: 3px solid red; */
+  /* border: 1px solid red; */
   margin: 5px 0px;
+  /* box-sizing: border-box; */
 }
 
 path {
@@ -29,17 +52,25 @@ text {
 }
 
 .ByGenreButtonsContainer button {
-  height: 30px;
-  border-radius: 10px;
-  border: 1px solid white;
+  height: 35px;
+  border-radius: 5px;
+  border: none;
   background: none;
-  padding: 0px 15px;
-  margin: 0px 5px;
+  padding: 0px 30px;
+  box-sizing: border-box;
+  margin-right: 4%;
   width: fit-content;
+  /* min-width: 95px; */
   display: inline;
   white-space: nowrap;
-  color: white;
+  /* font-weight: 900; */
+  font-family: "Raleway-Bold";
 }
+
+.ByGenreButtonsContainer button:last-child {
+  margin-right: 0;
+}
+
 
 .ByGenreButtonsContainer ::-webkit-scrollbar {
   display: none;
@@ -48,6 +79,7 @@ text {
 .YearsButtonsContainer {
   /* background-color: rgb(220, 214, 171); */
   padding: 5px 0px;
+  overflow-y: scroll;
 }
 
 .YearsButtonsContainer button:first-child {
@@ -80,6 +112,7 @@ text {
   padding-right: 20px;
   width: 90%;
   /* scrollbar-width: 40px; */
+  flex: 1;
 }
 
 ::-webkit-scrollbar {
@@ -100,12 +133,13 @@ text {
 
 .GenreCard {
   /* border: 1px solid blue; */
-  height: 20px;
+  /* height: 20px; */
   width: 100%;
   padding: 6px 6px;
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 300;
   align-items: center;
+  font-family: "Raleway-SemiBold";
 }
 
 .GenreColourBox {
@@ -113,15 +147,38 @@ text {
   width: 20px;
   /* border: 1px solid white; */
   margin-right: 4%;
-  border-radius: 150px;
+  /* border-radius: 150px; */
 }
 
 .Ranking {
   margin-right: 2%;
+  font-family: "Raleway-SemiBold";
 }
 
 .GenreCount {
-  margin-left: 2%;
+  margin-left: 9px;
   font-size: 12px;
   margin-top: auto;
+  color: #FF98FB;
+}
+
+.GenreName {
+  /* border: 1px solid red; */
+  max-width: 65%;
+  /* overflow-x: scroll; */
+  /* text-overflow: ellipsis; */
+  /* white-space: nowrap; */
+  text-align: left;
+}
+
+.NoDataMessage {
+  /* border: 1px solid green; */
+  height: 99%;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 25px;
+  font-size: 24px;
+  font-family: "Raleway-SemiBold";
+  color: #50506d;
 }

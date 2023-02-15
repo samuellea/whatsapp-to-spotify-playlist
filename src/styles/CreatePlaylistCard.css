@@ -1,14 +1,20 @@
-.CreatePlaylistCard {
-  border: 2px dashed purple;
-  height: 50px;
-}
-
 .CreatePlaylistCard button {
-  width: 70px;
+  width: 55%;
+  background-color: #7316C6;
+  border-radius: 10px;
+  border: none;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
 }
 
 .newMode {
+  /* border: 5px solid lime; */
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  height: 40px;
+  width: 100%;
+  justify-content: center;
 }

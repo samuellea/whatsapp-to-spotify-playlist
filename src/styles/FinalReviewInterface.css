@@ -1,63 +1,202 @@
+.FinalReviewInterfaceContainer {
+  flex: 1;
+  /* border: 2px solid yellow; */
+  /* border: 3px cyan dotted; */
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.FinalReviewInterfaceHeaders {
+  /* border: 2px solid white; */
+  font-family: "Raleway-Regular";
+  /* font-size: 20px; */
+  /* text-align: left; */
+  /* padding: 5%; */
+  /* min-height: 6%; */
+  /* align-items: center; */
+  padding-bottom: 2%;
+}
+
+.FinalReviewInterfaceHeaders h1 {
+  /* border: 1px solid red; */
+  text-align: center;
+  font-family: "Raleway-Bold";
+  font-size: 41px;
+  margin: 0;
+  padding: 0;
+}
+
+.FinalReviewInterfaceHeaders h2 {
+  /* border: 1px solid red; */
+  text-align: center;
+  font-family: "Raleway-Thin";
+  margin: 0;
+}
+
+.FinalReviewInterfaceHeaders h2 span {
+  font-family: "Raleway-Bold";
+}
+
+.FinalReviewInterfaceHeaders h3 {
+  /* border: 1px solid red; */
+  text-align: center;
+  font-family: "Raleway-Thin";
+  margin: 0;
+  font-size: 13px;
+}
+
 .FinalReviewInterface {
-  border: 1px solid green;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  border: 4px solid green;
+  /* justify-content: space-between; */
+  position: relative;
+}
+
+.FinalReviewHeader {
+  /* border: 2px solid yellow; */
+  width: 100%;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  margin-top: 2%;
+  align-items: center;
+}
+
+.FinalReviewHeader span:nth-child(1) {
+  font-family: "Raleway-Bold";
+  font-size: 27px;
+  color: #98FFAD;
+  margin-right: 8px;
+}
+
+
+.FinalReviewControlsContainer {
+  /* border: 3px solid orange; */
+  background-color: #09090D;
+  border-radius: 15px;
+  padding: 5%;
+
+  /* min-height: 0; */
+  flex: 1;
+  overflow: hidden;
+
+
+}
+
+.FinalReviewPostsDisplay {
+  /* border: 5px solid limegreen; */
+  width: 100%;
+  background-color: #1B1C2A;
+  overflow-y: scroll;
+  align-items: center;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border-radius: 15px;
+}
+
+.FinalReviewPostsDisplay::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+
+
+
+#ReviewConfirm {
+  background-color: #66B06E;
+}
+
+
+
+
+
+.FinalReviewPostsContainer {
+  border: 2px solid red;
+  height: 77%;
+  /* min-height: 0; */
+  /* max-height: 60%; */
+  overflow-y: scroll;
+}
+
+.FinalReviewPostsContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.FinalReviewButtonsContainer {
+  margin: auto 0;
+  /* height: 18%; */
+  width: 100%;
+  border: 2px dotted orange;
+  /* position: absolute; */
+  /* bottom: 0; */
+}
+
+
+.FinalReviewButtonsContainer button {
+  height: 50px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background-color: #7316C6;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  /* margin-top: 24px; */
+  margin-top: 5%;
+  /* margin-bottom: 20px; */
+  color: white;
 }
 
 .FinalReviewFeedback {
-  border: 1px solid green;
+  border: 1px solid yellow;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 90vh;
+  margin: auto 0;
+  font-family: "Raleway-Thin";
 }
 
-.FinalReviewInterface h4,
-h1,
-h2,
-h6 {
-  /* border: 1px solid red; */
-  margin: 5px 0px;
-}
-
-.PostsContainer {
-  border: 2px solid green;
-  height: 60vh;
-  max-height: 60vh;
-  overflow-y: scroll;
-}
-
-.SuccessIcon {
-  height: 40vw;
-  width: 40vw;
-  border-radius: 100%;
+.FinalReviewFeedback h1 {
   color: white;
+  font-size: 38px;
+  margin: 0;
+}
+
+#WhiteTick {
+  height: 100%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: fadeIn 1s;
-  margin-bottom: 50px;
 }
 
-.SuccessIcon span {
-  font-size: 20vw;
-}
 
-.Green {
-  background-color: limegreen;
+@keyframes noNewFadeIn {
+  0% {
+    opacity: 0
+  }
+
+  100% {
+    opacity: 1
+  }
 }
 
 .Red {
-  background-color: red;
+  background-color: rgb(199, 93, 93) !important;
 }
 
-.Message {
-  /* font-size: 38px; */
-}
-
-.Success {
-  color: limegreen;
-}
-
-.Failure {
-  color: red;
+.Red span {
+  height: 100%;
+  width: 100%;
+  font-size: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

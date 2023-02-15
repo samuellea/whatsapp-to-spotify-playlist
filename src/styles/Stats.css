@@ -1,13 +1,101 @@
 .StatsContainer {
-  border: 4px dashed blue;
-  height: 99vh;
+  border: 2px dashed yellow;
+  /* height: 99vh;
   overflow-y: scroll;
+  justify-content: center;
+  align-items: center; */
+
+  height: 100%;
+  /* width: 100%; */
+  max-height: 100%;
+  /* padding: 5%; */
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+
 }
 
 .Stats {
-  border: 2px solid darkred;
+  /* border: 3px solid lime; */
+  /* purple */
   height: 100%;
+  width: 100%;
+  padding: 5%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow-y: scroll;
 }
+
+.Stats::-webkit-scrollbar {
+  display: none;
+}
+
+
+.StatsInfoPod {
+  border-radius: 15px;
+  background-color: #09090D;
+  padding: 5%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+
+.StatsInfoPod img {
+  border-radius: 15px;
+}
+
+.StatsInfoPod h1 {
+  font-family: "Raleway-SemiBold";
+  font-size: 44px;
+  margin: 14px 0px 0px 0px;
+}
+
+.StatsInfoPod h2 {
+  font-family: "Raleway-Thin";
+  font-size: 20px;
+  margin: 0;
+}
+
+.StatsInfoPod h2 span {
+  font-family: "Raleway-SemiBold";
+  font-size: 20px;
+  color: white;
+}
+
+.StatsInfoPod span {
+  font-family: "Raleway-Regular";
+  font-size: 12px;
+  color: hotpink;
+  width: 100%;
+  text-align: center;
+  margin-top: 14px;
+}
+
+
+.StatsInfoPod img {}
+
+.StatsInfoPod img {}
+
+.StatsInfoPod img {}
+
+
+
+.StatsInfoPod img {}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------------------------------- */
 
 .SpotifyPlaylistArtwork {
   /* border: 3px solid green; */
@@ -30,8 +118,15 @@
   flex-direction: column;
 }
 
+.ContributorsSpacer {
+  width: 100%;
+  height: 2px;
+  background-color: #4A4964;
+  margin: 25px 0px;
+}
+
 .ContributorsContainer {
-  border: 2px solid black;
+  border: 2px solid cyan;
 }
 
 .OverviewContainer {
@@ -39,15 +134,14 @@
 }
 
 .ByYearContainer {
-  border: 2px solid greenyellow;
+  /* border: 2px solid greenyellow; */
 
 }
 
 .ByGenreContainer {
-  border: 2px solid purple;
+  /* border: 2px solid purple; */
 }
 
-.SectionHeader {
-  /* text-decoration: underline; */
+/* .SectionHeader {
   margin: 0;
-}
+} */

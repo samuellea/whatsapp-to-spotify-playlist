@@ -115,14 +115,15 @@ function App() {
     let spotifyToken = window.localStorage.getItem('spotifyToken');
     // console.log(spotifyToken);
     return (
-      <div className="SpotifyLoginContainer">
+      <div className="SpotifyLoginContainer Flex Column">
         {!spotifyToken ?
-          <div className="SpotifyLoginScreen">
-            <h1>Auth</h1>
-            <a href={authLink}>Login to Spotify</a>
+          <div className="SpotifyLoginScreen Flex Column">
+            <h1 className="Raleway-SemiBold">Login to Spotify</h1>
+            <a href={authLink}>Login</a>
           </div>
           :
           <Redirect to='/' />}
+        <div className="InvisiBox" style={{ height: '10%' }} />
       </div>
     )
   };
@@ -131,40 +132,42 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
-        <Route path="/login">
-          {!loggedIn ?
-            <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
-            : !spotifyToken ? <Redirect to='/spotifylogin' /> : <Redirect to='/' />
-          }
-        </Route>
-        <Route path="/signup">
-          <Signup updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
-        </Route>
-        <PrivateRoute exact path="/">
-          <Home
-            loggedIn={loggedIn}
-            handleLogout={handleLogout}
-            userPlaylistMetas={userPlaylistMetas}
-            fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
-            userPlaylistsLoading={userPlaylistsLoading}
-          />
-        </PrivateRoute>
-        <Route path="/spotifylogin" >
-          {spotifyLoginScreen()}
-        </Route>
-        <PrivateRoute path="/update">
-          <Update userPlaylistMetas={userPlaylistMetas} fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas} />
-        </PrivateRoute>
-        <PrivateRoute path="/stats">
-          <Stats
-            userPlaylistMetas={userPlaylistMetas}
-            fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
-            userPlaylistsLoading={userPlaylistsLoading}
-          />
-        </PrivateRoute>
-      </Router>
-    </div >
+      <div className="AppView">
+        <Router>
+          <Route path="/login">
+            {!loggedIn ?
+              <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
+              : !spotifyToken ? <Redirect to='/spotifylogin' /> : <Redirect to='/' />
+            }
+          </Route>
+          <Route path="/signup">
+            <Signup updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
+          </Route>
+          <PrivateRoute exact path="/">
+            <Home
+              loggedIn={loggedIn}
+              handleLogout={handleLogout}
+              userPlaylistMetas={userPlaylistMetas}
+              fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+              userPlaylistsLoading={userPlaylistsLoading}
+            />
+          </PrivateRoute>
+          <Route path="/spotifylogin" >
+            {spotifyLoginScreen()}
+          </Route>
+          <PrivateRoute path="/update">
+            <Update userPlaylistMetas={userPlaylistMetas} fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas} />
+          </PrivateRoute>
+          <PrivateRoute path="/stats">
+            <Stats
+              userPlaylistMetas={userPlaylistMetas}
+              fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+              userPlaylistsLoading={userPlaylistsLoading}
+            />
+          </PrivateRoute>
+        </Router>
+      </div >
+    </div>
   );
 }
 

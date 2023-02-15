@@ -1,5 +1,133 @@
+.InputTextInterfaceContainer {
+  flex: 1;
+  border: 2px solid yellow;
+}
+
+.InputTextInterfaceMessage {
+  border: 2px solid white;
+  font-family: "Raleway-Regular";
+  font-size: 20px;
+  text-align: left;
+  padding: 5%;
+  min-height: 6%;
+}
+
+.InputTextInterfaceMessage ul {
+  margin: 0;
+  padding-left: 6%;
+}
+
+.InputTextWarning {
+  font-size: 18px;
+}
+
+.InputTextWarning :nth-child(1) {
+  margin-bottom: 2%;
+  line-height: 20px;
+}
+
+.InputTextWarning :nth-child(1) svg {
+  color: rgb(255, 110, 110);
+  padding-top: 2px;
+  margin: 0px 8px 0px 0px;
+}
+
+
+.InputTextWarning :nth-child(2) {
+  font-size: 15px;
+  /* width: 90%; */
+}
+
+.InputTextWarning :nth-child(3) {
+  font-size: 15px;
+}
+
+.ValidTextFeedback {
+  color: #66B06E;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+}
+
 .InputTextInterface {
-  /* border: 3px cyan dotted; */
+  border: 3px cyan dotted;
+  flex: 1;
+  /* height: 96%; */
   /* width: 100%; */
   /* height: 30%; */
+  border-radius: 15px;
+  border: none;
+  background-color: #09090D;
+  padding: 5%;
 }
+
+textarea {
+  border: 1px solid red;
+  /* width: 98%; */
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  flex: 1;
+  font-size: 14px;
+  /* height: 50vh; */
+  background-color: #1B1C2A;
+  color: white;
+  padding: 5%;
+}
+
+textarea::-webkit-scrollbar {
+  width: 1em;
+  padding: 0;
+  margin: 0;
+}
+
+textarea::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
+.InputTextButtonArea {
+  border: 1px solid cyan;
+}
+
+.InputTextButtonArea button {
+  height: 40px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background-color: #7316C6;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  /* margin-top: 24px; */
+  margin-top: 5%;
+  /* margin-bottom: 20px; */
+  color: white;
+}
+
+.InputTextButtonArea button:disabled {
+  opacity: 0.25;
+}
+
+
+.InputTextButtonArea button:first-child {
+  background-color: #66B06E;
+}
+
+/* 
+#submitButton {
+  border: 1px solid green;
+  width: 120px;
+  height: 30px;
+  border-radius: 10px;
+}
+
+#submitButton:disabled {
+  border: none;
+} */

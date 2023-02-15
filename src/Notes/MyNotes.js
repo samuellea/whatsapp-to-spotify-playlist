@@ -23,3 +23,16 @@ const res = [...monthObjDotPosts].sort(function (a, b) {
 
 });
 console.log(res)
+
+// create multiple refs to be used on multiple elements
+// creatRef useRef
+
+let myRefs = useRef([])
+myRefs = byYear[slide - 1].posters.map(e => React.createRef())
+useEffect(() => {
+  const refWidths = myRefs.map(e => e.current.clientWidth);
+}, [slide])
+
+// ...map(e => (
+  // <div className="blah" ref={myRefs[i]}
+// ))

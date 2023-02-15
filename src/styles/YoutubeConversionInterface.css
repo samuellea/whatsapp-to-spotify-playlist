@@ -1,218 +1,90 @@
 .YoutubeConversionInterface {
-  border: 1px cyan dotted;
+  border: 3px cyan dotted;
   width: 100%;
-  height: 100%;
-  /* position: relative; */
-
-}
-
-.YoutubeConversionColumnsContainer {
-  overflow-y: scroll;
-  max-height: 70vh;
-  /* border: 3px black dashed; */
-  display: flex;
-  flex-direction: row;
-  /* justify-content: center; */
-  width: 98%;
-  height: 100%;
-}
-
-.DividerColumn {
-  /* border: 1px solid black; */
-  width: 4%;
-  height: 100%;
-}
-
-.DividerIcon {
-  /* padding: 3px 0px; */
-  height: 80px;
-
-  /* border: 1px solid black; */
-  color: black;
-  margin-bottom: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 13px;
-}
-
-.YoutubeColumn {
-  /* border: 2px solid red; */
-  width: 48%;
-  max-width: 48%;
-}
-
-.SpotifyColumn {
-  /* border: 2px solid limegreen; */
-  width: 48%;
-  max-width: 48%;
-}
-
-.NullPost {
-  /* border: 1px solid rgb(162, 162, 162); */
-  height: 80px;
-  background-color: rgb(211, 211, 211);
-  border-radius: 5px;
-  color: rgb(96, 96, 96);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 5px;
-  font-size: 12px;
-}
-
-.YoutubePost {
-  /* border: 1px solid darkred; */
-  /* padding: 3px 3px; */
-  background-color: rgb(247, 230, 230);
-  border-radius: 5px;
-  height: 80px;
-  display: grid;
-  grid-template: 60% 40% / 100%;
-  margin-bottom: 5px;
-  color: rgb(114, 82, 82);
-}
-
-.YoutubeThumbContainer {
-  /* border: 1px dashed blue; */
-  grid-area: 1 / 1 / 2 / 2;
-  background-color: black;
-  border-radius: 3px 3px 0px 0px;
-  /* height: 50%; */
-  /* width:100%;
-  max-width: 100%; */
-  overflow: hidden;
-}
-
-.YoutubeThumbnail {
-  position: relative;
-  top: -25px;
-  /* height: 45px;
-  width: 70px; */
-}
-
-.YoutubeInfoContainer {
-  /* border: 2px dashed grey; */
-  grid-area: 2 / 1 / 3 / 2;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0px 5px;
-}
-
-.SpotifyMatchInspected {
-  background-color: rgb(219, 244, 219);
-  border-radius: 5px;
-  height: 80px;
-  width: 100%;
-  margin-bottom: 5px;
-  color: rgb(54, 94, 54);
-}
-
-
-.SpotifyMatch {
-  /* padding: 0px 4px; */
-  /* border: 1px solid red; */
-  background-color: rgb(219, 244, 219);
-  border-radius: 5px;
-  height: 80px;
-  width: 100%;
-  /* width: 100%;
-  max-width: 100%; */
-  display: grid;
-  grid-template: 60% 40% / 100%;
-  margin-bottom: 5px;
-  color: rgb(54, 94, 54);
-}
-
-.Include-true {}
-
-
-.Include-false {
-  background-color: darkred;
-  color: red;
-}
-
-.SpotifyThumbContainer {
-  /* border: 1px dashed blue; */
-  grid-area: 1 / 1 / 2 / 2;
-  /* border: 1px solid green; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.SpotifyThumbnail {
   height: 100%;
   max-height: 100%;
+  /* position: relative; */
 }
 
-.SpotifyInfoContainer {
-  /* border: 1px dashed grey; */
-  grid-area: 2 / 1 / 3 / 2;
-  max-width: 93%;
-  display: grid;
-  grid-template: 50% 50% / 1fr;
-  margin: 0 auto;
-  padding: 0px 5px;
-}
-
-.SpotifyTitle {
-  /* border: 1px solid purple; */
-  grid-area: 1/1/2/2;
-  font-size: 11px;
+.YoutubeConversionsHeader {
+  font-family: "Raleway-Regular";
+  font-size: 23px;
+  /* border: 3px cyan dotted; */
+  width: 100%;
   text-align: left;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  margin: 5% 2%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.YoutubeConversionsDisplayContainer {
+  border: 2px solid red;
+  background-color: #09090D;
+  border-radius: 15px;
+  padding: 5%;
+  min-height: 0;
+  flex: 1;
+}
+
+.YoutubeConversionsList {
+  border: 2px solid limegreen;
+  min-height: 0;
+  /* min-height: 100%; */
+  /* max-height: 10%; */
+  width: 100%;
+  background-color: #1B1C2A;
+  flex: 1;
+  overflow-y: scroll;
+  /* padding: 5%; */
   align-items: center;
-
+  padding: 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-.SpotifyArtists {
-  /* border: 1px solid orange; */
-  max-width: 100%;
-  grid-area: 2/1/3/2;
-  font-size: 9px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-
-
-
+.YoutubeConversionsList::-webkit-scrollbar {
+  display: none;
 }
 
-.CurtailText {
-  max-width: 100%;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  word-wrap: break-word;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.YoutubeConversionsConfirmButton {
+  height: 50px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background-color: #7316C6;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  /* margin-top: 24px; */
+  margin-top: 5%;
+  /* margin-bottom: 20px; */
+  color: white;
 }
 
-.Curtail1 {
-  -webkit-line-clamp: 1;
-}
 
-.Curtail2 {
-  -webkit-line-clamp: 2;
-}
+
+
+
+
+
+
+/* --------------------------------- */
 
 .ChangeModalContainer {
   position: absolute;
-  /* border: 1px solid purple; */
+  top: 0;
+  left: 0;
   z-index: 2;
-  width: 97vw;
-  max-width: 97vw;
-  height: 75vh;
-  max-height: 75vh;
-  /* backdrop-filter: blur(0px); */
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 5%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }

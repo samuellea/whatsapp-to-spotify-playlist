@@ -7,6 +7,9 @@ import FinalReviewInterface from './FinalReviewInterface';
 import * as u from './utils';
 import * as h from './helpers';
 import NoNew from './NoNew';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import Oval from 'react-loading-icons/dist/esm/components/oval';
 
 function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // â“ this prop
   let history = useHistory();
@@ -167,7 +170,9 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // â
   }
 
   const screenToRender = () => {
-    if (infoLoading) return (<h1>âŒ›</h1>);
+    if (infoLoading) return (
+      <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
+    );
     if (screen === 'input') {
       return (
         <InputTextInterface
@@ -210,11 +215,15 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // â
 
 
   return (
-    <div className="Update">
-      <button type="button" onClick={handleGoBack}>{'<- Back'}</button>
-      <h1>Update page</h1>
+    <div className="Update Flex Column">
+      <div className="UpdateGoBackContainer Flex">
+        <button className="Flex Row" type="button" onClick={handleGoBack}>
+          <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
+          <span>Back</span>
+        </button>
+      </div>
 
-      <div className="infoArea">
+      <div className="InfoArea Flex Column">
         {screenToRender()}
       </div>
 
