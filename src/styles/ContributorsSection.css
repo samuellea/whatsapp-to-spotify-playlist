@@ -1,5 +1,5 @@
 .ContributorsSection {
-  border: 2px solid orange;
+  /* border: 2px solid orange; */
   font-family: monospace, monospace;
 }
 
@@ -125,6 +125,7 @@
   justify-content: center;
   font-family: "Raleway-SemiBold";
   position: relative;
+  padding-bottom: 5px;
 }
 
 .ContributorTotalOverlay {

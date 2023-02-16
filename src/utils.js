@@ -201,7 +201,19 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     })
 
     // search Spotify API using these returned YT titles
-    const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${el.title}&type=track&limit=5` : null);
+    const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${encodeURIComponent(el.title)}&type=track&limit=5` : null);
+
+    console.log(spotifySearchQueries, ' <-- spotifySearchQueries')
+
+    // one that worked directly from API page
+    /*
+    https://api.spotify.com/v1/search?q=Timbaland%20Teaches%20Producing%20and%20Beatmaking%20%7C%20Official%20Trailer%20%7C%20MasterClass&type=track&limit=5" -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQAm4v2-2sgWCSSoGXhP_q76pTtGuOPd6cesvtXoXstWOBbM0tT4xSqof3gKsWVmbJTArJtwhJprb-ByZwZh_6kiA_qpj7zB82iThD6mGf8pFbt4xqgO6vCwz4GYwUxJ6uEZdkn96ABUSYUlu6WaeHam3cEjc9w-FpVhraf9TmBVgFo
+    */
+
+    // one that failed, that my app composted
+    /*
+    "https://api.spotify.com/v1/search?q=Timbaland Teaches Producing and Beatmaking | Official Trailer | MasterClass&type=track&limit=5"
+    */
 
     const spotifyGetResponses = await Promise.all(
       spotifySearchQueries.map(async (query) => {
@@ -280,6 +292,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
   }
 };
 
+// NB: a 'spotifyPost' is a Spotify TRACK post!
 export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
   const spotifyPostsPlusTrackIDs = []; // ❓❓❓
   const justTrackIDs = [];

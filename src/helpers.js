@@ -28,7 +28,16 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
 
   for (let i = 0; i <= individualMessages.length; i++) {
     const singleMessage = individualMessages[i];
-    if (spotiOrYTRegex().test(singleMessage)) { // if this message contains one or more Spoti or YT links...
+
+    // 🚧 🚧 🚧 Handle /playlist and /album spotify uris 🚧 🚧 🚧
+
+    /*
+    line 40 and 45 - use a modified regex that also allows /album and /playlist spotify uris - but then, in 'decideLinkType' func, decide if 'spotify', 'spotifyAlbum', 'spotifyPlaylist' or
+    'youtube' linkType
+    */
+
+
+    if (spotiOrYTRegex().test(singleMessage)) { // if this message contains one or more Spoti TRACK or YT links...
       // grab required data
       const dateTime = singleMessage.match(messageDateTimeRegex)[0]; // 14/01/2023, 15:00
       const poster = singleMessage.match(/(?<=-).*?(?=:)/g)[0].trim();

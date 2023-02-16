@@ -7,13 +7,13 @@
   /* border: 3px solid blue; */
   display: flex;
   justify-content: center;
-  border: 2px solid orange;
+  /* border: 2px solid orange; */
   box-sizing: border-box;
 }
 
 .AppView {
   background-color: #292B3E;
-  border: 2px solid red;
+  /* border: 2px solid red; */
   height: 100%;
   max-height: 100%;
   width: 382px;

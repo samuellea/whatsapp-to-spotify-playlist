@@ -9,6 +9,7 @@ import { Oval } from 'react-loading-icons';
 import './styles/Home.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowAltCircleRight, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import RecordSleeveIcon from './RecordSleeveIcon';
 
 function Home({
   loggedIn,
@@ -112,7 +113,10 @@ function Home({
           <div className="HomePlaylistCardsContainer">
             {userPlaylistMetas?.length > 0 ?
               alphabetizedMetas(userPlaylistMetas).map((metaObj, i) => <PlaylistCard metaObj={metaObj} key={`card-${i}`} />)
-              : null}
+              : <div className="NoPlaylistsMessage Flex Column">
+                <RecordSleeveIcon fill='#646480' />
+                No playlists yet.
+              </div>}
           </div>
 
 

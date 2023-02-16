@@ -1,10 +1,10 @@
 .InputTextInterfaceContainer {
   flex: 1;
-  border: 2px solid yellow;
+  /* border: 2px solid yellow; */
 }
 
 .InputTextInterfaceMessage {
-  border: 2px solid white;
+  /* border: 2px solid white; */
   font-family: "Raleway-Regular";
   font-size: 20px;
   text-align: left;
@@ -52,7 +52,7 @@
 }
 
 .InputTextInterface {
-  border: 3px cyan dotted;
+  /* border: 3px cyan dotted; */
   flex: 1;
   /* height: 96%; */
   /* width: 100%; */
@@ -64,7 +64,7 @@
 }
 
 textarea {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   /* width: 98%; */
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -75,6 +75,7 @@ textarea {
   background-color: #1B1C2A;
   color: white;
   padding: 5%;
+  resize: none;
 }
 
 textarea::-webkit-scrollbar {
@@ -93,7 +94,7 @@ textarea::-webkit-scrollbar-thumb {
 }
 
 .InputTextButtonArea {
-  border: 1px solid cyan;
+  /* border: 1px solid cyan; */
 }
 
 .InputTextButtonArea button {

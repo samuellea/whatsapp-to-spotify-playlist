@@ -1,5 +1,5 @@
 .StatsContainer {
-  border: 2px dashed yellow;
+  /* border: 2px dashed yellow; */
   /* height: 99vh;
   overflow-y: scroll;
   justify-content: center;
@@ -35,7 +35,7 @@
 .StatsInfoPod {
   border-radius: 15px;
   background-color: #09090D;
-  padding: 5%;
+  padding: 5% 6%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -50,6 +50,9 @@
   font-family: "Raleway-SemiBold";
   font-size: 44px;
   margin: 14px 0px 0px 0px;
+  /* border: 1px solid red; */
+  line-height: 44px;
+  text-align: left;
 }
 
 .StatsInfoPod h2 {
@@ -126,11 +129,12 @@
 }
 
 .ContributorsContainer {
-  border: 2px solid cyan;
+  /* border: 2px solid cyan; */
+  margin-top: 17px;
 }
 
 .OverviewContainer {
-  border: 2px solid gray;
+  /* border: 2px solid gray; */
 }
 
 .ByYearContainer {
@@ -138,8 +142,11 @@
 
 }
 
-.ByGenreContainer {
+.ByGenreContainer {}
+
+.ByPosterContainer {
   /* border: 2px solid purple; */
+  /* height: 100%; */
 }
 
 /* .SectionHeader {

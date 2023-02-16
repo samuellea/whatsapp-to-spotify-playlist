@@ -61,7 +61,8 @@
 }
 
 .TranspButton button {
-  height: 80%;
+  height: 40px;
+  width: 40px;
   background: none;
   border: none;
   /* border: 1px solid cyan; */
@@ -72,7 +73,7 @@
 }
 
 .TranspButton button svg {
-  height: 100%;
+  height: 35px;
 }
 
 
@@ -101,18 +102,20 @@
 
 .GraphHalf {
   /* grid-area: 1/1/2/2; */
-  height: 205px;
+  height: 225px;
   width: 100%;
   box-sizing: border-box;
   /* border: 2px solid green; */
   display: grid;
   grid-template: 80% 20% / 1fr;
-  margin: 10px 0px 10px 0px;
+  /* margin: 10px 0px 10px 0px; */
+  padding: 10px 0px 10px 0px;
+  background-color: #343750;
 }
 
 .GraphArea {
   grid-area: 1/1/2/2;
-  background-color: #292B3E;
+  background-color: #343750;
   height: 100%;
   justify-content: center;
   align-items: center;
@@ -189,7 +192,7 @@
   grid-area: 2/1/3/2;
   /* border: 2px solid pink; */
   /* background-color: rgb(180, 187, 251) */
-  background-color: #292B3E;
+  background-color: #343750;
   justify-content: center;
   align-items: center;
 }

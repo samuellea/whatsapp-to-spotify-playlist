@@ -208,14 +208,16 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
               }
             </div>
 
-            {/* <div className="ByPosterContainer Flex Column">
+            <div className="ContributorsSpacer" />
+
+            <div className="ByPosterContainer Flex Column">
               <ByPosterSection
                 posters={tallied.map(e => e.poster).sort()}
                 posts={firebasePlaylist.obj.processedPostsLog}
                 lookup={lookupInState}
                 playlistMetaInAppState={userPlaylistMetas.find(e => e.metaId === firebaseMetaId)}
               />
-            </div> */}
+            </div>
 
 
           </ div>

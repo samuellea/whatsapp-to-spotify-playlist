@@ -91,7 +91,8 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
       success: false,
       error: false,
       pending: false,
-    })
+    });
+    setIndexPlaying(null);
   };
 
   if (!posterPosts) return null;
@@ -146,33 +147,37 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
     if (!success && !error && !pending) {
       return (
         <div className="ByPosterSectionContentWrapper Flex Column">
+          <h4 className="SectionHeader">Contributors' tracks</h4>
           <div className="PosterOptionContainer Flex Row">
             <span>{posters[posterIndex]}</span>
             <div className="OptionButtonsContainer Flex Row">
-              {posterIndex !== 0 ? <button type="text" value="left" onClick={(event) => handleOptionClick(event)}>
+              <button type="text" value="left" onClick={(event) => handleOptionClick(event)} style={{ visibility: posterIndex !== 0 ? 'visible' : 'hidden' }}>
                 <FontAwesomeIcon icon={faChevronLeft} pointerEvents="none" />
-              </button> : null}
-              {posterIndex !== posters.length - 1 ? <button type="text" value="right" onClick={(event) => handleOptionClick(event)}>
+              </button>
+              <button type="text" value="right" onClick={(event) => handleOptionClick(event)} style={{ visibility: posterIndex !== posters.length - 1 ? 'visible' : 'hidden' }}>
                 <FontAwesomeIcon icon={faChevronRight} pointerEvents="none" />
-              </button> : null}
+              </button>
             </div>
           </div>
 
           <div className="PosterPlaylistContainer">
-            {posterPosts.map((post, i) => (
-              <div className="PosterPlaylistCard Flex Row">
-                <img src={post.thumbnail} />
-                <div className="PosterPlaylistCardInfo Flex Column">
-                  <span>{post.title}</span>
-                  <span>{post.artists.join(', ')}</span>
+            {posterPosts.map((post, i) => {
+              const bgColor = i % 2 === 0 ? 'Odd' : 'Even';
+              return (
+                <div className={`PosterPlaylistCard Flex Row ${bgColor}`}>
+                  <img src={post.thumbnail} />
+                  <div className="PosterPlaylistCardInfo Flex Column">
+                    <span className="CurtailText Curtail2">{post.title}</span>
+                    <span className="CurtailText Curtail2">{post.artists.join(', ')}</span>
+                  </div>
+                  <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} />
                 </div>
-                <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} />
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="PosterMakeButtonContainer Flex Row">
-            <button className="ByPosterButtonBig" type="button" onClick={handleMakePlaylistClick}><span>Make Playlist</span></button>
+            <button className="ByPosterButtonBig Flex" type="button" onClick={handleMakePlaylistClick}><span>Make Playlist</span></button>
           </div>
         </div>
       );

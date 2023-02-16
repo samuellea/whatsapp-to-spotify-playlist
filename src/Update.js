@@ -82,12 +82,11 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // �
         if (!newPostsRaw.length) {
           console.log('fish')
           setInfoLoading(false);
-          return setScreen('nonew')
+          return setScreen('nonew');
         };
 
-        console.log('ape')
         // first, get all the Spotify Data for all .linkType = 'spotify' posts
-        const justNewSpotifyPosts = newPostsRaw.filter(e => e.linkType === 'spotify');
+        const justNewSpotifyPosts = newPostsRaw.filter(e => e.linkType === 'spotify'); // these are just Spotify TRACKs! (not playlists or albums)
         const newSpotifyPostsCompleteData = await u.getSpotifyTrackData(justNewSpotifyPosts, spotifyToken);
         // // ❓❓❓❓ check newSpotifyPostsCompleteData
         // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
@@ -139,6 +138,7 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // �
     // create updated version of rawPostsLog and processedPostsLog with all the newly-found
     // and newly-processed posts, in order to then send off to FB.
     const updatedRawPosts = [...rawPostsLog, ...newPostsRaw];
+    console.log(updatedRawPosts)
     const updatedPosts = [...(processedPostsLog || []), ...newPostsInStateMinusUnnecessaryKeys];
 
     const updatedPlaylistObj = {

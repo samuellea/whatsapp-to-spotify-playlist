@@ -48,6 +48,7 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
   const handleExcludeMatch = (index) => {
     const updatedSpotifyMatches = [...spotifyMatchesAfterReview];
     const spotifyMatchToExclude = updatedSpotifyMatches[index];
+    console.log(spotifyMatchToExclude, ' 🍕');
     const excludedSpotifyMatch = { ...spotifyMatchToExclude, include: false };
     updatedSpotifyMatches[index] = excludedSpotifyMatch;
     setSpotifyMatchesAfterReview(updatedSpotifyMatches);

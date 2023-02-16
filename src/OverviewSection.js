@@ -27,7 +27,7 @@ function OverviewSection({ overview }) {
                 <div className="ChartBarContainer Flex Row">
                   <div className="BarAndNumberContainer Flex Column" >
                     <div className="NumberContainer Flex Column">{yearObj.posts.length}</div>
-                    <div className="Bar Flex Column" style={{ height: `${desiredHeight - 15}%` }} />
+                    <div className="Bar Flex Column" style={{ height: `${desiredHeight - 5}%` }} />
                   </div>
                 </div>
               )
