@@ -65,7 +65,7 @@ function App() {
     const firebaseUserId = localStorage.getItem('firebaseUserId');
     return await u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(async ({ data, status }) => {
       if (status === 200) {
-        console.log(status, ' <-- fetchAndSetFirebasePlaylistMetasStatus!');
+        // console.log(status, ' <-- fetchAndSetFirebasePlaylistMetasStatus!');
         // await mockSleep(5000) // ❓ ❓ ❓ ❓
         if (data) {
           const userPlaylistMetas = Object.entries(data).map(e => ({ metaId: e[0], ...e[1] }));
@@ -101,7 +101,7 @@ function App() {
   }, [loggedIn]);
 
   const handleLogout = () => {
-    console.log('handleLogout!')
+    // console.log('handleLogout!')
     localStorage.clear();
     setLoggedIn(false);
     // setSpotifyUserInfo({ id: '', displayName: '' });

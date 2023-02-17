@@ -34,14 +34,14 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
   const prevPosters = usePrevious(posters);
 
   useEffect(() => {
-    console.log('💡 💡 💡 💡 ')
-    console.log(posters)
+    // console.log('💡 💡 💡 💡 ')
+    // console.log(posters)
     if (posters !== prevPosters) {
       // reset the posterIndex to zero
       setPosterIndex(0);
     }
     const postsByPoster = h.groupPostsByPoster(posters[posterIndex], posts, lookup);
-    console.log(postsByPoster)
+    // console.log(postsByPoster)
     setPosterPosts(postsByPoster);
     setIndexPlaying(null);
     // if (prevIndex !== posterIndex) { }
@@ -74,9 +74,9 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
       const posterTrackIDs = posterPosts.map(e => e.spotifyTrackID);
 
       const createPosterPlaylistAttempt = await u.createPosterPlaylist(newPosterPlaylistName, spotifyToken, spotifyUserId, posterTrackIDs);
-      console.log(createPosterPlaylistAttempt)
+      // console.log(createPosterPlaylistAttempt)
       if (!createPosterPlaylistAttempt.error) {
-        console.log(createPosterPlaylistAttempt, ' oooooppopopp')
+        // console.log(createPosterPlaylistAttempt, ' oooooppopopp')
         const { newPlaylistInfo } = createPosterPlaylistAttempt;
         setCreation({ success: true, error: false, pending: false, newPlaylistInfo });
       } else {
@@ -121,7 +121,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
     }
 
     if (success) {
-      console.log(creation, ' <------ creation')
+      // console.log(creation, ' <------ creation')
       const newPlaylistId = creation.newPlaylistInfo?.id || null;
       return (
         <div className="ByPosterCreationFeedback Flex Column">
@@ -162,6 +162,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
 
           <div className="PosterPlaylistContainer">
             {posterPosts.map((post, i) => {
+              // console.log(post)
               const bgColor = i % 2 === 0 ? 'Odd' : 'Even';
               return (
                 <div className={`PosterPlaylistCard Flex Row ${bgColor}`}>
@@ -170,7 +171,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
                     <span className="CurtailText Curtail2">{post.title}</span>
                     <span className="CurtailText Curtail2">{post.artists.join(', ')}</span>
                   </div>
-                  <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} />
+                  <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} post={post} />
                 </div>
               )
             })}

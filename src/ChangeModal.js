@@ -63,6 +63,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
         spotifyTrackData.thumbnail = data.album.images[1].url;
         spotifyTrackData.spotifyTrackID = data.id;
         spotifyTrackData.artistIDs = data.artists.map(artist => artist.id);
+        spotifyTrackData.previewURL = data.preview_url;
         setSpotifyObj(spotifyTrackData);
       } else {
         setInputBarErrorMsg('Error retrieving Spotify track');

@@ -1,5 +1,10 @@
 import _, { constant } from "lodash";
 
+export const spotiTrackAlbumPlaylistOrYTRegex = () => {
+  const spotiTrackAlbumPlaylistOrYTPattern = /(open.spotify.com\/track\/[^\s]*)|(open.spotify.com\/album\/[^\s]*)|(open.spotify.com\/playlist\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)/g
+  return spotiTrackAlbumPlaylistOrYTPattern;
+};
+
 export const spotiOrYTRegex = () => {
   const spotiYTRegexPattern = /(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)/g
   return spotiYTRegexPattern;
@@ -7,6 +12,16 @@ export const spotiOrYTRegex = () => {
 
 export const spotifyTrackIDRegex = () => {
   const spotifyTrackIDPattern = /(?<=open.spotify.com\/track\/)(.*)/g
+  return spotifyTrackIDPattern;
+};
+
+export const spotifyAlbumIDRegex = () => {
+  const spotifyTrackIDPattern = /(?<=open.spotify.com\/album\/)(.*)/g
+  return spotifyTrackIDPattern;
+}
+
+export const spotifyPlaylistIDRegex = () => {
+  const spotifyTrackIDPattern = /(?<=open.spotify.com\/playlist\/)(.*)/g
   return spotifyTrackIDPattern;
 }
 
@@ -29,33 +44,32 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
   for (let i = 0; i <= individualMessages.length; i++) {
     const singleMessage = individualMessages[i];
 
-    // 🚧 🚧 🚧 Handle /playlist and /album spotify uris 🚧 🚧 🚧
-
-    /*
-    line 40 and 45 - use a modified regex that also allows /album and /playlist spotify uris - but then, in 'decideLinkType' func, decide if 'spotify', 'spotifyAlbum', 'spotifyPlaylist' or
-    'youtube' linkType
-    */
-
-
-    if (spotiOrYTRegex().test(singleMessage)) { // if this message contains one or more Spoti TRACK or YT links...
+    if (spotiTrackAlbumPlaylistOrYTRegex().test(singleMessage)) { // if this msg contains one or more Spoti (track/album/pl) or YT links...
       // grab required data
       const dateTime = singleMessage.match(messageDateTimeRegex)[0]; // 14/01/2023, 15:00
       const poster = singleMessage.match(/(?<=-).*?(?=:)/g)[0].trim();
 
-      const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())].map(arrEl => arrEl[0].trim());
+      const spotiOrYTLinks = [...singleMessage.matchAll(spotiTrackAlbumPlaylistOrYTRegex())].map(arrEl => arrEl[0].trim());
       // const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())];
 
       // iterate over all Spoti or YT links in this message, and compose a postObj for each link found
       spotiOrYTLinks.forEach(link => {
+
         const decideLinkType = (urlString) => {
           let linkType = 'spotify';
+          if (/open.spotify.com\/track\/.*/g.test(urlString)) linkType = 'spotify';
+          if (/open.spotify.com\/album\/.*/g.test(urlString)) linkType = 'spotifyAlbum';
+          if (/open.spotify.com\/playlist\/.*/g.test(urlString)) linkType = 'spotifyPlaylist';
           if (/youtu.*/g.test(urlString)) linkType = 'youtube';
           return linkType;
         };
 
         const linkType = decideLinkType(link);
         let linkID;
+
         if (linkType === 'spotify') linkID = link.match(spotifyTrackIDRegex())[0].split('?')[0];
+        if (linkType === 'spotifyAlbum') linkID = link.match(spotifyAlbumIDRegex())[0].split('?')[0];
+        if (linkType === 'spotifyPlaylist') linkID = link.match(spotifyPlaylistIDRegex())[0].split('?')[0];
         if (linkType === 'youtube') linkID = link.match(youtubeVideoIDRegex())[0];
         postCounter++;
         const postObj = {
@@ -310,7 +324,7 @@ export const listAllPosters = (posts, lookup) => {
 };
 
 export const createColourMap = (posters) => {
-  console.log(posters, ' <--- posters')
+  // console.log(posters, ' <--- posters')
   // TO-DO: handle more than 24 posters / colours!
   const colourChoices = [
     'F78080',

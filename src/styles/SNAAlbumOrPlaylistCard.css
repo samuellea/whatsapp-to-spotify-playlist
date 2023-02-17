@@ -1,0 +1,94 @@
+.SharedNotAddedAlbumOrPlaylistCard {
+  height: 110px;
+  /* border: 1px solid green; */
+  padding: 10px 0px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.SNA-AOP-PosterAndTracksContainer {
+  /* border: 1px solid red; */
+  height: 20px;
+  width: 100%;
+  position: relative;
+  /* display: flex;
+  flex-direction: row;
+  justify-content: space-between; */
+}
+
+.SNA-AOP-PosterRibbonContainer {
+  position: absolute;
+  height: 20px;
+  width: 80%;
+}
+
+.SNA-AOP-PosterAndTracksContainer #posterRibbonLong {
+  /* background-color: #09090D; */
+  /* border-right: 1px solid #09090D; */
+  width: 45%;
+}
+
+/* .SNA-AOP-PosterAndTracksContainer #ribbonTri1 {
+  border-color: #09090D transparent transparent transparent;
+} */
+
+/* .SNA-AOP-PosterAndTracksContainer #ribbonTri2 {
+  border-color: transparent transparent transparent #09090D;
+  opacity: 1;
+} */
+
+.SNA-AOP-TotalTracks {
+  /* border: 1px solid red; */
+  color: white;
+  font-size: 11px;
+  font-family: Arial;
+  padding: 2px;
+  box-sizing: border-box;
+  background-color: #7316C6;
+  height: 100%;
+  width: 60px;
+  max-width: 60px;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.SNA-AOP-InfoContainer {
+  margin-top: 10px;
+  /* border: 1px solid blue; */
+  flex: 1;
+  padding: 0px 10px;
+  box-sizing: border-box;
+}
+
+.SNA-AOP-ThumbContainer {
+  height: 55px;
+  width: 55px;
+  border: 1px solid white;
+}
+
+.SNA-AOP-ThumbContainer img {
+  height: 55px;
+  width: 55px;
+}
+
+.SNA-AOP-TitleAndArtist {
+  /* border: 1px solid white; */
+  width: 100%;
+  font-family: Arial;
+  text-align: left;
+  justify-content: center;
+  padding-left: 10px;
+}
+
+.SNA-AOP-Title {
+  /* border: 1px solid yellow; */
+  font-size: 13px;
+}
+
+.SNA-AOP-Artist {
+  /* border: 1px solid purple; */
+  font-size: 11px;
+}

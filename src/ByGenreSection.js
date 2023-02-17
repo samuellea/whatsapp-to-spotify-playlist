@@ -41,13 +41,13 @@ function ByGenreSection({ genresTallied }) {
   const postersList = Object.keys(genresTallied).filter(e => e !== 'allPosters');
 
   const handleClick = (e) => {
-    console.log('---------')
-    console.log(genresTallied)
+    // console.log('---------')
+    // console.log(genresTallied)
     const { id } = e.target;
     const { value } = e.target;
     if (id === 'year') setYear(value);
     if (id === 'poster') setPoster(value);
-    console.log(genresTallied[poster][year])
+    // console.log(genresTallied[poster][year])
     // console.log(`year: ${year}`);
     // console.log(`poster: ${poster}`);
   };

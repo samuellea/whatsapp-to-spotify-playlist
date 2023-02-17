@@ -201,7 +201,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     })
 
     // search Spotify API using these returned YT titles
-    const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${encodeURIComponent(el.title)}&type=track&limit=5` : null);
+    const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${encodeURIComponent(el.title)}&type=track&market=GB&limit=5` : null);
 
     console.log(spotifySearchQueries, ' <-- spotifySearchQueries')
 
@@ -307,7 +307,7 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
 
   const spotifyGetTracksQueries = subArraysMax50Each.map(arrayOfMax50IDs => {
     const max50IDsJoined = arrayOfMax50IDs.join(',')
-    const spotifyQuery = `https://api.spotify.com/v1/tracks?ids=${max50IDsJoined}`;
+    const spotifyQuery = `https://api.spotify.com/v1/tracks?market=GB&ids=${max50IDsJoined}`;
     return spotifyQuery;
   });
 
@@ -319,30 +319,38 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
     }).catch(e => { console.log(e); return e })))
   );
 
-  if (spotifyGetTracksResponses.every(e => e.status === 200)) {
-    const getTracksResponsesFlattened = spotifyGetTracksResponses.reduce((acc, e, i) => {
-      e.data.tracks.forEach(obj => acc.push({
-        title: obj.name,
-        artists: obj.artists.map(artist => artist.name),
-        spotifyTrackID: obj.id,
-        thumbnail: obj.album.images[1].url,
-        artistIDs: obj.artists.map(artist => artist.id),
-        previewURL: obj.preview_url,
-      }))
-      return acc;
-    }, []);
+  const getTracksResponsesFlattened = spotifyGetTracksResponses.reduce((acc, e, i) => {
+    if (/^5\d{2}$/g.test(e.response?.status)) {
+      console.log('🚨')
+      // 500 error - server error. We want to stop the Submission process overall
+      acc.push(500);
+    }
+    if (e.status === 200) {
+      e.data.tracks.forEach(obj => {
+        // this element in the response's .tracks array could be null - track deleted or doesn't exist for some reason. Ignore in that case.
+        // But if this element ISN'T null, actual track data has been returned! Track exists on Spotify. So push into acc.
+        if (obj) {
+          acc.push({
+            title: obj.name,
+            artists: obj.artists.map(artist => artist.name),
+            spotifyTrackID: obj.id,
+            thumbnail: obj.album.images[1].url,
+            artistIDs: obj.artists.map(artist => artist.id),
+            previewURL: obj.preview_url,
+          })
+        }
+      })
+    }
+    return acc;
+  }, []);
 
-    // recompose spotifyPosts to have each original object's kv pairs PLUS the title, artist and thumbnail back
-    const spotifyPostsCompleteData = spotifyPosts.map((obj, i) => ({ ...obj, ...getTracksResponsesFlattened[i] }));
-
-    return spotifyPostsCompleteData;
-  } else {
-    console.log('error fetching spotify tracks');
-    return null;
-  };
-
-
+  // if any of the track responses failed with a 500 server error status, return null, and handle this up in Update - stop the submission.
+  if (getTracksResponsesFlattened.some(e => e === 500)) return null;
+  // else, all good - recompose spotifyPosts to have each original object's kv pairs PLUS the title, artist and thumbnail back
+  const spotifyPostsCompleteData = spotifyPosts.map((obj, i) => ({ ...obj, ...getTracksResponsesFlattened[i] }));
+  return spotifyPostsCompleteData;
 };
+
 
 export const getGenresForSpotifyTracks = async (tracksArr, spotifyToken) => {
 
@@ -368,35 +376,50 @@ export const getGenresForSpotifyTracks = async (tracksArr, spotifyToken) => {
     }).catch(e => { console.log(e); return e })))
   );
 
-  if (spotifyGetArtistsResponses.every(e => e.status === 200)) {
+  ////////////////////////////////////////////////////////////////////////////////
 
-    const getArtistsResponsesFlattened = spotifyGetArtistsResponses.reduce((acc, e, i) => {
-      e.data.artists.forEach(obj => acc.push({
-        genres: obj.genres
-      }))
-      return acc;
+  const getArtistsResponsesFlattened = spotifyGetArtistsResponses.reduce((acc, e, i) => {
+    if (/^5\d{2}$/g.test(e.response?.status)) {
+      console.log('🚨')
+      // 500 error - server error. We want to stop the Submission process overall
+      acc.push(500);
+    }
+    if (e.status === 200) {
+      e.data.artists.forEach(obj => {
+        if (obj) {
+          acc.push({
+            genres: obj.genres
+          })
+        }
+      })
+    }
+    return acc;
+  }, []);
+
+  // if any of the artists responses failed with a 500 server error status, return null, and handle this up in Update - stop the submission.
+  if (getArtistsResponsesFlattened.some(e => e === 500)) return null;
+
+  const postArtistsPlusGenres = postArtists.map((e, i) => ({
+    ...e,
+    genres: getArtistsResponsesFlattened[i].genres,
+  }))
+
+  const tracksArrPlusGenres = tracksArr.map(trackObj => {
+    const genresForAllTrackArtists = postArtistsPlusGenres.filter(e => e.postId === trackObj.postId).reduce((acc, postArtistObj) => {
+      return _.uniq([...acc, ...postArtistObj.genres]);
     }, []);
 
-    const postArtistsPlusGenres = postArtists.map((e, i) => ({
-      ...e,
-      genres: getArtistsResponsesFlattened[i].genres,
-    }))
+    return { ...trackObj, genres: genresForAllTrackArtists }
+  })
 
-    const tracksArrPlusGenres = tracksArr.map(trackObj => {
-      const genresForAllTrackArtists = postArtistsPlusGenres.filter(e => e.postId === trackObj.postId).reduce((acc, postArtistObj) => {
-        return _.uniq([...acc, ...postArtistObj.genres]);
-      }, []);
+  console.log(tracksArrPlusGenres);
+  return tracksArrPlusGenres;
 
-      return { ...trackObj, genres: genresForAllTrackArtists }
-    })
+  ////////////////////////////////////////////////////////////////////////////////
 
-    console.log(tracksArrPlusGenres);
-    return tracksArrPlusGenres;
 
-  } else {
-    console.log(`error fetching genres for these tracks' artists`);
-    return null;
-  };
+
+
 };
 
 export const updatePlaylistMetaLookup = async (lookupInState, metaId, token) => {
@@ -464,4 +487,117 @@ export const createPosterPlaylist = async (newPosterPlaylistName, spotifyToken, 
   if (addTracksResponse.error) return addTracksResponse;
   const newPlaylistInfo = { id: newPlaylistId, name: newPlaylistName };
   return { error: false, newPlaylistInfo };
+};
+
+export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
+  const justAlbumIDs = albumPosts.map(e => e.linkID);
+  const subArraysMax50Each = _.chunk(justAlbumIDs, 50);
+
+  const spotifyGetAlbumsQueries = subArraysMax50Each.map(arrayOfMax50IDs => {
+    const max50IDsJoined = arrayOfMax50IDs.join(',')
+    const spotifyQuery = `https://api.spotify.com/v1/albums?ids=${max50IDsJoined}xyz&market=GB`;
+    return spotifyQuery;
+  });
+
+  const spotifyGetAlbumsResponses = await Promise.all(
+    spotifyGetAlbumsQueries.map(async (query) => (await axios.get(query, {
+      headers: {
+        Authorization: `Bearer ${spotifyToken}`
+      }
+    }).catch(e => { console.log(e); return e })))
+  );
+
+  const getAlbumsResponsesFlattened = spotifyGetAlbumsResponses.reduce((acc, e) => {
+    console.log(e.response)
+    if (/^5\d{2}$/g.test(e.response?.status)) {
+      console.log('🚨')
+      // 500 error - server error. We want to stop the Submission process overall
+      acc.push(500);
+    }
+
+    // *NB - not handling 404 - on this GET /albums endpoint, if you try to get an album with an id that's incorrect, or for an album that doesn't exist,
+    // the API still returns a response object with .albums: [ null ], status still 200. In which case, we just want to disregard these anyway.
+
+    if (e.status === 200) {
+      e.data.albums.forEach(obj => {
+        // this element in the response's .albums array could be null - album deleted or doesn't exist for some reason. Ignore in that case.
+        // But if this element ISN'T null, actual album data has been returned! Album exists. So push into acc.
+        if (obj) {
+          acc.push({
+            artists: obj.artists.map(artist => artist.name),
+            thumbnail: obj.images[1].url,
+            title: obj.name,
+            totalTracks: obj.total_tracks,
+          })
+        }
+      }
+      );
+    }
+
+    return acc;
+  }, []);
+
+  // if any of the playlist responses failed with a 500 server error status, return null, and handle this up in Update - stop the submission.
+  if (getAlbumsResponsesFlattened.some(e => e === 500)) return null;
+  // else, all good - recompose albumPosts to have each original object's kv pairs PLUS the title, thumbnail and owner back
+  const albumPostsCompleteData = albumPosts.map((obj, i) => ({ ...obj, ...getAlbumsResponsesFlattened[i] }));
+  return albumPostsCompleteData;
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
+  const justPlaylistIDs = playlistPosts.map(e => e.linkID);
+
+  const spotifyGetPlaylistQueries = justPlaylistIDs.map(playlistID => {
+    const spotifyQuery = `https://api.spotify.com/v1/playlists/${playlistID}?market=GB&fields=name,owner(display_name),images,tracks(total)`;
+    return spotifyQuery;
+  });
+
+  const spotifyGetPlaylistResponses = await Promise.all(
+    spotifyGetPlaylistQueries.map(async (query) => (await axios.get(query, {
+      headers: {
+        Authorization: `Bearer ${spotifyToken}`
+      }
+    }).catch(e => { console.log(e); return e })))
+  );
+
+  const getPlaylistResponsesFlattened = spotifyGetPlaylistResponses.reduce((acc, e) => {
+    console.log(e.response)
+    if (/^5\d{2}$/g.test(e.response?.status)) {
+      console.log('🚨')
+      // 500 error - server error. We want to stop the Submission process overall
+      acc.push(500);
+    }
+    if (/^4\d{2}$/g.test(e.response?.status)) {
+      console.log('🚫')
+      // 400 error eg. 404
+      // playlist not found - could have been deleted since posted in W/A chat. Therefore, ignore this playlist.
+      return acc;
+    }
+    if (e.status === 200) {
+      // okay, it's a 200, but has data actually been sent back?
+      // if not, ignore
+      if (!e.data) {
+        console.log('🌱...')
+        return acc;
+      } else {
+        console.log('🌱!')
+        // playlist data actually present. Package this up in an object, merge into posts array etc. etc.
+        acc.push({
+          thumbnail: e.data?.images[0].url,
+          title: e.data?.name,
+          totalTracks: e.data?.tracks.total,
+          owner: e.data?.owner.display_name,
+        });
+      }
+    }
+    return acc;
+  }, []);
+
+  // if any of the playlist responses failed with a 500 server error status, return null, and handle this up in Update - stop the submission.
+  if (getPlaylistResponsesFlattened.some(e => e === 500)) return null;
+  // else, all good - recompose playlistPosts to have each original object's kv pairs PLUS the title, thumbnail and owner back
+  const playlistPostsCompleteData = playlistPosts.map((obj, i) => ({ ...obj, ...getPlaylistResponsesFlattened[i] }));
+  return playlistPostsCompleteData;
 };

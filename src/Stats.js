@@ -14,6 +14,7 @@ import ByYearSection from './ByYearSection';
 import ByGenreSection from './ByGenreSection';
 import ByPosterSection from './ByPosterSection';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
+import SharedNotAddedSection from './SharedNotAddedSection';
 
 function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading }) {
 
@@ -60,12 +61,12 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
 
   // When metas update, set .lookup in state, tally / re-tally contributors
   useEffect(() => {
-    console.log(firebasePlaylist.id, ' 🚨')
-    console.log(playlistMetaInAppState, ' <-- playlistMetaInAppState')
+    // console.log(firebasePlaylist.id, ' 🚨')
+    // console.log(playlistMetaInAppState, ' <-- playlistMetaInAppState')
 
     if (firebasePlaylist.id !== null && playlistMetaInAppState) {
       setPageLoading(true);
-      console.log('Got All We Need! 🚨 🚨 🚨🚨 🚨 🚨')
+      // console.log('Got All We Need! 🚨 🚨 🚨🚨 🚨 🚨')
       const { processedPostsLog } = firebasePlaylist.obj;
       const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
       const lookupOnFB = playlistMetaInAppState?.lookup || {};
@@ -73,13 +74,13 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
 
       const processedPostsPlusFakes = [...processedPostsLog, ...fakes];
 
-      console.log(processedPostsLog)
+      // console.log(processedPostsLog)
 
       // 🚨 🚨 🚨 ---> processedPostsPlusFakes should be processedPostsLog!
       const contributions = h.tallyContributions(processedPostsPlusFakes, lookupInState);
       setTallied(contributions);
 
-      console.log(contributions);
+      // console.log(contributions);
 
       const postsGroupedByYear = h.groupPostsByYear(processedPostsPlusFakes);
       setOverview(postsGroupedByYear);
@@ -91,6 +92,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       setGenresTallied(genresTalliedObj);
       setPageLoading(false);
       // 🚨 🚨 🚨 ---> processedPostsPlusFakes should be processedPostsLog!
+      console.log(lookupInState);
+      console.log(firebasePlaylist.obj.rawPostsLog)
     }
   }, [userPlaylistMetas]);
 
@@ -119,9 +122,9 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
         setColourMap(originalPostersColourMap);
 
         const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
-        console.log(playlistMetaInAppState, ' <--- playlistMetaInAppState ! ! ! !! !')
+        // console.log(playlistMetaInAppState, ' <--- playlistMetaInAppState ! ! ! !! !')
         const lookupOnFB = playlistMetaInAppState?.lookup || {};
-        console.log(lookupOnFB)
+        // console.log(lookupOnFB)
         await fetchAndSetFirebasePlaylistMetas();
 
         h.groupPostsByYear(processedPostsLog, lookupInState);
@@ -164,62 +167,63 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       {
         !pageLoading ?
           <div className="Stats">
+            <div className="StatsPadding">
+              <div className="StatsInfoPod Flex Column">
+                <img src={spotifyArtwork} className="SpotifyPlaylistArtwork" alt="Spotify Artwork" />
+                <h1>{spotifyPlaylistName}</h1>
+                <h2><span>{processedPostsLog.length}</span> tracks</h2>
+                <span>last updated</span>
+              </div>
 
-            <div className="StatsInfoPod Flex Column">
-              <img src={spotifyArtwork} className="SpotifyPlaylistArtwork" alt="Spotify Artwork" />
-              <h1>{spotifyPlaylistName}</h1>
-              <h2><span>{processedPostsLog.length}</span> tracks</h2>
-              <span>last updated</span>
-            </div>
 
+              <div className="ContributorsContainer">
+                {!userPlaylistsLoading ?
+                  <ContributorsSection
+                    tallied={tallied}
+                    lookupInState={lookupInState}
+                    setLookupInState={setLookupInState}
+                  />
+                  : <Spinner />}
+              </div>
 
-            <div className="ContributorsContainer">
-              {!userPlaylistsLoading ?
-                <ContributorsSection
-                  tallied={tallied}
-                  lookupInState={lookupInState}
-                  setLookupInState={setLookupInState}
+              <div className="ContributorsSpacer" />
+
+              <div className="OverviewContainer Flex Column">
+                {!userPlaylistsLoading ?
+                  <OverviewSection overview={overview} />
+                  : <Spinner />}
+              </div>
+
+              <div className="ContributorsSpacer" />
+
+              <div className="ByYearContainer Flex Column">
+                {byYear.length ?
+                  <ByYearSection byYear={byYear} lookupInState={lookupInState} colourMap={colourMap} />
+                  : <Spinner />}
+              </div>
+
+              <div className="ContributorsSpacer" />
+
+              <div className="ByGenreContainer Flex Column">
+                {JSON.stringify(genresTallied) !== '{}' ?
+                  <ByGenreSection genresTallied={genresTallied} />
+                  : null
+                }
+              </div>
+
+              <div className="ContributorsSpacer" />
+
+              <div className="ByPosterContainer Flex Column">
+                <ByPosterSection
+                  posters={tallied.map(e => e.poster).sort()}
+                  posts={firebasePlaylist.obj.processedPostsLog}
+                  lookup={lookupInState}
+                  playlistMetaInAppState={userPlaylistMetas.find(e => e.metaId === firebaseMetaId)}
                 />
-                : <Spinner />}
+              </div>
+
             </div>
-
-            <div className="ContributorsSpacer" />
-
-            <div className="OverviewContainer Flex Column">
-              {!userPlaylistsLoading ?
-                <OverviewSection overview={overview} />
-                : <Spinner />}
-            </div>
-
-            <div className="ContributorsSpacer" />
-
-            <div className="ByYearContainer Flex Column">
-              {byYear.length ?
-                <ByYearSection byYear={byYear} lookupInState={lookupInState} colourMap={colourMap} />
-                : <Spinner />}
-            </div>
-
-            <div className="ContributorsSpacer" />
-
-            <div className="ByGenreContainer Flex Column">
-              {JSON.stringify(genresTallied) !== '{}' ?
-                <ByGenreSection genresTallied={genresTallied} />
-                : null
-              }
-            </div>
-
-            <div className="ContributorsSpacer" />
-
-            <div className="ByPosterContainer Flex Column">
-              <ByPosterSection
-                posters={tallied.map(e => e.poster).sort()}
-                posts={firebasePlaylist.obj.processedPostsLog}
-                lookup={lookupInState}
-                playlistMetaInAppState={userPlaylistMetas.find(e => e.metaId === firebaseMetaId)}
-              />
-            </div>
-
-
+            <SharedNotAddedSection rawPostsLog={firebasePlaylist.obj.rawPostsLog} lookupInState={lookupInState} colourMap={colourMap} />
           </ div>
           : <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
       }

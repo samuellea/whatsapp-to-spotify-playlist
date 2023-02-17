@@ -6,9 +6,9 @@ import * as h from './helpers';
 import './styles/ByYearSection.css';
 
 function ByYearSection({ byYear, lookupInState, colourMap }) {
-  console.log('*****************')
-  console.log(byYear);
-  console.log('*****************')
+  // console.log('*****************')
+  // console.log(byYear);
+  // console.log('*****************')
 
   const highestMonthlyPosts = h.determineMostPostsInAMonth(byYear);
   const divisor = 100 / highestMonthlyPosts;
@@ -16,7 +16,7 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
     if (e.posters.length > acc) acc = e.posters.length;
     return acc;
   }, 0);
-  console.log(`mostPosters: ${mostPosters}`)
+  // console.log(`mostPosters: ${mostPosters}`)
 
   const [slide, setSlide] = useState(1);
 
@@ -59,9 +59,9 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
               const { monthlyTotalOverall, totalsByPoster } = h.calcTotalForMonth(i, byYear, slide);
 
               if (totalsByPoster !== null) {
-                console.log('[TOTALS BY POSTER]');
-                console.log(totalsByPoster)
-                console.log('[TOTALS BY POSTER]');
+                // console.log('[TOTALS BY POSTER]');
+                // console.log(totalsByPoster)
+                // console.log('[TOTALS BY POSTER]');
               }
               return (
                 <div className="MonthBarContainer Flex Column">
@@ -69,6 +69,7 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
                     <div className="MonthBar Flex Column">
                       {totalsByPoster.map(e => {
                         const posterColour = h.pickPosterColour(e.poster, lookupInState, colourMap);
+                        console.log(`${e.poster} = ${posterColour}`)
                         return (
                           <div className="MonthSubBar" style={{ height: `calc(${e.monthlyTotal} * ${divisor}%)`, backgroundColor: `#${posterColour}` }} />
                         )

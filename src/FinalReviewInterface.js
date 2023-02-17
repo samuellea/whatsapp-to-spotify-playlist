@@ -1,9 +1,8 @@
-import './styles/FinalReviewInterface.css';
 import React, { useState, useEffect } from 'react';
 import FinalReviewPost from './FinalReviewPost';
 import { mockSleep } from './helpers';
 import { useHistory } from "react-router-dom";
-
+import './styles/FinalReviewInterface.css';
 
 function FinalReviewInterface({
   firebasePlaylistObj,

@@ -51,13 +51,14 @@
 .Auth input {
   height: 50px;
   /* height: 20%; */
-  width: 94%;
+  width: 100%;
   border: none;
   background-color: #1B1C2A;
   border-radius: 15px;
   color: white;
   font-size: 16px;
   padding: 0px 10px;
+  box-sizing: border-box;
 }
 
 .Auth input:focus {}

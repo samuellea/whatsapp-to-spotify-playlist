@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "./styles/Preview.css";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 
-const Preview = ({ index, url, setIndexPlaying, indexPlaying, playingThis, playingOthers }) => {
+const Preview = ({ index, url, setIndexPlaying, indexPlaying, playingThis, playingOthers, post }) => {
   const [playing, setPlaying] = useState(false);
   const myRef = useRef();
 
@@ -13,15 +13,16 @@ const Preview = ({ index, url, setIndexPlaying, indexPlaying, playingThis, playi
     // console.log(`indexPlaying: ${indexPlaying}`);
     // console.log('-----')
     if (indexPlaying === index) {
-      console.log(`🌱 I am ${index}. indexPlaying is ${indexPlaying}.`)
+      console.log(post, ' 🌱🌱🌱')
+      // console.log(`🌱 I am ${index}. indexPlaying is ${indexPlaying}.`)
       myRef.current.play()
     };
     if (indexPlaying !== index) {
-      console.log(`🛑 Stopping ${index}!`)
+      // console.log(`🛑 Stopping ${index}!`)
       myRef.current.pause()
     };
     if (!indexPlaying) {
-      console.log('--- nothing playing now. ----')
+      // console.log('--- nothing playing now. ----')
       // myRef.current.pause();
     }
   }, [indexPlaying])

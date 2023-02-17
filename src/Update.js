@@ -1,29 +1,27 @@
 import './styles/Update.css';
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 import YoutubeConversionInterface from './YoutubeConversionInterface';
 import InputTextInterface from './InputTextInterface';
 import FinalReviewInterface from './FinalReviewInterface';
 import * as u from './utils';
 import * as h from './helpers';
+import { mockSleep } from './helpers';
 import NoNew from './NoNew';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 
-function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // ❓ this prop
+function Update({ userPlaylistMetas }) {
   let history = useHistory();
   const params = new URLSearchParams(window.location.search);
 
   const spotifyPlaylistId = params.get('spotifyPlaylistId');
   const firebasePlaylistId = params.get('firebasePlaylistId');
 
-  console.log(userPlaylistMetas, ' <-- userPlaylistMetas')
   const playlistMetaInAppState = userPlaylistMetas.find(e => e.spotifyPlaylistId === spotifyPlaylistId);
   const firebaseMetaId = playlistMetaInAppState.metaId;
-  console.log(firebaseMetaId, ' 🔥 🔥 🔥 firebaseMetaId');
-
-
 
   const [spotifyPlaylistInState, setSpotifyPlaylistInState] = useState(null);
   const [inputText, setInputText] = useState('');
@@ -76,7 +74,6 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // �
         const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
         // determine new posts by comparing input text's posts with .rawPosts
         const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
-        console.log(newPostsRaw, ' <-- newPostsRaw')
 
         // if there ARE no new posts found from the input text, feedback to user.
         if (!newPostsRaw.length) {
@@ -88,35 +85,41 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // �
         // first, get all the Spotify Data for all .linkType = 'spotify' posts
         const justNewSpotifyPosts = newPostsRaw.filter(e => e.linkType === 'spotify'); // these are just Spotify TRACKs! (not playlists or albums)
         const newSpotifyPostsCompleteData = await u.getSpotifyTrackData(justNewSpotifyPosts, spotifyToken);
-        // // ❓❓❓❓ check newSpotifyPostsCompleteData
-        // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
-        setNewPostsInState(newSpotifyPostsCompleteData)
-
-        // second, handle any .linkType = 'youtube' posts
-        const youtubePosts = [...newPostsRaw.filter(e => e.linkType === 'youtube')];
-
-        // if any youtube posts in chat, find the closest matching results for these on spotify
-        if (youtubePosts.length) {
-          console.log('giraffe')
-          const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
-          const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
-          // ❓❓❓❓ check spotifyDataObjs
-          setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
-          setScreen('youtube');
-          setInfoLoading(false);
+        if (!newSpotifyPostsCompleteData) {
+          console.log('Spotify API server error when trying to fetch data for Spotify tracks!');
+          toast(`Couldn't fetch data for Spotify tracks - Spotify API server error. Please try again later`, { duration: 2000 })
+          await mockSleep(2000)
+          return history.push(`/`);
         } else {
-          console.log('hippo')
-          setScreen('review');
-          setInfoLoading(false);
+          // // ❓❓❓❓ check newSpotifyPostsCompleteData
+          // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
+          setNewPostsInState(newSpotifyPostsCompleteData)
+
+          // second, handle any .linkType = 'youtube' posts
+          const youtubePosts = [...newPostsRaw.filter(e => e.linkType === 'youtube')];
+
+          // if any youtube posts in chat, find the closest matching results for these on spotify
+          if (youtubePosts.length) {
+            console.log('giraffe')
+            const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
+            const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
+            // ❓❓❓❓ check spotifyDataObjs
+            setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
+            setScreen('youtube');
+            setInfoLoading(false);
+          } else {
+            console.log('hippo')
+            setScreen('review');
+            setInfoLoading(false);
+          }
         }
       } else {
         // handle error getting this playlist from firebase - server error, bad request, 
       }
-    })
+    }).catch(e => console.log(e))
   }
 
   const handleConvertedPosts = (convertedPosts) => {
-    setConvertYoutubePosts({ youtubePosts: [], spotifyMatches: [] });
     // mix convertedPosts with the spotify-type posts already in newPostsInState
     const combinedAndSortedSpotifyAndYoutubePosts = newPostsInState.concat(convertedPosts).sort((a, b) => (a.postId > b.postId) ? 1 : -1);
     setNewPostsInState(combinedAndSortedSpotifyAndYoutubePosts);
@@ -129,17 +132,87 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // �
     const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
 
     const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
+    console.log(newPostsRaw, ' <-- newPostsRaw') // this will have our 'spotifyAlbum' and 'spotifyPlaylist' .linkType posts included
+
+    // get album info for any Spotify albums posted, and map onto those 'spotifyAlbum'-type posts in newPostsRaw
+    const albumTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyAlbum');
+    const spotifyAlbumsData = await u.getSpotifyAlbumsData(albumTypePosts, spotifyToken);
+    if (!spotifyAlbumsData) {
+      setInfoLoading(false);
+      setSubmissionSuccess(false);
+      console.log('Spotify API server error when trying to fetch data for Albums in chat!');
+      return;
+    }
+    spotifyAlbumsData.forEach(obj => {
+      const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyAlbum' && e.linkID === obj.linkID);
+      newPostsRaw[indexOfCorrespondingRawPostObj] = {
+        ...newPostsRaw[indexOfCorrespondingRawPostObj],
+        artists: obj.artists,
+        thumbnail: obj.thumbnail,
+        title: obj.title,
+        totalTracks: obj.totalTracks,
+      }
+    });
+
+    // get playlist info for any Spotify playlists posted, and map onto those 'spotifyPlaylist'-type posts in newPostsRaw
+    const playlistTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyPlaylist');
+    const spotifyPlaylistsData = await u.getSpotifyPlaylistsData(playlistTypePosts, spotifyToken);
+    if (!spotifyPlaylistsData) {
+      setInfoLoading(false);
+      setSubmissionSuccess(false);
+      console.log('Spotify API server error when trying to fetch data for Playlists in chat!');
+      return;
+    }
+
+    spotifyPlaylistsData.forEach(obj => {
+      const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyPlaylist' && e.linkID === obj.linkID);
+      newPostsRaw[indexOfCorrespondingRawPostObj] = {
+        ...newPostsRaw[indexOfCorrespondingRawPostObj],
+        thumbnail: obj.thumbnail,
+        title: obj.title,
+        totalTracks: obj.totalTracks,
+        owner: obj.owner,
+      }
+    });
 
     // scrape genres for each spotify track
     const newPostsInStatePlusGenres = await u.getGenresForSpotifyTracks(newPostsInState, spotifyToken);
+    if (!newPostsInStatePlusGenres) {
+      setInfoLoading(false);
+      setSubmissionSuccess(false);
+      console.log('Spotify API server error when trying to fetch Genres');
+      return;
+    }
+
     const newPostsInStateMinusUnnecessaryKeys = [...newPostsInStatePlusGenres]
     newPostsInStateMinusUnnecessaryKeys.forEach(e => delete e.postId);
 
     // create updated version of rawPostsLog and processedPostsLog with all the newly-found
     // and newly-processed posts, in order to then send off to FB.
     const updatedRawPosts = [...rawPostsLog, ...newPostsRaw];
-    console.log(updatedRawPosts)
     const updatedPosts = [...(processedPostsLog || []), ...newPostsInStateMinusUnnecessaryKeys];
+
+    // youtube posts will have been manually excluded by user if flagged as a Youtube post that may be able to be converted,
+    // but no corresponding Spotify track could be found. In which case, the user will click to exclude that Youtube post.
+    // However, we want to hang on to the retrieved data for these excluded Youtube videos all the same, because we
+    // want to include as part of the FB .rawPostsLog, so we can display these excluded YT videos to the user on the Stats page!
+    const excludedYoutubePosts = convertYoutubePosts.youtubePosts.reduce((acc, e) => {
+      if (!e) return acc;
+      if (!updatedPosts.some(obj => obj.linkType === 'youtube' && obj.linkID === e.youtubeID)) acc.push(e)
+      return acc;
+    }, []);
+
+    // modify updatedRawPosts, adding .title and .thumbnail of any *excluded* YT posts to their corresponding rawPosts objects
+    excludedYoutubePosts.forEach(obj => {
+      const indexOfCorrespondingRawPostObj = updatedRawPosts.findIndex(e => e.linkType === 'youtube' && e.linkID === obj.youtubeID);
+      updatedRawPosts[indexOfCorrespondingRawPostObj] = {
+        ...updatedRawPosts[indexOfCorrespondingRawPostObj],
+        thumbnail: obj.thumbnail,
+        title: obj.title,
+      }
+    });
+
+    console.log(updatedRawPosts)
 
     const updatedPlaylistObj = {
       ...playlistObj,
@@ -147,16 +220,10 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // �
       processedPostsLog: updatedPosts,
     };
 
-    console.log(updatedPlaylistObj)
-
     // POST our updatedPlaylistObj off to FB.
     const firebaseStatus = await u.createOrUpdateFirebasePlaylist('PATCH', firebaseUserId, token, updatedPlaylistObj, firebasePlaylistId);
     // POST our new tracks to the Spotify playlist.
     const spotifyStatus = await u.postToSpotifyPlaylist(spotifyPlaylistId, spotifyToken, trackIDs) // <--- POSTING TRACKS TO SPOTIFY!!
-
-    // h.mockSleep(5000) // ❓ ❓ ❓ ❓
-    // const metasStatus = await fetchAndSetFirebasePlaylistMetas(); // ❓ ❓ ❓ ❓
-    // console.log(metasStatus, ' < metasStatus') // ❓ ❓ ❓ ❓
 
     if ([200, 201].includes(firebaseStatus) && [200, 201].includes(spotifyStatus)) {
       setInfoLoading(false);
@@ -225,6 +292,7 @@ function Update({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, }) { // �
 
       <div className="InfoArea Flex Column">
         {screenToRender()}
+        <Toaster />
       </div>
 
     </div>

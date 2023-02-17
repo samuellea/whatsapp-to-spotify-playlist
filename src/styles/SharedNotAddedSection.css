@@ -1,0 +1,187 @@
+.SharedNotAddedSection {
+  /* border: 3px solid yellow; */
+  width: 100%;
+  background-color: #4A4964;
+}
+
+.BackgroundGradientBlock {
+  width: 100%;
+  height: 100px;
+  background-image: linear-gradient(#292B3E, #4A4964);
+}
+
+.SharedNotAddedSectionPadding {
+  padding: 5%;
+  /* border: 1px solid red; */
+}
+
+.SectionHeader {
+  color: white;
+  font-family: "Raleway-Bold";
+  font-size: 26px;
+  margin: 0;
+  padding-bottom: 3%;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.SharedNotAddedSegment {
+  height: 500px;
+  max-height: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25px;
+}
+
+.YoutubeNotAdded {
+  /* border: 2px solid #FF6363; */
+  border-top: none;
+  border-bottom: none;
+  border-radius: 15px;
+}
+
+.YoutubeNotAdded h4 {
+  color: #FF6363;
+}
+
+.AlbumNotAdded {
+  /* border: 2px solid #66B06E; */
+  border-top: none;
+  border-bottom: none;
+  border-radius: 15px;
+}
+
+.AlbumNotAdded h4 {
+  color: #66B06E;
+}
+
+.PlaylistNotAdded {
+  /* border: 2px solid #57978B; */
+  border-top: none;
+  border-bottom: none;
+  border-radius: 15px;
+}
+
+.PlaylistNotAdded h4 {
+  color: #57978B;
+}
+
+.SharedNotAddedSegmentTopper h4 {
+  padding: 0;
+}
+
+.SharedNotAddedSegmentTopper {
+  height: 90px;
+  width: 100%;
+  padding: 18px;
+  box-sizing: border-box;
+  background-color: #09090D;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+  border-radius: 15px 15px 0px 0px;
+}
+
+.SharedNotAddedSegmentTopper span {
+  font-size: 12px;
+  font-family: "Raleway-Regular";
+  text-align: left;
+  width: 100%;
+}
+
+.SharedNotAddedSegmentContent {
+  /* border: 2px solid white; */
+  flex: 1;
+  /* border-radius: 0px 0px 15px 15px; */
+  background-color: #292B3E;
+  /* padding: 0% 4%; */
+  overflow-y: scroll;
+}
+
+.SharedNotAddedSegmentContent a {
+  text-decoration: none;
+  color: white;
+}
+
+
+.SharedNotAddedSegmentContent::-webkit-scrollbar {
+  display: none;
+}
+
+.SharedNotAddedSegmentFooter {
+  height: 3%;
+  width: 100%;
+  background-color: #292B3E;
+  /* background-color: #09090D; */
+
+  border-radius: 0px 0px 15px 15px;
+}
+
+.SharedNotAddedYoutubeCard {
+  /* border: 1px solid red; */
+  /* padding: 4%; */
+  width: 100%;
+  height: 90px;
+  margin: 12px 0px;
+  padding: 0% 4%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+}
+
+.SNA-YT-ThumbContainer {
+  /* border: 1px solid orange; */
+  height: 100%;
+  width: 55%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  border-radius: 5px;
+}
+
+.SNA-YT-ThumbContainer img {
+  flex-shrink: 0;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.SNA-YT-PosterRibbonContainer {
+  position: absolute;
+  height: 20px;
+  width: 80%;
+  bottom: 10%;
+  left: 0;
+}
+
+
+
+
+.SNA-YT-TitleContainer {
+  /* border: 3px solid purple; */
+  height: 100%;
+  width: 45%;
+  padding: 0px 8px;
+  box-sizing: border-box;
+  font-size: 13px;
+  font-family: "Arial";
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.CurtailText {
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Curtail5 {
+  -webkit-line-clamp: 5;
+}

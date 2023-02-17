@@ -1,0 +1,74 @@
+#posterRibbon {
+  /* border: 1px solid red; */
+  height: 100%;
+  width: 100%;
+  font-size: 12px;
+  display: flex;
+  flex-direction: row;
+  /* padding-left: 5px; */
+}
+
+#posterRibbonLong {
+  /* background-color: #292B3E; */
+  /* border-right: 2px solid #292B3E; */
+  height: 100%;
+  width: 80%;
+  max-width: 80%;
+  /* border: 1px solid white; */
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  box-sizing: border-box;
+}
+
+#posterRibbonLong span {
+  /* border: 1px solid red; */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+  max-width: 95%;
+}
+
+
+#posterRibbonTriangles {
+  /* border: 1px solid red; */
+  height: 100%;
+  width: 10%;
+  position: relative;
+}
+
+#ribbonTri1Cont {
+  /* border: 1px solid cyan; */
+  /* border: 1px solid cyan; */
+  height: 10px;
+  /* position: absolute;
+  top: -25%;
+  left: -20%; */
+}
+
+#ribbonTri1 {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 10px 0 0;
+  border-color: #292B3E transparent transparent transparent;
+}
+
+#ribbonTri2Cont {
+  /* border: 1px solid green; */
+  height: 10px;
+  /* position: absolute;
+  bottom: -25%;
+  left: -20%; */
+  /* top: 50; */
+}
+
+#ribbonTri2 {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 0 10px;
+  border-color: transparent transparent transparent #292B3E;
+  border-bottom: 0px solid #292B3E;
+}
