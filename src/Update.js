@@ -21,6 +21,7 @@ function Update({ userPlaylistMetas }) {
   const firebasePlaylistId = params.get('firebasePlaylistId');
 
   const playlistMetaInAppState = userPlaylistMetas.find(e => e.spotifyPlaylistId === spotifyPlaylistId);
+  if (!playlistMetaInAppState) history.push('/');
   const firebaseMetaId = playlistMetaInAppState.metaId;
 
   const [spotifyPlaylistInState, setSpotifyPlaylistInState] = useState(null);
@@ -30,7 +31,7 @@ function Update({ userPlaylistMetas }) {
   const [validInputText, setValidInputText] = useState(false);
   const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] })
   const [newPostsInState, setNewPostsInState] = useState([]);
-  const [screen, setScreen] = useState('nonew');
+  const [screen, setScreen] = useState('input');
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
 
   const firebaseUserId = localStorage.getItem('firebaseUserId');

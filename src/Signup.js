@@ -103,6 +103,15 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
         <h1 className="Raleway-SemiBold">WhatsApp to Spotify</h1>
         <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
       </div>
+
+      <div className="InvisiBox" style={{ flex: 0.25 }} />
+
+      <div className="SignupErrorContainer Flex Row">
+        {error ? <span className="SignupErrorMsg Flex">
+          <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
+          {error}</span> : null}
+      </div>
+
       {!signupPending ?
         <form className="Flex Column" onSubmit={(event) => event.preventDefault()}>
 
@@ -119,12 +128,6 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
             <span id="SignupInputError">{formError.password ? '* Please enter a password (at least 8 chars)' : null}</span>
           </div>
 
-          <div className="LoginErrorContainer Flex Row">
-            {error ? <span className="LoginErrorMsg Flex">
-              <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
-              {error}</span> : null}
-          </div>
-
           <div className="submitButtonContainer">
             <button className="authSubmitButton" onClick={handleClick} disabled={Object.values(formError).some(e => e)}>Create Account</button>
           </div>
@@ -136,7 +139,9 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
           <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
         </div>
       }
-      <div className="InvisiBox" style={{ height: '20%' }} />
+      {/* <div className="InvisiBox" style={{ height: '20%' }} /> */}
+      <div className="InvisiBox" style={{ flex: 1 }} />
+
     </div>
   )
 }

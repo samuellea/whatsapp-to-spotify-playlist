@@ -64,6 +64,15 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
         <h1 className="Raleway-SemiBold">WhatsApp to Spotify</h1>
         <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
       </div>
+
+      <div className="InvisiBox" style={{ flex: 0.25 }} />
+
+      <div className="LoginErrorContainer">
+        {error ? <span className="LoginErrorMsg Flex">
+          <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
+          Could not login - please try again</span> : null}
+      </div>
+
       {!loginPending ?
         <form className="Flex Column" onSubmit={(event) => event.preventDefault()}>
 
@@ -77,11 +86,6 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
             <input type="password" id="password" onChange={(event) => handleChange(event)}></input>
           </div>
 
-          <div className="LoginErrorContainer">
-            {error ? <span className="LoginErrorMsg">
-              <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
-              Could not login - please try again</span> : null}
-          </div>
 
           <div className="submitButtonContainer">
             <button className="authSubmitButton" onClick={handleClick}>Login</button>
@@ -93,7 +97,8 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
           <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
         </div>
       }
-      <div className="InvisiBox" style={{ height: '20%' }} />
+      <div className="InvisiBox" style={{ flex: 1 }} />
+
     </div>
   )
 

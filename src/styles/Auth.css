@@ -5,16 +5,16 @@
 }
 
 .greenrow {
-  background-color: green;
+  /* background-color: green; */
 }
 
 .Auth {
   /* border: 6px solid lime; */
   /* border: 2px solid cyan; */
-  height: 94%;
-  max-height: 94%;
+  height: 100%;
+  max-height: 100%;
   padding: 5%;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 }
 
 .Auth a {
@@ -25,7 +25,7 @@
 
 .AuthHeaders {
   /* border: 2px dashed cyan; */
-  margin-bottom: 20%;
+  /* margin-bottom: 10%; */
 }
 
 .Auth h1 {
@@ -47,12 +47,13 @@
 
 .Auth form {
   /* border: 3px solid yellow; */
-  height: 80%;
+  height: 365px;
   background-color: #09090D;
   border-radius: 15px;
   /* padding: 15px; */
   padding: 4.2%;
   justify-content: center;
+  padding-bottom: 8%;
 }
 
 .Auth input {
@@ -108,15 +109,24 @@
 }
 
 .LoginErrorContainer {
-  /* border: 1px solid red; */
-  height: 20px;
-  padding-top: 0;
+  /* border: 1px solid green; */
+  height: 40px;
+  display: flex;
+  align-items: center;
+  /* padding-top: 0; */
+  /* padding-bottom: 4%; */
+
 }
 
 .LoginErrorMsg {
   color: red;
   /* border: 1px solid yellow; */
   padding-top: 2%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 4%;
   /* height: 10%; */
 }
 
