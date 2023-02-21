@@ -17,31 +17,9 @@
 
 }
 
-.GreenCircleContainer {
+.NoNewGreenCircleContainer {
   width: 100%;
   display: flex;
   justify-content: center;
   margin: 10% 0%;
-}
-
-@keyframes noNewFadeIn {
-  0% {
-    opacity: 0
-  }
-
-  100% {
-    opacity: 1
-  }
-}
-
-.GreenCircle {
-  height: 40vw;
-  width: 40vw;
-  border-radius: 100%;
-  background-color: #66B06E;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: noNewFadeIn 0.5s linear;
 }

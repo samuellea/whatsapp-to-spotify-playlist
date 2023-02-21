@@ -6,6 +6,7 @@ import Spinner from './Spinner';
 import { mockSleep } from './helpers';
 import * as h from './helpers';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
+import GreenCircleRedCross from './GreenCircleRedCross';
 
 function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyResult }) {
   const spotifyToken = localStorage.getItem('spotifyToken');
@@ -106,8 +107,8 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   const replaceSuccessMessage = () => {
     return (
       <div className="ReplaceSuccessMessage Flex Column">
-        <div className="GreenCircle">
-          <span><i class="fa fa-check"></i></span>
+        <div className="ChangeModalGreenCircleContainer Flex">
+          <GreenCircleRedCross type="GreenCircle" height={165} />
         </div>
         <span>Successfully replaced</span>
       </div>

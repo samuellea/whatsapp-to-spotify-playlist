@@ -30,7 +30,7 @@ function Update({ userPlaylistMetas }) {
   const [validInputText, setValidInputText] = useState(false);
   const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] })
   const [newPostsInState, setNewPostsInState] = useState([]);
-  const [screen, setScreen] = useState('input');
+  const [screen, setScreen] = useState('nonew');
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
 
   const firebaseUserId = localStorage.getItem('firebaseUserId');
@@ -53,6 +53,7 @@ function Update({ userPlaylistMetas }) {
   const handleChangeTextArea = (e) => {
     const inputTextNoLineBreaks = e.target.value.replace(/(\r\n|\n|\r)/gm, " ");
     setInputText(inputTextNoLineBreaks);
+    setInfoLoading(false);
   }
 
   const handleTextAreaClear = () => {
@@ -250,6 +251,7 @@ function Update({ userPlaylistMetas }) {
           handleChangeTextArea={handleChangeTextArea}
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
+          infoLoading={infoLoading}
         />
       )
     }

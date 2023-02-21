@@ -536,7 +536,7 @@ export const getLastUpdatedFromMeta = (playlistMetaInAppState) => {
   return 'never'
 };
 
-export const setLoadedFonts = (fontsArr, fontsLoadedSetter) => {
+export const setLoadedFonts = async (fontsArr, fontsLoadedSetter) => {
   const promises = fontsArr.map(e => new FontFaceObserver(e).load());
   console.log(promises)
   Promise.all([promises]).then(function () {

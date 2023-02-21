@@ -18,18 +18,24 @@ function Home({
   fetchAndSetFirebasePlaylistMetas,
   userPlaylistsLoading,
   appToast,
+  spotifyUserDisplayName,
 }) {
   console.log(userPlaylistMetas)
   const history = useHistory();
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
-  const spotifyUserDisplayName = localStorage.getItem('spotifyUserDisplayName');
+
+  console.log(token);
+  console.log(spotifyToken);
+  console.log(spotifyToken);
 
   const [fontsLoaded, setFontsLoaded] = useState(false)
+
   useEffect(() => {
     const fontsArr = ['Raleway-Regular', 'Raleway-Bold', 'Raleway-Thin', 'Raleway-SemiBold']
-    h.setLoadedFonts(fontsArr, setFontsLoaded)
+    h.setLoadedFonts(fontsArr, setFontsLoaded);
+
   }, []);
 
   const [viewCreateModal, setViewCreateModal] = useState(false);
@@ -116,7 +122,7 @@ function Home({
         <div className="UserContainer Flex Row" style={{ opacity: fontsLoaded ? 1 : 0 }}>
           <FontAwesomeIcon icon={faUserCircle} pointerEvents="none" />
           <div className="UsernameAndSignOut Flex Column">
-            <span className="Raleway-Regular">{spotifyUserDisplayName}</span>
+            <span className={`Raleway-Regular Empty-${!spotifyUserDisplayName}`}>{spotifyUserDisplayName}</span>
             <button type="button" onClick={logoutClicked}>
               sign out
               <FontAwesomeIcon icon={faArrowAltCircleRight} pointerEvents="none" />

@@ -16,15 +16,14 @@ import ByPosterSection from './ByPosterSection';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 import SharedNotAddedSection from './SharedNotAddedSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import FontFaceObserver from 'fontfaceobserver';
 
-function PublicStats({
-  // userPlaylistMetas, 
-  // fetchAndSetFirebasePlaylistMetas, 
-}) {
+function PublicStats({ authLink, handleLogout }) {
 
   let { publicStatsId } = useParams();
+  const token = localStorage.getItem('token');
+  if (!token) localStorage.setItem('publicStatsHashNonAuth', publicStatsId)
 
   const [fontsLoaded, setFontsLoaded] = useState(false)
   useEffect(() => {
@@ -34,6 +33,7 @@ function PublicStats({
 
   const [publicStatsObj, setPublicStatsObj] = useState(null);
   const [publicStatsError, setPublicStatsError] = useState(false);
+  const [spotifyLoggedInBanner, setSpotifyLoggedInBanner] = useState(false);
 
   const [pageLoading, setPageLoading] = useState(true);
   const [playlistArtworkLoaded, setPlaylistArtworkLoaded] = useState(false);
@@ -44,6 +44,14 @@ function PublicStats({
   const [genresTallied, setGenresTallied] = useState({});
 
   useEffect(() => {
+    const spotifyToken = window.localStorage.getItem('spotifyToken');
+    const spotifyUserId = window.localStorage.getItem('spotifyUserId');
+    if (spotifyToken && !spotifyUserId) {
+      console.log('BINGO')
+      // We are a public user (not a registered, logged-in user with FB auth) who has logged into Spotify for making a playlist in ByPosters
+      setSpotifyLoggedInBanner(true);
+    }
+
     const getAndSetPublicStatsData = async () => {
       const getPublicStatsResponse = await u.getPublicStats(publicStatsId);
       if ([200, 204].includes(getPublicStatsResponse.status)) {
@@ -58,12 +66,10 @@ function PublicStats({
   }, [])
 
   useEffect(() => {
-    console.log('🚨')
     if (publicStatsObj) {
-      console.log(publicStatsObj)
       const { processedPostsLog } = publicStatsObj.firebasePlaylistObj.obj;
 
-      const { lookup } = publicStatsObj.firebaseMetaObj
+      const lookup = publicStatsObj.firebaseMetaObj.lookup ? publicStatsObj.firebaseMetaObj.lookup : {};
       const contributions = h.tallyContributions(processedPostsLog, lookup);
       setTallied(contributions);
 
@@ -80,7 +86,6 @@ function PublicStats({
       const originalPostersColourMap = h.createColourMap(originalPosters);
       setColourMap(originalPostersColourMap);
 
-      console.log('done stuf')
       setPageLoading(false);
     }
   }, [publicStatsObj])
@@ -92,6 +97,11 @@ function PublicStats({
 
   const handleGoBack = () => {
     history.push('/');
+  };
+
+  const handlePublicRegisterLogin = () => {
+    handleLogout();
+    history.push('/login');
   };
 
   return (
@@ -107,15 +117,20 @@ function PublicStats({
         pageLoading ?
           null :
           <div className="Stats" >
-
+            {spotifyLoggedInBanner ?
+              <div className="SpotifyLoggedInBanner">
+                Logged in Spotify
+                <FontAwesomeIcon icon={faCheckCircle} pointerEvents="none" />
+              </div>
+              : null}
             <div className="StatsPadding">
 
-              <div className="StatsGoBackContainer Flex">
+              {/* <div className="StatsGoBackContainer Flex">
                 <button className="Flex Row" type="button" onClick={handleGoBack}>
                   <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
                   <span>Back</span>
                 </button>
-              </div>
+              </div> */}
 
               <div className="StatsInfoPod Flex Column" style={{ fontSize: `${((100 / publicStatsObj.firebasePlaylistObj.obj.spotifyPlaylistName.length) * 2000) ** (0.3)}px` }}>
                 <img src={publicStatsObj.spotifyPlaylistData.artwork} onLoad={() => setPlaylistArtworkLoaded(true)} className="SpotifyPlaylistArtwork" alt="Spotify Artwork" />
@@ -130,7 +145,7 @@ function PublicStats({
 
                 <ContributorsSection
                   tallied={tallied}
-                  lookupInState={publicStatsObj.firebaseMetaObj.lookup}
+                  lookupInState={publicStatsObj.firebaseMetaObj.lookup || {}}
                 />
               </div>
 
@@ -146,7 +161,7 @@ function PublicStats({
 
               <div className="ByYearContainer Flex Column">
                 {byYear.length ?
-                  <ByYearSection byYear={byYear} lookupInState={publicStatsObj.firebaseMetaObj.lookup} colourMap={colourMap} />
+                  <ByYearSection byYear={byYear} lookupInState={publicStatsObj.firebaseMetaObj.lookup || {}} colourMap={colourMap} />
                   : <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />}
               </div>
 
@@ -165,13 +180,22 @@ function PublicStats({
                 <ByPosterSection
                   posters={tallied.map(e => e.poster).sort()}
                   posts={publicStatsObj.firebasePlaylistObj.obj.processedPostsLog}
-                  lookup={publicStatsObj.firebaseMetaObj.lookup}
+                  lookup={publicStatsObj.firebaseMetaObj.lookup || {}}
                   playlistMetaInAppState={publicStatsObj.firebaseMetaObj}
+                  isPublicStatsPage={true}
+                  authLink={authLink}
                 />
               </div>
 
             </div>
-            <SharedNotAddedSection rawPostsLog={publicStatsObj.firebasePlaylistObj.obj.rawPostsLog} lookupInState={publicStatsObj.firebaseMetaObj.lookup} colourMap={colourMap} isPublicStatsPage={true} />
+            <SharedNotAddedSection rawPostsLog={publicStatsObj.firebasePlaylistObj.obj.rawPostsLog} lookupInState={publicStatsObj.firebaseMetaObj.lookup || {}} colourMap={colourMap} isPublicStatsPage={true} />
+
+            {!token ?
+              <div className="PublicRegisterLoginContainer Flex Column">
+                <span>Turn your WhatsApp chats into Spotify playlists! Sign up and try it out yourself </span>
+                <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
+              </div>
+              : null}
           </ div>
       }
       <Toaster />

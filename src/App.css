@@ -6,9 +6,11 @@
   text-align: center;
   background-color: #292B3E;
   color: white;
-  height: 92vh;
-  max-height: 92vh;
-  /* border: 3px solid blue; */
+  height: 100vh;
+  /* 92vh */
+  max-height: 100vh;
+  /* 92vh */
+  border: 3px solid blue;
   display: flex;
   justify-content: center;
   /* border: 2px solid orange; */
@@ -17,12 +19,14 @@
 
 .AppView {
   background-color: #292B3E;
-  /* border: 2px solid red; */
+  border: 2px solid red;
+  border-radius: 15px;
   height: 100%;
   max-height: 100%;
   width: 382px;
   max-width: 362px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 

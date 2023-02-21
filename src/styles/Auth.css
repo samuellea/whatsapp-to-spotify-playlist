@@ -10,11 +10,18 @@
 
 .Auth {
   /* border: 6px solid lime; */
+  /* border: 2px solid cyan; */
   height: 94%;
   max-height: 94%;
   padding: 5%;
   justify-content: space-between;
 }
+
+.Auth a {
+  /* text-decoration: none; */
+  color: white;
+}
+
 
 .AuthHeaders {
   /* border: 2px dashed cyan; */
@@ -40,7 +47,7 @@
 
 .Auth form {
   /* border: 3px solid yellow; */
-  height: 50%;
+  height: 80%;
   background-color: #09090D;
   border-radius: 15px;
   /* padding: 15px; */
@@ -61,13 +68,9 @@
   box-sizing: border-box;
 }
 
-.Auth input:focus {}
-
-
-.Auth input {}
-
 .InputContainer {
   /* border: 1px solid yellow; */
+  height: 98px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -106,8 +109,8 @@
 
 .LoginErrorContainer {
   /* border: 1px solid red; */
-  height: 6%;
-  padding-top: 1%;
+  height: 20px;
+  padding-top: 0;
 }
 
 .LoginErrorMsg {
@@ -120,37 +123,6 @@
 .LoginErrorMsg svg {
   /* border: 1px solid green; */
   margin-right: 2%;
-}
-
-
-.Auth {
-  /* height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid white;
-  background-color: rgb(20, 0, 20); */
-}
-
-.Auth form {
-  /* width: 50%; */
-}
-
-
-.Auth input:focus {
-  /* background-color: purple;
-  color: black;
-  border: 1px solid black;
-  outline: none;
-  transition: .5s; */
-}
-
-
-
-.Auth button:hover {
-  /* background-color: black;
-  color: purple; */
 }
 
 @media screen and (max-width: 768px) {

@@ -8,8 +8,12 @@ import './styles/ByPosterSection.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Oval } from 'react-loading-icons';
 import Preview from './Preview';
+import { Redirect, useHistory } from 'react-router-dom';
+import axios from 'axios';
+import GreenCircleRedCross from './GreenCircleRedCross';
 
-function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
+function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPublicStatsPage = false, authLink }) {
+  const history = useHistory();
 
   // useEffect(() => {
   //   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ')
@@ -64,30 +68,50 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
     }
   };
 
-  const handleMakePlaylistClick = async () => {
+  const handleCreatePosterPlaylist = async (spotifyToken, spotifyUserId) => {
+    setCreation({ success: false, error: false, pending: true });
+    const { spotifyPlaylistName } = playlistMetaInAppState;
+    const date = h.dateTodayDdMmYyyy();
+    const newPosterPlaylistName = `${posters[posterIndex]} - ${spotifyPlaylistName} [${date}]`;
+    const posterTrackIDs = posterPosts.map(e => e.spotifyTrackID);
+    const createPosterPlaylistAttempt = await u.createPosterPlaylist(newPosterPlaylistName, spotifyToken, spotifyUserId, posterTrackIDs);
+    if (!createPosterPlaylistAttempt.error) {
+      const { newPlaylistInfo } = createPosterPlaylistAttempt;
+      setCreation({ success: true, error: false, pending: false, newPlaylistInfo });
+    } else {
+      setCreation({ success: false, error: createPosterPlaylistAttempt.error, pending: false });
+    }
+  };
+
+  const handleMakePlaylistClickPrivate = async () => {
     const spotifyToken = window.localStorage.getItem('spotifyToken');
     const spotifyUserId = window.localStorage.getItem('spotifyUserId');
 
     let r = window.confirm(`This will create a new playlist in your Spotify account`);
     if (r == true) {
-      setCreation({ success: false, error: false, pending: true });
-      const { spotifyPlaylistName } = playlistMetaInAppState;
-      const date = h.dateTodayDdMmYyyy();
-      const newPosterPlaylistName = `${posters[posterIndex]} - ${spotifyPlaylistName} [${date}]`;
-      const posterTrackIDs = posterPosts.map(e => e.spotifyTrackID);
-
-      const createPosterPlaylistAttempt = await u.createPosterPlaylist(newPosterPlaylistName, spotifyToken, spotifyUserId, posterTrackIDs);
-      // console.log(createPosterPlaylistAttempt)
-      if (!createPosterPlaylistAttempt.error) {
-        // console.log(createPosterPlaylistAttempt, ' oooooppopopp')
-        const { newPlaylistInfo } = createPosterPlaylistAttempt;
-        setCreation({ success: true, error: false, pending: false, newPlaylistInfo });
-      } else {
-        setCreation({ success: false, error: createPosterPlaylistAttempt.error, pending: false });
-      }
-
+      await handleCreatePosterPlaylist(spotifyToken, spotifyUserId);
     }
   };
+
+  const handleMakePlaylistClickPublic = async () => {
+    const spotifyToken = window.localStorage.getItem('spotifyToken');
+    let spotifyUserId = window.localStorage.getItem('spotifyUserId');
+    let r = window.confirm(`This will create a new playlist in your Spotify account`);
+    if (r == true) {
+      if (!spotifyToken) {
+        console.log('fambo?')
+        window.location.href = authLink;
+        return;
+      }
+      if (!spotifyUserId) {
+        const { data } = await axios({ method: 'get', url: 'https://api.spotify.com/v1/me', headers: { 'Authorization': 'Bearer ' + spotifyToken } })
+        window.localStorage.setItem('spotifyUserId', data.id);
+      };
+      spotifyUserId = window.localStorage.getItem('spotifyUserId');
+      await handleCreatePosterPlaylist(spotifyToken, spotifyUserId);
+    }
+  };
+
 
   const handleBack = () => {
     setCreation({
@@ -128,15 +152,14 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
     }
 
     if (success) {
-      // console.log(creation, ' <------ creation')
       const newPlaylistId = creation.newPlaylistInfo?.id || null;
       return (
         <div className="ByPosterCreationFeedback Flex Column">
-          <div className="GreenCircleContainer">
-            <div className="GreenCircle">
-              <span><i class="fa fa-check"></i></span>
-            </div>
+
+          <div className="ByPosterSectionGreenCircleContainer Flex">
+            <GreenCircleRedCross type="GreenCircle" height={200} />
           </div>
+
           <h4>Made playlist</h4>
           <h1>{creation.newPlaylistInfo?.name || 'BLAH'}</h1>
 
@@ -152,6 +175,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
     }
 
     if (!success && !error && !pending) {
+      const spotifyToken = window.localStorage.getItem('spotifyToken');
       return (
         <div className="ByPosterSectionContentWrapper Flex Column">
           <h4 className="SectionHeader">Contributors' tracks</h4>
@@ -201,7 +225,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
 
 
           <div className="PosterMakeButtonContainer Flex Row">
-            <button className="ByPosterButtonBig Flex" type="button" onClick={handleMakePlaylistClick}><span>Make Playlist</span></button>
+            <button className="ByPosterButtonBig Flex" type="button" onClick={isPublicStatsPage ? () => handleMakePlaylistClickPublic() : () => handleMakePlaylistClickPrivate()}><span>{spotifyToken ? 'Make Playlist' : 'Make Playlist (Log Into Spotify)'}</span></button>
           </div>
         </div>
       );

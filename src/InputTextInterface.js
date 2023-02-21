@@ -2,8 +2,9 @@ import './styles/InputTextInterface.css';
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faWarning } from '@fortawesome/free-solid-svg-icons';
+import Oval from 'react-loading-icons/dist/esm/components/oval';
 
-function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear }) {
+function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear, infoLoading }) {
   useEffect(() => { }, []);
 
   const inputTextInfo = () => {
@@ -29,17 +30,23 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
 
   return (
     <div className="InputTextInterfaceContainer Flex Column">
-
       <div className="InputTextInterfaceMessage">{inputTextInfo()}</div>
 
       <div className="InputTextInterface Flex Column">
-        <textarea id="w3review" name="w3review" onChange={handleChangeTextArea} disabled={inputText.length} value={inputText}></textarea>
+
+        {!infoLoading ?
+          <textarea id="w3review" name="w3review" onChange={handleChangeTextArea} disabled={inputText.length} value={inputText}></textarea>
+          :
+          <Oval className="InputTextAreaSpinner" stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
+        }
         <div className="InputTextButtonArea Flex Column">
-          <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length}>Clear</button>
-          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText}>Submit</button>
+          <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Clear</button>
+          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText || infoLoading}>Submit</button>
         </div>
 
+
       </div>
+
     </div>
   )
 };

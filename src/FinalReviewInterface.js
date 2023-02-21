@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import './styles/FinalReviewInterface.css';
 import FontFaceObserver from 'fontfaceobserver';
 import * as h from './helpers';
+import GreenCircleRedCross from './GreenCircleRedCross';
 
 function FinalReviewInterface({
   firebasePlaylistObj,
@@ -94,10 +95,8 @@ function FinalReviewInterface({
     if (submissionFeedback === 'success') {
       return (
         <div className="FinalReviewFeedback">
-          <div className="GreenCircleContainer">
-            <div className="GreenCircle">
-              <span id="FeedbackSymbol"><i class="fa fa-check"></i></span>
-            </div>
+          <div className="FinalReviewFeedbackGreenCircleContainer">
+            <GreenCircleRedCross type="GreenCircle" height={165} fadeInAnimation={true} />
           </div>
           <h1>Playlist updated successfully</h1>
         </div>
@@ -107,11 +106,9 @@ function FinalReviewInterface({
     if (submissionFeedback === 'failure') {
       return (
         <div className="FinalReviewFeedback">
-          <div className="GreenCircleContainer">
-            <div className="GreenCircle Red">
-              <span id="FeedbackSymbol"><i class=" fa fa-times"></i></span>
-            </div>
-          </div >
+          <div className="FinalReviewFeedbackGreenCircleContainer">
+            <GreenCircleRedCross type="RedCross" height={165} fadeInAnimation={true} />
+          </div>
           <h1>Couldn't update playlist...</h1>
           <h2 className="Message Failure">Please try again later</h2>
         </div >

@@ -29,10 +29,12 @@
   font-family: "Raleway-Regular";
 }
 
-.ByPosterCreationFeedback .GreenCircleContainer {
+.ByPosterSectionGreenCircleContainer {
   margin-bottom: 10px;
+  /* border: 1px solid red; */
+  height: 50%;
+  align-items: center;
 }
-
 
 .ByPosterCreationFeedback h4 {
   margin: 10px 0px 5px 0px;

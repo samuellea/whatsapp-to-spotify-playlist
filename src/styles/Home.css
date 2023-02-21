@@ -41,6 +41,8 @@
 .UsernameAndSignOut {
   /* border: 1px solid blue; */
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
   margin-left: 16px;
   align-items: flex-start;
   justify-content: space-between;
@@ -50,7 +52,15 @@
 .UsernameAndSignOut span {
   /* font-family: "Raleway-Thin"; */
   font-size: 18px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
   font-family: "Raleway-Regular";
+  height: 23px;
+  box-sizing: border-box;
 }
 
 .UsernameAndSignOut button {
@@ -72,8 +82,16 @@
   margin-left: 6px;
 }
 
+
 .HomePlaylistCardsContainerSpinner {
   height: 100%;
+}
+
+.Empty-true {
+  background-color: #343750;
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
 }
 
 
@@ -144,11 +162,11 @@
 .HomeCreatePlaylistModal {
   position: absolute;
   width: 80%;
-  height: 20%;
+  height: 190px;
   padding: 5%;
   background-color: #292B3E;
   border-radius: 15px;
-  z-index: 999;
+  z-index: 888;
   justify-content: center;
   align-items: center;
 }

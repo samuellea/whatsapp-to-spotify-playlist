@@ -6,8 +6,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
 import './styles/Auth.css';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
+import * as h from './helpers';
 
 function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an existing user
+
+  localStorage.removeItem('publicStatsHashNonAuth');
+
+  const [fontsLoaded, setFontsLoaded] = useState(false)
+
+  useEffect(() => {
+    const fontsArr = ['Raleway-Regular', 'Raleway-ExtraLight', 'Raleway-SemiBold']
+    h.setLoadedFonts(fontsArr, setFontsLoaded);
+  }, []);
 
   const [email, setEmail] = useState({});
   const [password, setPassword] = useState({});
@@ -49,17 +59,19 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
   };
 
   return (
-    <div className="Auth Flex Column">
+    <div className="Auth Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
       <div className="AuthHeaders">
         <h1 className="Raleway-SemiBold">WhatsApp to Spotify</h1>
         <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
       </div>
       {!loginPending ?
         <form className="Flex Column" onSubmit={(event) => event.preventDefault()}>
+
           <div className="InputContainer">
-            <span>Username</span>
+            <span>Email</span>
             <input className="emailInput" type="text" id="email" onChange={(event) => handleChange(event)}></input>
           </div>
+
           <div className="InputContainer">
             <span>Password</span>
             <input type="password" id="password" onChange={(event) => handleChange(event)}></input>
@@ -74,7 +86,7 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
           <div className="submitButtonContainer">
             <button className="authSubmitButton" onClick={handleClick}>Login</button>
           </div>
-          <Link to="/signup">No account? Sign up here</Link>
+          <Link to="/signup">No account? Sign up</Link>
         </form>
         :
         <div className="AuthSpinnerContainer">

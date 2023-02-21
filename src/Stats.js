@@ -10,6 +10,7 @@ import usePrevious from './customHooks/usePrevious';
 import _ from 'lodash';
 import toast, { Toaster } from 'react-hot-toast';
 import { Redirect, useHistory } from 'react-router-dom';
+// const history = useHistory();
 import ByYearSection from './ByYearSection';
 import ByGenreSection from './ByGenreSection';
 import ByPosterSection from './ByPosterSection';

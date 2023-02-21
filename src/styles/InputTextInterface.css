@@ -1,6 +1,13 @@
 .InputTextInterfaceContainer {
   flex: 1;
-  /* border: 2px solid yellow; */
+}
+
+.InputTextAreaSpinner {
+  height: 100%;
+  margin: 0 auto;
+  /* background-color: #1B1C2A; */
+  /* border: 1px solid #1B1C2A; */
+  /* width: 100%; */
 }
 
 .InputTextInterfaceMessage {

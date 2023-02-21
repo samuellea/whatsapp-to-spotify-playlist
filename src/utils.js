@@ -653,7 +653,14 @@ export const searchForUsersPlaylistByName = async (newPosterPlaylistName, spotif
   return result;
 };
 
-export const createPosterPlaylist = async (newPosterPlaylistName, spotifyToken, spotifyUserId, posterTrackIDs) => {
+export const createPosterPlaylist = async (
+  newPosterPlaylistName,
+  spotifyToken,
+  spotifyUserId,
+  posterTrackIDs,
+  setCreation
+) => {
+
   const searchResponse = await searchForUsersPlaylistByName(newPosterPlaylistName, spotifyToken, spotifyUserId);
   if (searchResponse.error) return searchResponse;
   console.log(searchResponse)
@@ -666,6 +673,7 @@ export const createPosterPlaylist = async (newPosterPlaylistName, spotifyToken, 
   if (addTracksResponse.error) return addTracksResponse;
   const newPlaylistInfo = { id: newPlaylistId, name: newPlaylistName };
   return { error: false, newPlaylistInfo };
+
 };
 
 export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
