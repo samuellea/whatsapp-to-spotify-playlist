@@ -148,7 +148,8 @@ function Update({ userPlaylistMetas }) {
       newPostsRaw[indexOfCorrespondingRawPostObj] = {
         ...newPostsRaw[indexOfCorrespondingRawPostObj],
         artists: obj.artists,
-        thumbnail: obj.thumbnail,
+        thumbnailSmall: obj.thumbnailSmall,
+        thumbnailMed: obj.thumbnailMed,
         title: obj.title,
         totalTracks: obj.totalTracks,
       }
@@ -168,7 +169,8 @@ function Update({ userPlaylistMetas }) {
       const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyPlaylist' && e.linkID === obj.linkID);
       newPostsRaw[indexOfCorrespondingRawPostObj] = {
         ...newPostsRaw[indexOfCorrespondingRawPostObj],
-        thumbnail: obj.thumbnail,
+        thumbnailSmall: obj.thumbnailSmall,
+        thumbnailMed: obj.thumbnailMed,
         title: obj.title,
         totalTracks: obj.totalTracks,
         owner: obj.owner,

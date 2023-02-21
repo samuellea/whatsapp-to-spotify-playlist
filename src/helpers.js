@@ -1,12 +1,13 @@
 import _, { constant } from "lodash";
+import FontFaceObserver from 'fontfaceobserver';
 
 export const spotiTrackAlbumPlaylistOrYTRegex = () => {
-  const spotiTrackAlbumPlaylistOrYTPattern = /(open.spotify.com\/track\/[^\s]*)|(open.spotify.com\/album\/[^\s]*)|(open.spotify.com\/playlist\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)/g
+  const spotiTrackAlbumPlaylistOrYTPattern = /(open.spotify.com\/track\/[^\s]*)|(open.spotify.com\/album\/[^\s]*)|(open.spotify.com\/playlist\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/(?!shorts)[^\s]*)/g
   return spotiTrackAlbumPlaylistOrYTPattern;
 };
 
 export const spotiOrYTRegex = () => {
-  const spotiYTRegexPattern = /(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/[^\s]*)/g
+  const spotiYTRegexPattern = /(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/(?!shorts)[^\s]*)/g
   return spotiYTRegexPattern;
 };
 
@@ -526,6 +527,22 @@ export const dateTodayDdMmYyyy = () => {
   return format.replace(/dd|mm|yyyy/gi, matched => map[matched])
 };
 
+export const getLastUpdatedFromMeta = (playlistMetaInAppState) => {
+  if (playlistMetaInAppState?.lastUpdated) {
+    const dateBits = new Date(playlistMetaInAppState.lastUpdated).toString().split(' ');
+    const lastUpdatedForDisplay = `${dateBits[2]} ${dateBits[1]} ${dateBits[3]} ${dateBits[4]?.slice(0, 5) || null}`
+    return lastUpdatedForDisplay;
+  };
+  return 'never'
+};
+
+export const setLoadedFonts = (fontsArr, fontsLoadedSetter) => {
+  const promises = fontsArr.map(e => new FontFaceObserver(e).load());
+  console.log(promises)
+  Promise.all([promises]).then(function () {
+    fontsLoadedSetter(true);
+  });
+};
 
 /*
 RED e74c3c

@@ -1,8 +1,8 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import toast, { Toaster } from 'react-hot-toast';
 import * as u from './utils';
+import * as h from './helpers';
 import PlaylistCard from './PlaylistCard';
 import CreatePlaylistCard from './CreatePlaylistCard';
 import { Oval } from 'react-loading-icons';
@@ -17,25 +17,43 @@ function Home({
   userPlaylistMetas,
   fetchAndSetFirebasePlaylistMetas,
   userPlaylistsLoading,
+  appToast,
 }) {
+  console.log(userPlaylistMetas)
   const history = useHistory();
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
   const spotifyUserDisplayName = localStorage.getItem('spotifyUserDisplayName');
 
+  const [fontsLoaded, setFontsLoaded] = useState(false)
+  useEffect(() => {
+    const fontsArr = ['Raleway-Regular', 'Raleway-Bold', 'Raleway-Thin', 'Raleway-SemiBold']
+    h.setLoadedFonts(fontsArr, setFontsLoaded)
+  }, []);
+
   const [viewCreateModal, setViewCreateModal] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [creatingNewPlaylist, setCreatingNewPlaylist] = useState(false);
 
-  const newPlaylistSuccess = (status) => {
+  const newPlaylistSuccess = async (status) => {
     console.log(status, ' <--- status')
     if ([200, 201].includes(status)) {
-      toast('Playlist created!', { duration: 1500 })
+      appToast('Playlist created!', { duration: 1500 })
       // pull down users playlists again, so we can display the newly-created playlist
       fetchAndSetFirebasePlaylistMetas();
     } else {
-      toast(`Couldn't create playlist.`, { duration: 2000 })
+      appToast(`Couldn't create playlist.`, { duration: 2000 })
+    }
+  };
+
+  const deletePlaylistSuccess = async (status) => {
+    if ([200, 202, 204].includes(status)) {
+      appToast('Playlist deleted', { duration: 1500 })
+      // pull down users playlists again, so we can display the newly-created playlist
+      fetchAndSetFirebasePlaylistMetas();
+    } else {
+      appToast(`Couldn't delete playlst. Please try again later`, { duration: 2000 })
     }
   };
 
@@ -92,35 +110,41 @@ function Home({
 
   return (
 
-    <div className="HomeScreenLoggedInSpotify Flex Column">
-      {userPlaylistsLoading ?
-        <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
-        :
+    <div className="HomeScreenLoggedInSpotify Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
+      <div className="HomeContainer Flex Column">
 
-        <div className="HomeContainer Flex Column">
+        <div className="UserContainer Flex Row" style={{ opacity: fontsLoaded ? 1 : 0 }}>
+          <FontAwesomeIcon icon={faUserCircle} pointerEvents="none" />
+          <div className="UsernameAndSignOut Flex Column">
+            <span className="Raleway-Regular">{spotifyUserDisplayName}</span>
+            <button type="button" onClick={logoutClicked}>
+              sign out
+              <FontAwesomeIcon icon={faArrowAltCircleRight} pointerEvents="none" />
+            </button>
+          </div>
+        </div>
 
-          <div className="UserContainer Flex Row">
-            <FontAwesomeIcon icon={faUserCircle} pointerEvents="none" />
-            <div className="UsernameAndSignOut Flex Column">
-              <span className="Raleway-Regular">{spotifyUserDisplayName}</span>
-              <button type="button" onClick={logoutClicked}>
-                sign out
-                <FontAwesomeIcon icon={faArrowAltCircleRight} pointerEvents="none" />
-              </button>
+        {
+          // userPlaylistsLoading ?
+          //   <div className="HomePlaylistCardsContainer HPCC-Spinner">
+          //     <Oval className="HomePlaylistCardsContainerSpinner" stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
+          //   </div>
+          //   :
+          <>
+
+            <div className="HomePlaylistCardsContainer">
+              {userPlaylistMetas?.length > 0 ?
+                alphabetizedMetas(userPlaylistMetas).map((metaObj, i) => <PlaylistCard metaObj={metaObj} firebaseUserId={firebaseUserId} token={token} key={`card-${i}`} deletePlaylistSuccess={deletePlaylistSuccess} />)
+                : userPlaylistsLoading ?
+                  <Oval className="HomePlaylistCardsContainerSpinner" stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
+                  : <div className="NoPlaylistsMessage Flex Column">
+                    <RecordSleeveIcon fill='#646480' />
+                    No playlists yet.
+                  </div>}
             </div>
-          </div>
-
-          <div className="HomePlaylistCardsContainer">
-            {userPlaylistMetas?.length > 0 ?
-              alphabetizedMetas(userPlaylistMetas).map((metaObj, i) => <PlaylistCard metaObj={metaObj} key={`card-${i}`} />)
-              : <div className="NoPlaylistsMessage Flex Column">
-                <RecordSleeveIcon fill='#646480' />
-                No playlists yet.
-              </div>}
-          </div>
 
 
-          {/* <CreatePlaylistCard
+            {/* <CreatePlaylistCard
             spotifyToken={spotifyToken}
             newPlaylistSuccess={newPlaylistSuccess}
             firebaseUserId={firebaseUserId}
@@ -128,33 +152,32 @@ function Home({
           /> */}
 
 
-          <div className="HomeCreatePlaylistButtonContainer Flex Column">
-            <button type="button" onClick={() => setViewCreateModal(true)}>Create</button>
-          </div>
-
-          <Toaster />
-          {viewCreateModal ?
-            <div className="HomeCreatePlaylistModalContainer Flex Column">
-              <div className="HomeCreatePlaylistModal Flex Column">
-                {!creatingNewPlaylist ?
-                  <div className="HomeCreatePlaylistModalContents Flex Column">
-                    <input type="text" onChange={handlePlaylistNameChange}></input>
-                    <button type="button" onClick={handleCancelCreate}>Cancel</button>
-                    <button type="button" onClick={handleSubmitNewPlaylist} disabled={!newPlaylistName.length}>Create New Playlist</button>
-                  </div> :
-                  <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
-                }
-              </div>
+            <div className="HomeCreatePlaylistButtonContainer Flex Column">
+              {userPlaylistsLoading ? null : <button type="button" onClick={() => setViewCreateModal(true)}>Create</button>}
             </div>
-            : null}
 
-          <div className="CreatePlaylistModalBackdrop" style={{ visibility: `${viewCreateModal ? 'visible' : 'hidden'}` }}>
+            {viewCreateModal ?
+              <div className="HomeCreatePlaylistModalContainer Flex Column">
+                <div className="HomeCreatePlaylistModal Flex Column">
+                  {!creatingNewPlaylist ?
+                    <div className="HomeCreatePlaylistModalContents Flex Column">
+                      <input type="text" onChange={handlePlaylistNameChange}></input>
+                      <button type="button" onClick={handleCancelCreate}>Cancel</button>
+                      <button type="button" onClick={handleSubmitNewPlaylist} disabled={!newPlaylistName.length}>Create New Playlist</button>
+                    </div> :
+                    <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
+                  }
+                </div>
+              </div>
+              : null}
 
-          </div>
+            <div className="CreatePlaylistModalBackdrop" style={{ visibility: `${viewCreateModal ? 'visible' : 'hidden'}` }}>
 
-        </div>
-      }
+            </div>
+          </>
+        }
 
+      </div>
 
     </div>
 

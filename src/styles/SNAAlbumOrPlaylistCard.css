@@ -27,6 +27,16 @@
   /* background-color: #09090D; */
   /* border-right: 1px solid #09090D; */
   width: 45%;
+  max-width: 45%;
+}
+
+.SNA-AOP-PosterAndTracksContainer #ribbonLabel {
+  /* border: 1px solid red; */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+  max-width: 38% !important;
 }
 
 /* .SNA-AOP-PosterAndTracksContainer #ribbonTri1 {
@@ -41,14 +51,14 @@
 .SNA-AOP-TotalTracks {
   /* border: 1px solid red; */
   color: white;
-  font-size: 11px;
+  font-size: 12px;
   font-family: Arial;
   padding: 2px;
   box-sizing: border-box;
   background-color: #7316C6;
   height: 100%;
-  width: 60px;
-  max-width: 60px;
+  width: 70px;
+  max-width: 70px;
   margin-left: auto;
   display: flex;
   justify-content: center;

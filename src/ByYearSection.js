@@ -69,7 +69,6 @@ function ByYearSection({ byYear, lookupInState, colourMap }) {
                     <div className="MonthBar Flex Column">
                       {totalsByPoster.map(e => {
                         const posterColour = h.pickPosterColour(e.poster, lookupInState, colourMap);
-                        console.log(`${e.poster} = ${posterColour}`)
                         return (
                           <div className="MonthSubBar" style={{ height: `calc(${e.monthlyTotal} * ${divisor}%)`, backgroundColor: `#${posterColour}` }} />
                         )

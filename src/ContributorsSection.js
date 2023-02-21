@@ -294,9 +294,12 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
       <div className="NotEditing" ref={contributorsRef}>
         <div className="HeaderAndEditButton Flex Row">
           <h4 className="SectionHeader">Contributors</h4>
-          <button className={`ContribEdit-${editing}`} type="button" onClick={handleEditStart} disabled={editing}>
-            <FontAwesomeIcon icon={faPen} pointerEvents="none" />
-          </button>
+          {setLookupInState ?
+            <button className={`ContribEdit-${editing}`} type="button" onClick={handleEditStart} disabled={editing}>
+              <FontAwesomeIcon icon={faPen} pointerEvents="none" />
+            </button>
+            : null
+          }
         </div>
 
         <div className="ContributorsList">

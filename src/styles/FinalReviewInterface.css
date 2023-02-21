@@ -87,7 +87,6 @@
 }
 
 .FinalReviewPostsDisplay {
-  /* border: 5px solid limegreen; */
   width: 100%;
   background-color: #1B1C2A;
   overflow-y: scroll;
@@ -96,6 +95,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   border-radius: 15px;
+  flex: 1;
 }
 
 .FinalReviewPostsDisplay::-webkit-scrollbar {

@@ -2,12 +2,12 @@ import './styles/FinalReviewPost.css';
 import React, { useState, useEffect } from 'react';
 
 function FinalReviewPost({ post, index }) {
-  const { title, artists, thumbnail } = post;
+  const { title, artists, thumbnailMed } = post;
   const bgColor = index % 2 === 0 ? 'Odd' : 'Even';
   return (
     <div className={`FinalReviewPost ${bgColor} Flex Row`}>
       <div className="FinalReviewPostThumb">
-        <img src={thumbnail} alt="Spotify Thumbnail" />
+        <img src={thumbnailMed} alt="Spotify Thumbnail" />
       </div>
 
 

@@ -3,31 +3,48 @@
   height: 100%;
   width: 100%;
   font-size: 12px;
+  font-family: "Arial";
   display: flex;
   flex-direction: row;
   /* padding-left: 5px; */
+  position: relative;
 }
 
 #posterRibbonLong {
-  /* background-color: #292B3E; */
-  /* border-right: 2px solid #292B3E; */
+  background-color: #09090D;
+  border-right: 2px solid #09090D;
   height: 100%;
   width: 80%;
   max-width: 80%;
-  /* border: 1px solid white; */
+
   display: flex;
-  align-items: center;
+  /* align-items: center; */
+  /* justify-content: center; */
   padding-left: 5px;
   box-sizing: border-box;
+  /* filter: saturate(90%) brightness(75%); */
 }
 
-#posterRibbonLong span {
-  /* border: 1px solid red; */
+/* #posterRibbonLong span {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: left;
   max-width: 95%;
+} */
+
+#ribbonLabel {
+  /* border: 1px solid lime; */
+  /* height: 100%; */
+  position: absolute;
+  top: 3px;
+  left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+  max-width: 75%;
+  padding-left: 5px;
 }
 
 
@@ -52,7 +69,8 @@
   height: 0;
   border-style: solid;
   border-width: 10px 10px 0 0;
-  border-color: #292B3E transparent transparent transparent;
+  border-color: #09090D transparent transparent transparent;
+  /* filter: saturate(90%) brightness(75%); */
 }
 
 #ribbonTri2Cont {
@@ -69,6 +87,7 @@
   height: 0;
   border-style: solid;
   border-width: 10px 0 0 10px;
-  border-color: transparent transparent transparent #292B3E;
-  border-bottom: 0px solid #292B3E;
+  border-color: transparent transparent transparent #09090D;
+  border-bottom: 0px solid #09090D;
+  /* filter: saturate(90%) brightness(75%); */
 }

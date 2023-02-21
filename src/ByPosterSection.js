@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-// import _ from 'lodash';
+import _ from 'lodash';
 import * as h from './helpers';
 import * as u from './utils';
 import usePrevious from './customHooks/usePrevious';
@@ -31,6 +31,8 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
   })
   const [indexPlaying, setIndexPlaying] = useState(null);
 
+  const [thumbsReady, setThumbsReady] = useState(false);
+
   const prevPosters = usePrevious(posters);
 
   useEffect(() => {
@@ -48,6 +50,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
   }, [posterIndex, posters]);
 
   const handleOptionClick = (e) => {
+    setThumbsReady(false)
     const atStart = posterIndex === 0;
     const atEnd = posterIndex === posters.length - 1;
     const { value } = e.target;
@@ -93,6 +96,10 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
       pending: false,
     });
     setIndexPlaying(null);
+  };
+
+  const onLoad = (index) => {
+    if (index === posterPosts.length - 1) setThumbsReady(true)
   };
 
   if (!posterPosts) return null;
@@ -160,22 +167,38 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState }) {
             </div>
           </div>
 
-          <div className="PosterPlaylistContainer">
-            {posterPosts.map((post, i) => {
-              // console.log(post)
-              const bgColor = i % 2 === 0 ? 'Odd' : 'Even';
-              return (
-                <div className={`PosterPlaylistCard Flex Row ${bgColor}`}>
-                  <img src={post.thumbnail} />
-                  <div className="PosterPlaylistCardInfo Flex Column">
-                    <span className="CurtailText Curtail2">{post.title}</span>
-                    <span className="CurtailText Curtail2">{post.artists.join(', ')}</span>
+
+          <div className="PosterPlaylistAndSpinnerContainer">
+
+            {!thumbsReady ?
+              <div className="PosterPlaylistSpinnerContainer Flex">
+                <Oval stroke="#98FFAD" height={100} width={50} strokeWidth={6} />
+              </div>
+              : null}
+
+            <div className="PosterPlaylistContainer">
+              {posterPosts.map((post, i) => {
+                // console.log(post)
+                const bgColor = i % 2 === 0 ? 'Odd' : 'Even';
+                return (
+                  <div className={`PosterPlaylistCard Flex Row ${bgColor}`}>
+
+                    <img src={post.thumbnailSmall} onLoad={() => onLoad(i)} />
+
+                    <div className="PosterPlaylistCardInfo Flex Column">
+                      <span className="CurtailText Curtail2">{post.title}</span>
+                      <span className="CurtailText Curtail2">{post.artists.join(', ')}</span>
+                      {/* <span>{post.time.day + '/' + post.time.month + '/' + post.time.year + ' ' + post.time.hour + ':' + post.time.minute}</span> */}
+                    </div>
+                    <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} post={post} />
                   </div>
-                  <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} post={post} />
-                </div>
-              )
-            })}
+                )
+              })
+              }
+            </div>
+
           </div>
+
 
           <div className="PosterMakeButtonContainer Flex Row">
             <button className="ByPosterButtonBig Flex" type="button" onClick={handleMakePlaylistClick}><span>Make Playlist</span></button>

@@ -3,7 +3,6 @@ import * as accents from 'remove-accents';
 import * as h from './helpers';
 import _ from 'lodash';
 
-
 const firebaseUrl = process.env.REACT_APP_FIREBASE_URL;
 
 export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) => {
@@ -21,6 +20,21 @@ export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) =>
     return { error: { msg: 'Unable to create playlist. Please try again later' } };
   });
 };
+
+export const deleteFirebasePlaylist = async (
+  firebasePlaylistId,
+  metaId,
+  token
+) => {
+  const deletePlaylistResponse = await axios.delete(`${firebaseUrl}/playlists/${firebasePlaylistId}.json?auth=${token}`);
+  if (![200, 202, 204].includes(deletePlaylistResponse.status)) {
+    return deletePlaylistResponse.status;
+  }
+  // what if deletePlaylist fails? then don't delete meta. If it's successful, doesn't really matter if deleting meta fails.
+  // - 'couldnt delete playlist - please try again later'
+  await axios.delete(`${firebaseUrl}/playlistMetas/${metaId}.json?auth=${token}`);
+  return deletePlaylistResponse.status;
+}
 
 //  url: `${firebaseUrl}/playlists.json?orderBy="spotifyPlaylistId"&equalTo="${spotifyPlaylistId}"&auth=${token}`,
 
@@ -48,6 +62,8 @@ export const createOrUpdateFirebasePlaylistMetadata = async (
     console.log('🌱');
   }
 
+  const lastUpdated = new Date().getTime();
+
   const { spotifyPlaylistId, spotifyPlaylistName, processedPostsLog } = playlistData;
   const playlistMetadata = {
     userId: firebaseUserId,
@@ -56,6 +72,7 @@ export const createOrUpdateFirebasePlaylistMetadata = async (
     spotifyPlaylistName: spotifyPlaylistName,
     totalTracks: processedPostsLog.length,
     lookup: lookup,
+    lastUpdated: lastUpdated,
   };
 
   return axios({
@@ -129,22 +146,98 @@ export const getSpotifyPlaylist = (spotifyPlaylistId, spotifyToken) => {
   }).catch(e => console.log(e));
 };
 
-export const postToSpotifyPlaylist = (targetPlaylistID, spotifyToken, trackIDs) => {
-  // reverse() ensures tracks added to playlist in correct order
-  const spotifyLinksFormatted = trackIDs.map(id => `spotify:track:${id}`).reverse();
-  return axios({
-    method: 'post',
-    url: `https://api.spotify.com/v1/playlists/${targetPlaylistID}/tracks`,
-    headers: { 'Authorization': 'Bearer ' + spotifyToken },
-    data: {
-      'uris': [...spotifyLinksFormatted],
-      'position': 0,
-    }
-  }).then(({ status }) => status).catch(e => {
-    console.log(e);
-    return { error: { msg: 'Unable to create playlist. Please try again later' } }
-  });
+
+
+
+
+
+
+
+
+export const postToSpotifyPlaylist = async (targetPlaylistID, spotifyToken, trackIDs) => {
+
+  const spotifyLinksFormatted = trackIDs.map(id => `spotify:track:${id}`);
+
+  const subArraysMax100Each = _.chunk(spotifyLinksFormatted, 100);
+
+  // subArraysMax100Each.forEach((subArr, i) => {
+  //   console.log('subArr ' + (i + 1) + '------------')
+  //   console.log(subArr)
+  // });
+
+  const subArrsSuccessfullyPosted = [];
+
+  const makePostTracksRequests = async (subArraysMaxLength100) => {
+    const responses = [];
+
+    for (let i = 0; i < subArraysMaxLength100.length; i++) {
+      const subArrayOfMax100TrackIDs = subArraysMaxLength100[i];
+
+      const postResponse = await axios({
+        method: 'post',
+        url: `https://api.spotify.com/v1/playlists/${targetPlaylistID}/tracks`,
+        headers: { 'Authorization': 'Bearer ' + spotifyToken },
+        data: {
+          'uris': [...subArrayOfMax100TrackIDs].reverse(),
+          'position': 0,
+        }
+      }).catch(e => { console.log(e); return responses; });
+
+      subArrsSuccessfullyPosted.push(subArrayOfMax100TrackIDs);
+      responses.push(postResponse);
+    };
+
+    return responses
+  }
+
+  const makeDeleteTracksRequests = async (subArraysMaxLength100) => {
+    const responses = [];
+
+    for (let i = 0; i < subArraysMaxLength100.length; i++) {
+      const subArrayOfMax100TrackIDs = subArraysMaxLength100[i];
+
+      const deleteResponse = await axios({
+        method: 'delete',
+        url: `https://api.spotify.com/v1/playlists/${targetPlaylistID}/tracks`,
+        headers: { 'Authorization': 'Bearer ' + spotifyToken },
+        data: {
+          'uris': [...subArrayOfMax100TrackIDs],
+        }
+      }).catch(e => { console.log(e); return e; });
+
+      responses.push(deleteResponse);
+    };
+
+    return responses
+  }
+
+
+  const spotifyPostTracksResponses = await makePostTracksRequests(subArraysMax100Each);
+  if (spotifyPostTracksResponses.length < subArraysMax100Each.length) {
+    // then we must have exited early, which we do if there's an axios error!
+    // WE SHOULD DELETE ANY ITEMS THAT W
+    await makeDeleteTracksRequests(subArrsSuccessfullyPosted);
+    return { error: { msg: 'Unable to create playlist. Please try again later' } };
+  }
+  // else, maybe we completed all the POST requests, but some statuses weren't 201 Created... Some error of some kind there, too.
+  if (!spotifyPostTracksResponses.every(e => e.status === 201)) {
+    await makeDeleteTracksRequests(subArrsSuccessfullyPosted);
+    return { error: { msg: 'Unable to create playlist. Please try again later' } };
+  } else {
+    return 201;
+  }
+
 };
+
+
+
+
+
+
+
+
+
+
 
 export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedPlaylistObj) => {
   console.log(firebasePlaylistId)
@@ -166,6 +259,85 @@ export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedP
     }
   });
 };
+
+const shrekPlaceholder = {
+  album: {
+    album_type: 'album',
+    artists: [
+      {
+        external_urls: {
+          spotify: 'https://open.spotify.com/artist/2iEvnFsWxR0Syqu2JNopAd'
+        },
+        href: 'https://api.spotify.com/v1/artists/2iEvnFsWxR0Syqu2JNopAd',
+        id: '2iEvnFsWxR0Syqu2JNopAd',
+        name: 'Smash Mouth',
+        type: 'artist',
+        uri: 'spotify:artist:2iEvnFsWxR0Syqu2JNopAd'
+      }
+    ],
+    external_urls: {
+      spotify: 'https://open.spotify.com/album/2kyTLcEZe6nc1s6ve0zW9P'
+    },
+    href: 'https://api.spotify.com/v1/albums/2kyTLcEZe6nc1s6ve0zW9P',
+    id: '2kyTLcEZe6nc1s6ve0zW9P',
+    images: [
+      {
+        height: 640,
+        url: 'https://i.scdn.co/image/ab67616d0000b2734f3bbf9631faeb8de9912a23',
+        width: 640
+      },
+      {
+        height: 300,
+        url: 'https://i.scdn.co/image/ab67616d00001e024f3bbf9631faeb8de9912a23',
+        width: 300
+      },
+      {
+        height: 64,
+        url: 'https://i.scdn.co/image/ab67616d000048514f3bbf9631faeb8de9912a23',
+        width: 64
+      }
+    ],
+    name: 'Astro Lounge',
+    release_date: '1999-06-08',
+    release_date_precision: 'day',
+    total_tracks: '15',
+    type: 'album',
+    uri: 'spotify:album:2kyTLcEZe6nc1s6ve0zW9P'
+  },
+  artists: [
+    {
+      external_urls: {
+        spotify: 'https://open.spotify.com/artist/2iEvnFsWxR0Syqu2JNopAd'
+      },
+      href: 'https://api.spotify.com/v1/artists/2iEvnFsWxR0Syqu2JNopAd',
+      id: '2iEvnFsWxR0Syqu2JNopAd',
+      name: 'Smash Mouth',
+      type: 'artist',
+      uri: 'spotify:artist:2iEvnFsWxR0Syqu2JNopAd'
+    }
+  ],
+  disc_number: 1,
+  duration_ms: 200373,
+  explicit: false,
+  external_ids: {
+    isrc: 'USIR19902220'
+  },
+  external_urls: {
+    spotify: 'https://open.spotify.com/track/3cfOd4CMv2snFaKAnMdnvK'
+  },
+  href: 'https://api.spotify.com/v1/tracks/3cfOd4CMv2snFaKAnMdnvK',
+  id: '3cfOd4CMv2snFaKAnMdnvK',
+  is_local: false,
+  is_playable: true,
+  name: 'All Star',
+  popularity: 75,
+  preview_url: null,
+  track_number: 5,
+  type: 'track',
+  uri: 'spotify:track:3cfOd4CMv2snFaKAnMdnvK'
+
+}
+
 
 export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, youtubeApiKey, spotifyToken) => {
   // HANDLE ANY YOUTUBE LINKS
@@ -198,12 +370,14 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
         videoData.youtubeID = data.items[0].id;
       }
       return videoData;
-    })
+    }).filter(e => e !== null);
+    // ^ .filter = remove any 'null' elements in videoDataObjs - these have been returned by youtubeGetResponses because the YT video
+    // is now unavailable, private, or deleted. (Wasn't at the time the poster shared it in chat, but is now)
 
     // search Spotify API using these returned YT titles
     const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${encodeURIComponent(el.title)}&type=track&market=GB&limit=5` : null);
+    console.log(spotifySearchQueries);
 
-    console.log(spotifySearchQueries, ' <-- spotifySearchQueries')
 
     // one that worked directly from API page
     /*
@@ -231,39 +405,42 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     // WHICH is the most likely correct result.
     // return the FIRST result in either an array of tracks scored for similarity with the youtube title,
     // or the original array of 5 (the limit) tracks returned to us for each search by Spotify.
-
     const closestMatchInEachSpotifySearchResponse = spotifyGetResponses.map((spotiRes, i) => {
       const correspondingVideoTitle = videoDataObjs[i] ? accents.remove(videoDataObjs[i].title) : null;
-      if (!spotiRes) { return null } else {
-
-        const fiveTracksCondensed = spotiRes.data.tracks.items.map(item => {
-          const title = accents.remove(item.name);
-          const artists = accents.remove(item.artists.map(artist => artist.name).join(' '));
-          const titleAndArtists = [title, artists].join(' ');
-          return titleAndArtists;
-        })
-
-        const fiveTracksScored = fiveTracksCondensed.map((titleAndArtistsJoined, i) => {
-          const scoreSimilarity = (aVideoTitle, aString) => {
-            let count = 0;
-            const videoTitleTerms = aVideoTitle.split(' ').filter(term => {
-              const termsToRemove = ['&', '-', '+'];
-              if (!termsToRemove.includes(term)) return term;
-            });
-            videoTitleTerms.forEach(term => aString.includes(term) ? count++ : null)
-            return count;
-          };
-          const similarity = scoreSimilarity(correspondingVideoTitle, titleAndArtistsJoined);
-          return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
-        })
-
-        // choose the most likely index of spotiRes.data.tracks.items
-        const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
-        const highestScoringCandidates = fiveTracksScored.filter(e => e.similarity === highestScore);
-        const highestScoringCandidate = highestScoringCandidates[0];
-        return spotiRes.data.tracks.items[highestScoringCandidate.itemsIndex];
+      // if spotiRes has returned no tracks, then Spoti search using this YT vid title has returned zilch. 
+      // However, we still want to give the user chance to manually find correct one, so return a placeholder Spoti result.
+      if (!spotiRes) {
+        return shrekPlaceholder;
+      }
+      if (!spotiRes.data.tracks.items.length) {
+        return shrekPlaceholder;
       }
 
+      const fiveTracksCondensed = spotiRes.data.tracks.items.map(item => {
+        const title = accents.remove(item.name);
+        const artists = accents.remove(item.artists.map(artist => artist.name).join(' '));
+        const titleAndArtists = [title, artists].join(' ');
+        return titleAndArtists;
+      })
+
+      const fiveTracksScored = fiveTracksCondensed.map((titleAndArtistsJoined, i) => {
+        const scoreSimilarity = (aVideoTitle, aString) => {
+          let count = 0;
+          const videoTitleTerms = aVideoTitle.split(' ').filter(term => {
+            const termsToRemove = ['&', '-', '+'];
+            if (!termsToRemove.includes(term)) return term;
+          });
+          videoTitleTerms.forEach(term => aString.includes(term) ? count++ : null)
+          return count;
+        };
+        const similarity = scoreSimilarity(correspondingVideoTitle, titleAndArtistsJoined);
+        return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
+      })
+      // choose the most likely index of spotiRes.data.tracks.items
+      const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
+      const highestScoringCandidates = fiveTracksScored.filter(e => e.similarity === highestScore);
+      const highestScoringCandidate = highestScoringCandidates[0];
+      return spotiRes.data.tracks.items[highestScoringCandidate.itemsIndex];
     });
 
     const spotifyDataObjs = closestMatchInEachSpotifySearchResponse.map((el, i) => {
@@ -271,7 +448,8 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
       spotifyTrackData.artists = el?.artists.map(artist => artist.name) || null;
 
       spotifyTrackData.title = el?.name || null;
-      spotifyTrackData.thumbnail = el?.album.images[1].url || null;
+      spotifyTrackData.thumbnailSmall = el?.album.images[2].url || null;
+      spotifyTrackData.thumbnailMed = el?.album.images[1].url || null;
       spotifyTrackData.spotifyTrackID = el?.id || null;
       spotifyTrackData.include = el ? true : false;
       spotifyTrackData.artistIDs = el?.artists.map(artist => artist.id);
@@ -334,7 +512,8 @@ export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
             title: obj.name,
             artists: obj.artists.map(artist => artist.name),
             spotifyTrackID: obj.id,
-            thumbnail: obj.album.images[1].url,
+            thumbnailSmall: obj.album.images[2].url || obj.album.images[1].url || obj.album.images[0].url,
+            thumbnailMed: obj.album.images[1].url || obj.album.images[0].url || obj.album.images[2].url,
             artistIDs: obj.artists.map(artist => artist.id),
             previewURL: obj.preview_url,
           })
@@ -525,7 +704,8 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
         if (obj) {
           acc.push({
             artists: obj.artists.map(artist => artist.name),
-            thumbnail: obj.images[1].url,
+            thumbnailSmall: obj.images[2].url || obj.images[1].url || obj.images[0].url,
+            thumbnailMed: obj.images[1].url || obj.images[0].url || obj.images[2].url,
             title: obj.name,
             totalTracks: obj.total_tracks,
           })
@@ -583,9 +763,11 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
         return acc;
       } else {
         console.log('🌱!')
+        console.log(e)
         // playlist data actually present. Package this up in an object, merge into posts array etc. etc.
         acc.push({
-          thumbnail: e.data?.images[0].url,
+          thumbnailSmall: e.data?.images[2]?.url || e.data?.images[1]?.url || e.data?.images[0]?.url,
+          thumbnailMed: e.data?.images[1]?.url || e.data?.images[0]?.url || e.data?.images[2]?.url,
           title: e.data?.name,
           totalTracks: e.data?.tracks.total,
           owner: e.data?.owner.display_name,
@@ -601,3 +783,34 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
   const playlistPostsCompleteData = playlistPosts.map((obj, i) => ({ ...obj, ...getPlaylistResponsesFlattened[i] }));
   return playlistPostsCompleteData;
 };
+
+
+export const exportStatsPage = async (firebasePlaylistObj, firebaseMetaObj, spotifyPlaylistData, token) => {
+  const exportStatsData = {
+    firebasePlaylistObj,
+    firebaseMetaObj,
+    spotifyPlaylistData
+  };
+  let url = `${firebaseUrl}/publicStats.json?auth=${token}`;
+  const postPublicStatsReponse = await axios({
+    url: url,
+    method: 'POST',
+    data: exportStatsData,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  });
+  return postPublicStatsReponse;
+}
+
+export const getPublicStats = async (publicStatsId) => {
+  let url = `${firebaseUrl}/publicStats/${publicStatsId}.json`;
+  const getPublicStatsResponse = await axios({
+    url: url,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  });
+  return getPublicStatsResponse;
+}

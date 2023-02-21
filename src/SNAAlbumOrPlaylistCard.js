@@ -20,7 +20,7 @@ function SNAAlbumOrPlaylistCard({ post, index, artistOrOwner, link, lookupInStat
 
       <div className="SNA-AOP-InfoContainer Flex Row">
         <div className="SNA-AOP-ThumbContainer">
-          <img src={post.thumbnail} />
+          <img src={post.thumbnailMed || post.thumbnailSmall} />
         </div>
         <div className="SNA-AOP-TitleAndArtist Flex Column">
           <div className="SNA-AOP-Title CurtailText Curtail2">{post.title}</div>

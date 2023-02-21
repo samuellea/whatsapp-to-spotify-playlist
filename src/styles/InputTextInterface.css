@@ -98,7 +98,7 @@ textarea::-webkit-scrollbar-thumb {
 }
 
 .InputTextButtonArea button {
-  height: 40px;
+  height: 50px;
   width: 100%;
   border-radius: 10px;
   border: none;
@@ -117,7 +117,7 @@ textarea::-webkit-scrollbar-thumb {
 }
 
 
-.InputTextButtonArea button:first-child {
+.InputTextButtonArea button:nth-child(2) {
   background-color: #66B06E;
 }
 

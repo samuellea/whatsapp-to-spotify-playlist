@@ -12,6 +12,9 @@ import Stats from './Stats';
 import * as u from './utils';
 import Spinner from './Spinner';
 import { mockSleep } from './helpers';
+import toast, { Toaster } from 'react-hot-toast';
+import PublicStats from './PublicStats';
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -19,7 +22,7 @@ function App() {
   const [welcome, setWelcome] = useState(false);
   const [token, setToken] = useState(null);
   const [userPlaylistMetas, setUserPlaylistMetas] = useState([]);
-  const [userPlaylistsLoading, setUserPlaylistsLoading] = useState(false);
+  const [userPlaylistsLoading, setUserPlaylistsLoading] = useState(true);
 
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
@@ -71,6 +74,7 @@ function App() {
           const userPlaylistMetas = Object.entries(data).map(e => ({ metaId: e[0], ...e[1] }));
           setUserPlaylistMetas(userPlaylistMetas);
           setUserPlaylistsLoading(false);
+          return true;
         }
       }
     });
@@ -134,6 +138,9 @@ function App() {
     <div className="App">
       <div className="AppView">
         <Router>
+          <Route path="/publicStats/:publicStatsId">
+            <PublicStats />
+          </Route>
           <Route path="/login">
             {!loggedIn ?
               <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
@@ -150,7 +157,9 @@ function App() {
               userPlaylistMetas={userPlaylistMetas}
               fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
               userPlaylistsLoading={userPlaylistsLoading}
+              appToast={toast}
             />
+            <Toaster />
           </PrivateRoute>
           <Route path="/spotifylogin" >
             {spotifyLoginScreen()}
@@ -159,11 +168,14 @@ function App() {
             <Update userPlaylistMetas={userPlaylistMetas} fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas} />
           </PrivateRoute>
           <PrivateRoute path="/stats">
-            <Stats
-              userPlaylistMetas={userPlaylistMetas}
-              fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
-              userPlaylistsLoading={userPlaylistsLoading}
-            />
+            {userPlaylistMetas.length ?
+              <Stats
+                userPlaylistMetas={userPlaylistMetas}
+                fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+                userPlaylistsLoading={userPlaylistsLoading}
+                appToast={toast}
+              />
+              : null}
           </PrivateRoute>
         </Router>
       </div >

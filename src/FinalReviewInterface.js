@@ -3,6 +3,8 @@ import FinalReviewPost from './FinalReviewPost';
 import { mockSleep } from './helpers';
 import { useHistory } from "react-router-dom";
 import './styles/FinalReviewInterface.css';
+import FontFaceObserver from 'fontfaceobserver';
+import * as h from './helpers';
 
 function FinalReviewInterface({
   firebasePlaylistObj,
@@ -13,6 +15,12 @@ function FinalReviewInterface({
   firebaseMetaId,
 }) {
   let history = useHistory();
+
+  const [fontsLoaded, setFontsLoaded] = useState(false)
+  useEffect(() => {
+    const fontsArr = ['Raleway-Regular', 'Raleway-Bold', 'Raleway-Thin', 'Raleway-SemiBold']
+    h.setLoadedFonts(fontsArr, setFontsLoaded)
+  }, []);
 
   const [submissionFeedback, setSubmissionFeedback] = useState(null);
 
@@ -39,7 +47,7 @@ function FinalReviewInterface({
   };
 
   const onFinalClick = () => {
-    let r = window.confirm(`Update Spotify playlist? Cannot undo!`);
+    let r = window.confirm(`Update Spotify playlist with these tracks?`);
     if (r == true) {
       handleFinalSubmission(finalTrackIDs);
     }
@@ -51,33 +59,34 @@ function FinalReviewInterface({
 
     if (!submissionFeedback) {
       return (
-        <div className="FinalReviewInterfaceContainer Flex Column" >
+        <div className="FinalReviewInterfaceContainer Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
+          <>
+            <div className="FinalReviewInterfaceHeaders">
+              <h1>{spotifyPlaylistName}</h1>
+              <h2><span>{processedPostsLog?.length || 0}</span> tracks</h2>
+              <h3>Spotify: {spotifyPlaylistObj.tracks.total} tracks <span>{firebasePLAndSpotifyPLInSync ? '✅' : '⚠️'}</span></h3>
 
-          <div className="FinalReviewInterfaceHeaders">
-            <h1>{spotifyPlaylistName}</h1>
-            <h2><span>{processedPostsLog?.length || 0}</span> tracks</h2>
-            <h3>Spotify: {spotifyPlaylistObj.tracks.total} tracks <span>{firebasePLAndSpotifyPLInSync ? '✅' : '⚠️'}</span></h3>
-
-            <div className="FinalReviewHeader Flex Row">
-              <span>{newPosts.length}</span>
-              <span>new tracks will be added -</span>
-            </div>
-          </div>
-
-          <div className="FinalReviewControlsContainer Flex Column">
-            <div className="FinalReviewPostsDisplay Flex Column">
-              {
-                newPosts.map((post, i) => {
-                  return (<FinalReviewPost post={post} index={i} />)
-                })
-              }
-            </div>
-            <div className="FinalReviewButtonsContainer">
-              <button type="button" onClick={onFinalCancel}>Cancel</button>
-              <button type="button" id="ReviewConfirm" onClick={onFinalClick}>Confirm</button>
+              <div className="FinalReviewHeader Flex Row">
+                <span>{newPosts.length}</span>
+                <span>new tracks will be added -</span>
+              </div>
             </div>
 
-          </div>
+            <div className="FinalReviewControlsContainer Flex Column">
+              <div className="FinalReviewPostsDisplay Flex Column">
+                {
+                  newPosts.map((post, i) => {
+                    return (<FinalReviewPost post={post} index={i} />)
+                  })
+                }
+              </div>
+              <div className="FinalReviewButtonsContainer">
+                <button type="button" onClick={onFinalCancel}>Cancel</button>
+                <button type="button" id="ReviewConfirm" onClick={onFinalClick}>Confirm</button>
+              </div>
+
+            </div>
+          </>
         </div >
       )
     };

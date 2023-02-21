@@ -15,7 +15,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   const [inputBarErrorMsg, setInputBarErrorMsg] = useState('* Must be a valid Spotify track URL');
   const [spotifyObj, setSpotifyObj] = useState({
     ...matchToChange,
-    artists: [], title: '', thumbnail: '', spotifyTrackID: '', artistIDs: [],
+    artists: [], title: '', thumbnailSmall: '', thumbnailMed: '', spotifyTrackID: '', artistIDs: [],
   })
   const [searchLoading, setSearchLoading] = useState(false);
   const [replaceSuccess, setReplaceSuccess] = useState(false);
@@ -60,7 +60,8 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
         const spotifyTrackData = { ...matchToChange };
         spotifyTrackData.artists = data.artists.map(artist => artist.name);
         spotifyTrackData.title = data.name;
-        spotifyTrackData.thumbnail = data.album.images[1].url;
+        spotifyTrackData.thumbnailSmall = data.album.images[2].url;
+        spotifyTrackData.thumbnailMed = data.album.images[1].url;
         spotifyTrackData.spotifyTrackID = data.id;
         spotifyTrackData.artistIDs = data.artists.map(artist => artist.id);
         spotifyTrackData.previewURL = data.preview_url;
@@ -100,7 +101,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
     return false;
   }
 
-  const { artists, title, thumbnail, spotifyTrackID } = spotifyObj;
+  const { artists, title, thumbnailSmall, thumbnailMed, spotifyTrackID } = spotifyObj;
 
   const replaceSuccessMessage = () => {
     return (
@@ -119,7 +120,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
         {/* <div className="ChangeModalInfoContainer Flex Column"> */}
 
         <div className="TrackArtContainer">
-          <img className="SpotifyArtwork" src={thumbnail} alt="Spotify Thumbnail" />
+          <img className="SpotifyArtwork" src={thumbnailMed} alt="Spotify Artwork" />
         </div>
 
         <div className="TitleArtistsContainer Flex Column">

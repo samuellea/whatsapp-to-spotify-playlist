@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as h from './helpers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +15,19 @@ function OverviewSection({ overview }) {
   const maxPostsInAYear = Math.max(...yearTotals);
   const divisor = 100 / maxPostsInAYear;
 
+  const [subWidth, setSubWidth] = useState(0);
+
+  const myRef = useRef(null)
+
+  useEffect(() => {
+    if (myRef.current !== null) {
+      console.log(myRef.current.clientWidth)
+      setSubWidth(myRef.current.clientWidth)
+    }
+  }, [overview])
+
+  // ref={myRef} style={{ fontSize: `${subWidth / 3.5}px` }}
+
   return (
     <div className="OverviewSection Flex Column">
       <h4 className="SectionHeader">Total by year</h4>
@@ -27,7 +40,7 @@ function OverviewSection({ overview }) {
                 <div className="ChartBarContainer Flex Row">
                   <div className="BarAndNumberContainer Flex Column" >
                     <div className="NumberContainer Flex Column">{yearObj.posts.length}</div>
-                    <div className="Bar Flex Column" style={{ height: `${desiredHeight - 5}%` }} />
+                    <div className="Bar Flex Column" style={{ height: `${desiredHeight - 5 > 5 ? desiredHeight - 5 : desiredHeight}%` }} />
                   </div>
                 </div>
               )
@@ -35,7 +48,7 @@ function OverviewSection({ overview }) {
           </div>
           <div className="GraphFooterContainer Flex Row">
             {myOverview.map(yearObj => (
-              <div className="FooterYearContainer Flex">{yearObj.year}</div>
+              <div className="FooterYearContainer Flex" ref={myRef} style={{ fontSize: `${(subWidth / 3.5) < 28 ? (subWidth / 3.5) : 28}px` }}>{yearObj.year}</div>
             ))}
           </div>
         </div>

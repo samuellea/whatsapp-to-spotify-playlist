@@ -13,7 +13,44 @@
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  position: relative;
+}
 
+.StatsSpinnerContainer {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #292B3E;
+  /* opacity: 0.5; */
+  height: 100%;
+  z-index: 999;
+}
+
+.StatsGoBackContainer {
+  /* border: 1px solid lime; */
+  justify-content: flex-start;
+  align-items: center;
+  height: 5%;
+}
+
+.StatsGoBackContainer button {
+  height: 100%;
+  width: 40%;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 32px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.StatsGoBackContainer span {
+  font-family: "Raleway-Regular";
+  font-size: 22px;
+  margin-left: 12px;
 }
 
 .Stats {
@@ -39,6 +76,7 @@
 
 
 .StatsInfoPod {
+  margin-top: 5%;
   border-radius: 15px;
   background-color: #09090D;
   padding: 5% 6%;
@@ -53,11 +91,11 @@
 }
 
 .StatsInfoPod h1 {
-  font-family: "Raleway-SemiBold";
-  font-size: 44px;
-  margin: 14px 0px 0px 0px;
+  font-family: "Raleway-Bold";
+  /* font-size: 36px; */
+  margin: 14px 0px 6px 0px;
   /* border: 1px solid red; */
-  line-height: 44px;
+  /* line-height: 36px; */
   text-align: left;
 }
 
@@ -135,8 +173,8 @@
 }
 
 .ContributorsContainer {
-  /* border: 2px solid cyan; */
   margin-top: 17px;
+  /* height: 190px; */
 }
 
 .OverviewContainer {
@@ -145,6 +183,7 @@
 
 .ByYearContainer {
   /* border: 2px solid greenyellow; */
+  align-items: center;
 
 }
 

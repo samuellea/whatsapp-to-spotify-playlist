@@ -1,7 +1,7 @@
 .ByPosterSection {
   /* border: 2px solid coral; */
   /* height: 60vh; */
-  height: 480px;
+  height: 543px;
   margin-bottom: 20px;
 }
 
@@ -58,15 +58,17 @@
   border: none;
   /* border: 2px solid red; */
   background: none;
-  font-size: 15px;
-  height: 40px;
-  width: 180px;
+  height: 50px;
+  width: 100%;
   /* padding: 12px 50px; */
   border-radius: 10px;
   font-family: 'Arial';
+  font-size: 16px;
+  font-weight: 600;
   background-color: #7316C6;
   align-items: center;
   /* font-weight: 300; */
+
 }
 
 .ByPosterButtonBig span {
@@ -86,13 +88,15 @@
 
 
 .ByPosterSectionContentWrapper {
-  /* border: 3px solid green; */
-  min-height: 480px;
-  max-height: 480px;
+  /* border: 3px solid blue; */
+  min-height: 543px;
+  max-height: 543px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .PosterOptionContainer {
-  font-size: 20px;
+  font-size: 19px;
   font-family: "Raleway-Regular";
   justify-content: space-between;
   /* border: 2px solid yellow; */
@@ -101,10 +105,22 @@
   width: 100%;
   align-items: center;
   padding: 4%;
-  box-sizing: border-box;
   width: 100%;
   border-radius: 15px 15px 0px 0px;
+  box-sizing: border-box;
+
 }
+
+.PosterOptionContainer span {
+  /* border: 1px solid red; */
+  width: 57%;
+  max-width: 57%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
 
 .OptionButtonsContainer {}
 
@@ -126,11 +142,54 @@
   margin-left: 45px;
 }
 
-.PosterPlaylistContainer {
+.PosterPlaylistAndSpinnerContainer {
+  /* border: 1px solid red; */
   height: 70%;
+  max-height: 70%;
+  position: relative;
+}
+
+.PosterPlaylistSpinnerContainer {
+  position: absolute;
+  top: -2px;
+  left: -1px;
+  background-color: #343750;
+  width: 100%;
+  height: 101%;
+  /* border: 2px solid green; */
+  justify-content: center;
+  align-items: center;
+  /* opacity: 0.5; */
+  z-index: 9;
+  box-sizing: border-box;
+}
+
+.PosterPlaylistSpinnerContainer svg {
+  /* margin-top: auto; */
+  /* border: 1px solid red; */
+  /* width: 100%; */
+  /* height: 100%; */
+}
+
+
+.PosterPlaylistContainer {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 1px;
+  height: 100%;
+  width: 100%;
+  /* min-height: 70%; */
+  /* max-height: 70%; */
   overflow-y: scroll;
   /* border: 1px solid white; */
+  justify-content: center;
+  align-items: center;
+  /* position: relative; */
 }
+
+
+
 
 .PosterPlaylistContainer::-webkit-scrollbar {
   display: none;
@@ -138,13 +197,15 @@
 
 
 .PosterPlaylistCard {
+  /* border: 1px solid red; */
   height: 70px;
-  /* width: 100%; */
+  width: 99%;
   /* border: 1px solid rgb(85, 85, 85); */
   /* border: 1px solid orange; */
   border-top: none;
   padding: 0px 10px;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .PosterPlaylistCardInfo {
@@ -204,5 +265,7 @@
   align-items: center;
   flex-grow: 1;
   height: 96px;
+  padding: 5%;
+  box-sizing: border-box;
   border-radius: 0px 0px 15px 15px;
 }
