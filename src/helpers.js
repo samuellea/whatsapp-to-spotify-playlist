@@ -551,6 +551,17 @@ export const getIdFromGoogleDriveURL = (url) => {
   return match;
 };
 
+export const stringContainsKaraoke = (str) => {
+  if (str.toLowerCase().includes('karaoke')) return true;
+  if (str.toLowerCase().includes('karaoki')) return true;
+  if (str.toLowerCase().includes('kareoke')) return true;
+  if (str.toLowerCase().includes('kareoki')) return true;
+  if (str.toLowerCase().includes('karioke')) return true;
+  if (str.toLowerCase().includes('karioki')) return true;
+  if (str.toLowerCase().includes('karaeoke')) return true;
+  return false;
+};
+
 /*
 RED e74c3c
 BLUE 3498db

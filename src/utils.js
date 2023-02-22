@@ -424,19 +424,26 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
       })
 
       const fiveTracksScored = fiveTracksCondensed.map((titleAndArtistsJoined, i) => {
+
         const scoreSimilarity = (aVideoTitle, aString) => {
           let count = 0;
           const videoTitleTerms = aVideoTitle.split(' ').filter(term => {
             const termsToRemove = ['&', '-', '+'];
             if (!termsToRemove.includes(term)) return term;
           });
-          videoTitleTerms.forEach(term => aString.includes(term) ? count++ : null)
+          videoTitleTerms.forEach(term => aString.includes(term) ? count++ : null);
+
+          // handle karaoke versions - if 'karaoke' not in vid title, and 'karoke' found in Spoti result title, set similarity = 0
+          if (!h.stringContainsKaraoke(vidTitle) && h.stringContainsKaraoke(spotiTitle)) count = 0;
+
           return count;
         };
+
         const similarity = scoreSimilarity(correspondingVideoTitle, titleAndArtistsJoined);
         return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
       })
       console.log(fiveTracksScored)
+
       // choose the most likely index of spotiRes.data.tracks.items
       const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
       const highestScoringCandidates = fiveTracksScored.filter(e => e.similarity === highestScore);

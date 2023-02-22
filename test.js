@@ -1,10 +1,18 @@
-export const getIdFromGoogleDocURL = (url) => {
-        const googleDocRegex = /(?<=docs.google.com\/document\/d\/)(.*)/g;
-        const match = url.match(googleDocRegex);
-        if (match) return match[0].split('/')[0];
-        return match;
+const vidTitle = 'James Newman Song version';
+const spotiTitle = 'James Newman Song - Karaoke Version';
+
+const stringContainsKaraoke = (str) => {
+        if (str.toLowerCase().includes('karaoke')) return true;
+        if (str.toLowerCase().includes('karaoki')) return true;
+        if (str.toLowerCase().includes('kareoke')) return true;
+        if (str.toLowerCase().includes('kareoki')) return true;
+        if (str.toLowerCase().includes('karioke')) return true;
+        if (str.toLowerCase().includes('karioki')) return true;
+        if (str.toLowerCase().includes('karaeoke')) return true;
+        return false;
 };
 
-const url = 'https://docs.google.com/document/d/1Y6aFY7pDjHO73RE_qaicP6K9lg4WOB_Nr3rm4TvYg-Q';
 
-console.log(getIdFromGoogleDocURL(url))
+if (!stringContainsKaraoke(vidTitle) && stringContainsKaraoke(spotiTitle)) {
+        console.log('oh no, karaoke!')
+}
