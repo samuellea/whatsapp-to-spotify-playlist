@@ -139,7 +139,7 @@ function GoogleDocInterface({
               <div className="GoogleErrorGreenCircleContainer">
                 <GreenCircleRedCross type="RedCross" height={125} />
               </div>
-              <h1>Couldn't get Google Drive file</h1>
+              <h1>Couldn't log in to Google</h1>
               <h2 className="Message Failure">Please try again later</h2>
             </div>
           }

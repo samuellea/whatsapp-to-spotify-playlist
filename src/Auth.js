@@ -90,7 +90,7 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
           <div className="submitButtonContainer">
             <button className="authSubmitButton" onClick={handleClick}>Login</button>
           </div>
-          <Link to="/signup">No account? Sign up MATE</Link>
+          <Link to="/signup">No account? Sign up</Link>
 
         </form>
         :
