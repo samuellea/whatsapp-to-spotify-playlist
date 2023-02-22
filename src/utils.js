@@ -434,7 +434,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
           videoTitleTerms.forEach(term => aString.includes(term) ? count++ : null);
 
           // handle karaoke versions - if 'karaoke' not in vid title, and 'karoke' found in Spoti result title, set similarity = 0
-          if (!h.stringContainsKaraoke(vidTitle) && h.stringContainsKaraoke(spotiTitle)) count = 0;
+          if (!h.stringContainsKaraoke(aVideoTitle) && h.aString(spotiTitle)) count = 0;
 
           return count;
         };
