@@ -436,6 +436,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
         const similarity = scoreSimilarity(correspondingVideoTitle, titleAndArtistsJoined);
         return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
       })
+      console.log(fiveTracksScored)
       // choose the most likely index of spotiRes.data.tracks.items
       const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
       const highestScoringCandidates = fiveTracksScored.filter(e => e.similarity === highestScore);
