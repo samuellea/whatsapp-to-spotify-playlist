@@ -129,8 +129,11 @@ function App() {
       <div className="SpotifyLoginContainer Flex Column">
         {!spotifyToken ?
           <div className="SpotifyLoginScreen Flex Column">
+            <div className="InvisiBox" style={{ flex: 1 }} />
             <h1 className="Raleway-SemiBold">Login to Spotify</h1>
+            <div className="InvisiBox" style={{ flex: 0.25 }} />
             <a href={authLink}>Login</a>
+            <div className="InvisiBox" style={{ flex: 1 }} />
           </div>
           :
           publicStatsHashNonAuth !== null ? <Redirect to={`/publicStats/${publicStatsHashNonAuth}`} />

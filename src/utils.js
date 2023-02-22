@@ -821,4 +821,28 @@ export const getPublicStats = async (publicStatsId) => {
     },
   });
   return getPublicStatsResponse;
-}
+};
+
+// export const getGoogleDoc = async (googleDocID, googleToken) => {
+//   const getGoogleDocResponse = await axios({
+//     url: `https://docs.googleapis.com/v1/documents/${googleDocID}`,
+//     method: 'GET',
+//     headers: {
+//       'Authorization': 'Bearer ' + googleToken,
+//       'Content-Type': 'application/json'
+//     },
+//   });
+//   return getGoogleDocResponse;
+// };
+
+export const getGoogleDrive = async (googleDriveFileID, googleToken) => {
+  const getGoogleDocResponse = await axios({
+    url: `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}?alt=media`,
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + googleToken,
+      'Content-Type': 'application/json'
+    },
+  });
+  return getGoogleDocResponse;
+};

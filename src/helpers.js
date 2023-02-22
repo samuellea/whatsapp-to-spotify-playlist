@@ -544,6 +544,13 @@ export const setLoadedFonts = async (fontsArr, fontsLoadedSetter) => {
   });
 };
 
+export const getIdFromGoogleDriveURL = (url) => {
+  const googleDriveRegex = /(?<=drive.google.com\/file\/d\/)(.*)/g;
+  const match = url.match(googleDriveRegex);
+  if (match) return match[0].split('/')[0];
+  return match;
+};
+
 /*
 RED e74c3c
 BLUE 3498db

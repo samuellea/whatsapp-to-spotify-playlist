@@ -1,0 +1,46 @@
+.ChooseInputMenu {
+  /* border: 3px solid hotpink; */
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.ChooseInputMenu button {
+  height: 50px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background-color: #7316C6;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  /* margin-top: 24px; */
+  margin-top: 5%;
+  /* margin-bottom: 20px; */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#ChooseInputMenuButtonIcon {
+  margin-left: 10px;
+  font-size: 24px;
+}
+
+#ChooseInputMenuGoogleButton {
+  background-color: #4c8bf5;
+}
+
+.ChooseInputMenuText {
+  /* border: 2px solid white; */
+  font-family: "Raleway-Regular";
+  font-size: 20px;
+  /* text-align: left; */
+  /* padding: 5%; */
+  min-height: 6%;
+  /* flex: 1; */
+  justify-content: flex-end;
+  align-items: center;
+}

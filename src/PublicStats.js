@@ -23,7 +23,7 @@ function PublicStats({ authLink, handleLogout }) {
 
   let { publicStatsId } = useParams();
   const token = localStorage.getItem('token');
-  if (!token) localStorage.setItem('publicStatsHashNonAuth', publicStatsId)
+  if (!token && publicStatsId !== 'undefined') localStorage.setItem('publicStatsHashNonAuth', publicStatsId)
 
   const [fontsLoaded, setFontsLoaded] = useState(false)
   useEffect(() => {

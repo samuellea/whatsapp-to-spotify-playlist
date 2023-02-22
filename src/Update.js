@@ -12,6 +12,9 @@ import NoNew from './NoNew';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
+import GoogleDocInterface from './GoogleDocInterface';
+import { gapi } from 'gapi-script';
+import ChooseInputMenu from './ChooseInputMenu';
 
 function Update({ userPlaylistMetas }) {
   let history = useHistory();
@@ -31,7 +34,8 @@ function Update({ userPlaylistMetas }) {
   const [validInputText, setValidInputText] = useState(false);
   const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] })
   const [newPostsInState, setNewPostsInState] = useState([]);
-  const [screen, setScreen] = useState('input');
+  // const [screen, setScreen] = useState('input');
+  const [screen, setScreen] = useState('choose');
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
 
   const firebaseUserId = localStorage.getItem('firebaseUserId');
@@ -39,6 +43,21 @@ function Update({ userPlaylistMetas }) {
   const spotifyToken = localStorage.getItem('spotifyToken');
 
   useEffect(() => {
+    const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
+    const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    console.log(GOOGLE_API_KEY);
+    console.log(GOOGLE_CLIENT_ID);
+    // const SCOPES = "https://www.googleapis.com/auth/documents.readonly";
+    const SCOPES = "https://www.googleapis.com/auth/drive.file";
+    function start() {
+      gapi.client.init({
+        apiKey: GOOGLE_API_KEY,
+        clientId: GOOGLE_CLIENT_ID,
+        scope: SCOPES,
+      })
+    };
+    gapi.load('client:auth2', start);
+
     if (!spotifyPlaylistId || !firebasePlaylistId) return history.push('/');
   }, []);
 
@@ -48,11 +67,18 @@ function Update({ userPlaylistMetas }) {
   }, [inputText]);
 
   const handleGoBack = () => {
-    history.goBack();
+    if (screen === 'choose' || screen === 'youtube' || screen === 'nonew' || screen === 'review') history.goBack();
+    if (screen === 'google' || screen === 'input') setScreen('choose');
   };
 
   const handleChangeTextArea = (e) => {
     const inputTextNoLineBreaks = e.target.value.replace(/(\r\n|\n|\r)/gm, " ");
+    setInputText(inputTextNoLineBreaks);
+    setInfoLoading(false);
+  }
+
+  const handleChangeGoogleDriveFileTextArea = (googleDriveFileText) => {
+    const inputTextNoLineBreaks = googleDriveFileText.replace(/(\r\n|\n|\r)/gm, " ");
     setInputText(inputTextNoLineBreaks);
     setInfoLoading(false);
   }
@@ -244,6 +270,27 @@ function Update({ userPlaylistMetas }) {
     if (infoLoading) return (
       <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
     );
+
+    if (screen === 'choose') {
+      return (
+        <ChooseInputMenu setScreen={setScreen} handleTextAreaClear={handleTextAreaClear} />
+      )
+    }
+
+
+    if (screen === 'google') {
+      return (
+        <GoogleDocInterface
+          inputText={inputText}
+          validInputText={validInputText}
+          handleChangeGoogleDriveFileTextArea={handleChangeGoogleDriveFileTextArea}
+          handleSubmitInputText={handleSubmitInputText}
+          handleTextAreaClear={handleTextAreaClear}
+          infoLoading={infoLoading}
+        />
+      )
+    }
+
     if (screen === 'input') {
       return (
         <InputTextInterface

@@ -5,7 +5,6 @@ import { faCircleCheck, faWarning } from '@fortawesome/free-solid-svg-icons';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 
 function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear, infoLoading }) {
-  useEffect(() => { }, []);
 
   const inputTextInfo = () => {
     if (!inputText.length) return <span>Paste a WhatsApp chat export .txt file here</span>

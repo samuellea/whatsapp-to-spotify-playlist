@@ -95,12 +95,12 @@
 
 .SpotifyLoginScreen {
   /* border: 1px solid red; */
-  height: 155px;
+  height: 255px;
   background-color: #09090D;
   border-radius: 15px;
   padding: 2% 5% 7% 5%;
-  /* justify-content: center; */
-  /* align-items: center; */
+  justify-content: center;
+  align-items: center;
 
 }
 
@@ -116,6 +116,7 @@
 
 .SpotifyLoginScreen a {
   background-color: #66B06E;
+  width: 100%;
   min-height: 50px;
   color: white;
   font-family: Arial;
