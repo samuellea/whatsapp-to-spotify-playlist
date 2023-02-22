@@ -91,6 +91,7 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
             <button className="authSubmitButton" onClick={handleClick}>Login</button>
           </div>
           <Link to="/signup">No account? Sign up</Link>
+
         </form>
         :
         <div className="AuthSpinnerContainer">

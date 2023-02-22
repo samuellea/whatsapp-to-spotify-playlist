@@ -20,10 +20,15 @@ import { faArrowLeft, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import FontFaceObserver from 'fontfaceobserver';
 
 function PublicStats({ authLink, handleLogout }) {
+  const history = useHistory();
 
   let { publicStatsId } = useParams();
   const token = localStorage.getItem('token');
   if (!token && publicStatsId !== 'undefined') localStorage.setItem('publicStatsHashNonAuth', publicStatsId)
+  if (publicStatsId === 'undefined') {
+    localStorage.removeItem(publicStatsId);
+    history.push('/')
+  };
 
   const [fontsLoaded, setFontsLoaded] = useState(false)
   useEffect(() => {
@@ -91,7 +96,7 @@ function PublicStats({ authLink, handleLogout }) {
   }, [publicStatsObj])
 
 
-  const history = useHistory();
+  // const history = useHistory();
 
   // const { processedPostsLog, spotifyPlaylistName } = publicStatsObj.firebasePlaylist.obj;
 
