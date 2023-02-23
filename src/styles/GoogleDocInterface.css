@@ -190,7 +190,6 @@ textarea::-webkit-scrollbar-thumb {
   border-radius: 10px !important;
 }
 
-
 .LoginToGoogleText {
   /* border: 2px solid white; */
   font-family: "Raleway-Regular";
@@ -202,4 +201,11 @@ textarea::-webkit-scrollbar-thumb {
   justify-content: flex-end;
   align-items: center;
   margin-bottom: 5%;
+}
+
+#signInDiv {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
