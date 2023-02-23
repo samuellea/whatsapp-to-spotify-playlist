@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as accents from 'remove-accents';
 import * as h from './helpers';
 import _ from 'lodash';
+import axiosRetry from 'axios-retry';
 
 const firebaseUrl = process.env.REACT_APP_FIREBASE_URL;
 
@@ -338,7 +339,7 @@ const shrekPlaceholder = {
 
 }
 
-
+// these calls are being rate-limited - we need to batch them.
 export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, youtubeApiKey, spotifyToken) => {
   // HANDLE ANY YOUTUBE LINKS
   const youtubeApiBaseURL1 = 'https://content-youtube.googleapis.com/youtube/v3/videos?id=';
@@ -374,6 +375,9 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     // ^ .filter = remove any 'null' elements in videoDataObjs - these have been returned by youtubeGetResponses because the YT video
     // is now unavailable, private, or deleted. (Wasn't at the time the poster shared it in chat, but is now)
 
+    // console.log(videoDataObjs);
+    // console.log(`videoDataObjs.length: ${videoDataObjs.length} ************************`)
+
     // search Spotify API using these returned YT titles
     const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${encodeURIComponent(el.title)}&type=track&market=GB&limit=5` : null);
     console.log(spotifySearchQueries);
@@ -390,13 +394,45 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     */
 
     const spotifyGetResponses = await Promise.all(
-      spotifySearchQueries.map(async (query) => {
-        if (!query) { return null } else {
-          return await axios.get(query, {
+      // spotifySearchQueries.map(async (query) => {
+      [...spotifySearchQueries, ...spotifySearchQueries.reverse()].map(async (query) => {
+        if (!query) {
+          return null
+        } else {
+
+          axiosRetry(axios, {
+            retryCondition: (e) => {
+              return (
+                axiosRetry.isNetworkOrIdempotentRequestError(e) ||
+                e.response.status === 429
+              );
+            },
+            retryDelay: (retryCount, error) => {
+              if (error.response) {
+                const retry_after = error.response.headers["retry-after"];
+                if (retry_after) {
+                  return retry_after;
+                }
+              }
+              return axiosRetry.exponentialDelay(retryCount, error);
+            }
+          });
+
+          const axiosReqRetry = await axios.get(query, {
             headers: {
               Authorization: `Bearer ${spotifyToken}`
             }
-          }).catch(e => { console.log(e); return e })
+          }).then((response) => {
+            if (response.status === 429) {
+              console.log(response)
+            }
+          }).catch(e => {
+            console.log(e); return e
+          }
+          );
+
+          return axiosReqRetry;
+
         }
       })
     );

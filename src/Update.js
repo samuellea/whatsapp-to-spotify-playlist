@@ -50,6 +50,8 @@ function Update({ userPlaylistMetas }) {
     // const SCOPES = "https://www.googleapis.com/auth/documents.readonly";
     const SCOPES = "https://www.googleapis.com/auth/drive.file";
     function start() {
+      console.log(gapi);
+      console.log(gapi.client)
       gapi.client.init({
         apiKey: GOOGLE_API_KEY,
         clientId: GOOGLE_CLIENT_ID,

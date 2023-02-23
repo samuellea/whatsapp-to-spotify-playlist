@@ -131,6 +131,7 @@ function GoogleDocInterface({
                 onSuccess={handleGoogleLoginSuccess}
                 onFailure={handleGoogleLoginFailure}
                 cookiePolicy={'single_host_origin'}
+                // cookiePolicy={"http://localhost:3000/"}
                 isSignedIn={true}
               />
             </>
