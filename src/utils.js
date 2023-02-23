@@ -880,6 +880,7 @@ export const getPublicStats = async (publicStatsId) => {
 // };
 
 export const getGoogleDrive = async (googleDriveFileID, googleToken) => {
+  console.log(googleToken);
   const getGoogleDocResponse = await axios({
     url: `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}?alt=media`,
     method: 'GET',

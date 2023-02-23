@@ -14,14 +14,16 @@ import jwt_decode from "jwt-decode";
 function GoogleDocInterface({
   inputText,
   validInputText,
-  handleChangeGoogleDriveFileTextArea,
+  handleChangeTextArea,
   handleSubmitInputText,
   handleTextAreaClear,
   infoLoading,
 }) {
-  const [googleAccessToken, setGoogleAccessToken] = useState(null); // ?
 
-  const [googleUserObj, setGoogleUserObj] = useState(null);
+  // const [googleUserObj, setGoogleUserObj] = useState(null);
+  const [tokenClient, setTokenClient] = useState({});
+  // const [googleAccessToken, setGoogleAccessToken] = useState(null); // ?
+
 
   const [googleLoginFailure, setGoogleLoginFailure] = useState(false);
   const [googleFileURL, setGoogleFileURL] = useState('');
@@ -29,26 +31,54 @@ function GoogleDocInterface({
   const [loading, setLoading] = useState(false);
   const [getFileError, setGetFileError] = useState(false);
 
-  const handleCallbackResponse = response => {
-    if (!response) {
-      console.log(response);
-      setGoogleLoginFailure(true);
-    };
-    const userObject = jwt_decode(response.credential);
-    setGoogleUserObj(userObject);
-  };
+  // const handleCallbackResponse = response => {
+  //   if (!response) {
+  //     console.log(response);
+  //     setGoogleLoginFailure(true);
+  //   };
+  //   const userObject = jwt_decode(response.credential);
+  //   setGoogleUserObj(userObject);
+  // };
 
   useEffect(() => {
     /* global google */
-    google.accounts.id.initialize({
-      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-      callback: handleCallbackResponse
-    });
+    const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
-    google.accounts.id.renderButton(
-      document.getElementById("signInDiv"), { theme: "outline", size: "large" }
-    )
-  }, []);
+    const getGoogleDriveFile = async (accessToken) => {
+      console.log(googleFileURL, ' <-- googleFileURL');
+      console.log(accessToken, ' <-- accessToken');
+      const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
+      const getGoogleDriveResponse = await u.getGoogleDrive(googleDriveFileID, accessToken);
+      if ([200, 201].includes(getGoogleDriveResponse.status)) {
+        const { data } = getGoogleDriveResponse;
+        console.log(data)
+        // NOW, at this point, you could send data off to our backend endpoint for processing/parsing, keep the spinner spinning
+        handleChangeTextArea(data);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        setGetFileError(true);
+      };
+    };
+
+    //tokenClient
+    setTokenClient(google.accounts.oauth2.initTokenClient({
+      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      scope: SCOPES,
+      callback: async (tokenResponse) => {
+        console.log(tokenResponse)
+        console.log(googleFileURL)
+        // We now have a cces to al ive token to use for ANY google API (based on or SCOPES)
+        if (tokenResponse && tokenResponse.access_token) {
+          getGoogleDriveFile(tokenResponse.access_token)
+        } else {
+          setLoading(false);
+          setGetFileError(true);
+        }
+      }
+    }));
+
+  }, [googleFileURL]);
 
 
 
@@ -60,21 +90,13 @@ function GoogleDocInterface({
     setGoogleFileURL(e.target.value);
   }
 
-  const handleSubmitGoogleDoc = async () => {
+  const handleSubmitGoogleFileURL = async () => {
     const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
     console.log(googleDriveFileID)
     if (!googleDriveFileID) return setValidationError(true);
     setLoading(true);
-    const getGoogleDriveResponse = await u.getGoogleDrive(googleDriveFileID, googleAccessToken);
-
-    if ([200, 201].includes(getGoogleDriveResponse.status)) {
-      const { data } = getGoogleDriveResponse;
-      handleChangeGoogleDriveFileTextArea(data);
-      setLoading(false);
-    } else {
-      setLoading(false);
-      setGetFileError(true);
-    };
+    tokenClient.requestAccessToken(); // this prompts user to sign-in with google
+    // once they do that, the '.callback' func in SetTokenClient is called
   };
 
   const handleTryAgain = () => {
@@ -101,7 +123,8 @@ function GoogleDocInterface({
 
   return (
     <div className="GoogleDocInterface Flex Column">
-      {googleUserObj ?
+      {
+        // googleUserObj ?
         loading ?
           <Oval stroke="#98FFAD" height={100} width={75} strokeWidth={6} />
           :
@@ -120,52 +143,41 @@ function GoogleDocInterface({
 
                 <div className="GoogleInputTextInterface Flex Column" style={{ height: '180px' }}>
                   <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here"></input>
-                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmitGoogleDoc} disabled={validationError}>Submit</button>
+                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmitGoogleFileURL} disabled={validationError}>Submit</button>
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
 
               </>
               :
               <div className="GoogleInputTextInterface Flex Column" style={{ flex: 1 }}>
-                <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeGoogleDriveFileTextArea} disabled value={inputText}></textarea>
+                <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeTextArea} disabled value={inputText}></textarea>
                 <div className="GoogleInputTextButtonArea Flex Column">
                   <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Cancel</button>
                   <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText || infoLoading}>Submit</button>
                 </div>
               </div>
 
-        :
-        <div className="GoogleLogin Flex Column">
-          {!googleLoginFailure ?
-            <>
-              <div className="LoginToGoogleText Flex Column">
-                <span>Login To Google</span>
-              </div>
+        // :
+        // <div className="GoogleLogin Flex Column">
+        //   {!googleLoginFailure ?
+        //     <>
+        //       <div className="LoginToGoogleText Flex Column">
+        //         <span>Login To Google</span>
+        //       </div>
 
-              <div id="signInDiv"></div>
+        //       <div id="signInDiv"></div>
 
-              {/* <GoogleLogin
-                clientId={GOOGLE_CLIENT_ID}
-                buttonText="Login"
-                onSuccess={handleGoogleLoginSuccess}
-                onFailure={handleGoogleLoginFailure}
-                cookiePolicy={'single_host_origin'}
-                // cookiePolicy={"http://localhost:3000/"}
-                isSignedIn={true}
-              /> */}
-
-            </>
-            :
-            <div className="GoogleErrorDisplayContainer">
-              <div className="GoogleErrorGreenCircleContainer">
-                <GreenCircleRedCross type="RedCross" height={125} />
-              </div>
-              <h1>Couldn't log in to Google</h1>
-              <h2 className="Message Failure">Please try again later</h2>
-            </div>
-          }
-
-        </div>
+        //     </>
+        //     :
+        //     <div className="GoogleErrorDisplayContainer">
+        //       <div className="GoogleErrorGreenCircleContainer">
+        //         <GreenCircleRedCross type="RedCross" height={125} />
+        //       </div>
+        //       <h1>Couldn't log in to Google</h1>
+        //       <h2 className="Message Failure">Please try again later</h2>
+        //     </div>
+        //   }
+        // </div>
       }
     </div>
   )

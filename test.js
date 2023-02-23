@@ -1,18 +1,9 @@
-const vidTitle = 'James Newman Song version';
-const spotiTitle = 'James Newman Song - Karaoke Version';
+const str = `
+30/05/2019, 10:12 - Aaron Ayling: I don't hate Courtney Barnett <_<
+30/05/2019, 10:16 - Johnny Stowellman: She's got a realllly affected bogan accent
+30/05/2019, 10:17 - Johnny Stowellman: She's from the inner north of Melbourne. It's the equivalent of putting on an eastend accent if you're from Richmond
+30/05/2019, 10:20 - Johnny Stowellman: Northern Beaches in Sydney* actually, which is even worse
+`
 
-const stringContainsKaraoke = (str) => {
-        if (str.toLowerCase().includes('karaoke')) return true;
-        if (str.toLowerCase().includes('karaoki')) return true;
-        if (str.toLowerCase().includes('kareoke')) return true;
-        if (str.toLowerCase().includes('kareoki')) return true;
-        if (str.toLowerCase().includes('karioke')) return true;
-        if (str.toLowerCase().includes('karioki')) return true;
-        if (str.toLowerCase().includes('karaeoke')) return true;
-        return false;
-};
-
-
-if (!stringContainsKaraoke(vidTitle) && stringContainsKaraoke(spotiTitle)) {
-        console.log('oh no, karaoke!')
-}
+const res = str.replace('\r', '!');
+console.log(res)
