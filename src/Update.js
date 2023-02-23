@@ -67,8 +67,10 @@ function Update({ userPlaylistMetas }) {
   }, []);
 
   useEffect(() => {
+    setInfoLoading(true);
     const inputTextIsValid = h.inputTextIsValid(inputText);
     setValidInputText(inputTextIsValid);
+    setInfoLoading(false);
   }, [inputText]);
 
   const handleGoBack = () => {
@@ -81,7 +83,7 @@ function Update({ userPlaylistMetas }) {
     const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
     const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
     setInputText(inputTextReplaceThree);
-    setInfoLoading(false);
+    // setInfoLoading(false);
   };
 
   const handleChangeGoogleDriveFileTextArea = (googleDriveFileText) => {
@@ -91,7 +93,7 @@ function Update({ userPlaylistMetas }) {
     const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
     const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
     setInputText(inputTextReplaceThree);
-    setInfoLoading(false);
+    // setInfoLoading(false);
   };
 
   const handleTextAreaClear = () => {
@@ -298,6 +300,7 @@ function Update({ userPlaylistMetas }) {
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
           infoLoading={infoLoading}
+          setInfoLoading={setInfoLoading}
         />
       )
     }

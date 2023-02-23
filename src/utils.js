@@ -394,8 +394,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     */
 
     const spotifyGetResponses = await Promise.all(
-      // spotifySearchQueries.map(async (query) => {
-      [...spotifySearchQueries, ...spotifySearchQueries.reverse()].map(async (query) => {
+      spotifySearchQueries.map(async (query) => {
         if (!query) {
           return null
         } else {
@@ -409,9 +408,10 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
             },
             retryDelay: (retryCount, error) => {
               if (error.response) {
+                console.log('GONNA RETRY NOW')
                 const retry_after = error.response.headers["retry-after"];
                 if (retry_after) {
-                  return retry_after;
+                  return retry_after * 1000;
                 }
               }
               return axiosRetry.exponentialDelay(retryCount, error);
@@ -421,10 +421,6 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
           const axiosReqRetry = await axios.get(query, {
             headers: {
               Authorization: `Bearer ${spotifyToken}`
-            }
-          }).then((response) => {
-            if (response.status === 429) {
-              console.log(response)
             }
           }).catch(e => {
             console.log(e); return e
@@ -442,15 +438,17 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     // return the FIRST result in either an array of tracks scored for similarity with the youtube title,
     // or the original array of 5 (the limit) tracks returned to us for each search by Spotify.
     const closestMatchInEachSpotifySearchResponse = spotifyGetResponses.map((spotiRes, i) => {
-      const correspondingVideoTitle = videoDataObjs[i] ? accents.remove(videoDataObjs[i].title) : null;
-      // if spotiRes has returned no tracks, then Spoti search using this YT vid title has returned zilch. 
-      // However, we still want to give the user chance to manually find correct one, so return a placeholder Spoti result.
       if (!spotiRes) {
         return shrekPlaceholder;
       }
       if (!spotiRes.data.tracks.items.length) {
         return shrekPlaceholder;
       }
+
+      const correspondingVideoTitle = videoDataObjs[i] ? accents.remove(videoDataObjs[i].title) : null;
+      console.log(correspondingVideoTitle, ' <-- correspondingVideoTitle')
+      // if spotiRes has returned no tracks, then Spoti search using this YT vid title has returned zilch. 
+      // However, we still want to give the user chance to manually find correct one, so return a placeholder Spoti result.
 
       const fiveTracksCondensed = spotiRes.data.tracks.items.map(item => {
         const title = accents.remove(item.name);
@@ -879,7 +877,7 @@ export const getPublicStats = async (publicStatsId) => {
 //   return getGoogleDocResponse;
 // };
 
-export const getGoogleDrive = async (googleDriveFileID, googleToken) => {
+export const getGoogleDriveFile = async (googleDriveFileID, googleToken) => {
   console.log(googleToken);
   const getGoogleDocResponse = await axios({
     url: `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}?alt=media`,

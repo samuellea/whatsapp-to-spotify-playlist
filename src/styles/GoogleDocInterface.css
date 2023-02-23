@@ -88,6 +88,8 @@ textarea::-webkit-scrollbar-track {
 textarea::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
+  height: 60px;
+  border-radius: 20px;
 }
 
 .GoogleInputTextButtonArea {

@@ -16,31 +16,32 @@ function GoogleDocInterface({
   handleSubmitInputText,
   handleTextAreaClear,
   infoLoading,
+  setInfoLoading,
 }) {
 
   const [tokenClient, setTokenClient] = useState({});
   const [googleFileURL, setGoogleFileURL] = useState('');
   const [validationError, setValidationError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [getFileError, setGetFileError] = useState(false);
 
   useEffect(() => {
     /* global google */
     const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
-    const getGoogleDriveFile = async (accessToken) => {
+    const handleGetGoogleDriveFile = async (accessToken) => {
       console.log(googleFileURL, ' <-- googleFileURL');
       console.log(accessToken, ' <-- accessToken');
       const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
-      const getGoogleDriveResponse = await u.getGoogleDrive(googleDriveFileID, accessToken);
+      const getGoogleDriveResponse = await u.getGoogleDriveFile(googleDriveFileID, accessToken);
       if ([200, 201].includes(getGoogleDriveResponse.status)) {
         const { data } = getGoogleDriveResponse;
         console.log(data)
         // NOW, at this point, you could send data off to our backend endpoint for processing/parsing, keep the spinner spinning
         handleChangeGoogleDriveFileTextArea(data);
-        setLoading(false);
+        // setLoading(false);
       } else {
-        setLoading(false);
+        // setLoading(false);
         setGetFileError(true);
       };
     };
@@ -52,11 +53,11 @@ function GoogleDocInterface({
       callback: async (tokenResponse) => {
         console.log(tokenResponse)
         console.log(googleFileURL)
-        // We now have a cces to al ive token to use for ANY google API (based on or SCOPES)
+        // We now have access to a live token to use for ANY google API (based on our SCOPES)
         if (tokenResponse && tokenResponse.access_token) {
-          getGoogleDriveFile(tokenResponse.access_token)
+          handleGetGoogleDriveFile(tokenResponse.access_token)
         } else {
-          setLoading(false);
+          // setLoading(false);
           setGetFileError(true);
         }
       }
@@ -74,7 +75,8 @@ function GoogleDocInterface({
     const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
     console.log(googleDriveFileID)
     if (!googleDriveFileID) return setValidationError(true);
-    setLoading(true);
+    // setLoading(true);
+    setInfoLoading(true);
     tokenClient.requestAccessToken(); // this prompts user to sign-in with google
     // once they do that, the '.callback' func in SetTokenClient is called
   };
@@ -104,8 +106,9 @@ function GoogleDocInterface({
   return (
     <div className="GoogleDocInterface Flex Column">
       {
-        loading ?
-          <Oval stroke="#98FFAD" height={100} width={75} strokeWidth={6} />
+        infoLoading ?
+          // <Oval stroke="#98FFAD" height={100} width={75} strokeWidth={6} />
+          <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
           :
           getFileError ?
             <div className="GoogleErrorDisplayContainer">
@@ -126,14 +129,24 @@ function GoogleDocInterface({
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
               </>
-              :
-              <div className="GoogleInputTextInterface Flex Column" style={{ flex: 1 }}>
-                <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeGoogleDriveFileTextArea} disabled value={inputText}></textarea>
-                <div className="GoogleInputTextButtonArea Flex Column">
-                  <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Cancel</button>
-                  <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText || infoLoading}>Submit</button>
+              : validInputText ?
+                <div className="GoogleInputTextInterface Flex Column" style={{ flex: 1 }}>
+                  <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeGoogleDriveFileTextArea} disabled value={inputText}></textarea>
+                  <div className="GoogleInputTextButtonArea Flex Column">
+                    <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Cancel</button>
+                    <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText}>Submit</button>
+                  </div>
                 </div>
-              </div>
+                :
+                <div className="GoogleErrorDisplayContainer">
+                  <div className="GoogleErrorGreenCircleContainer">
+                    <GreenCircleRedCross type="RedCross" height={125} />
+                  </div>
+                  <h1>Not a valid WhatsApp chat export file</h1>
+                  <h3>Make sure your file is a .txt file</h3>
+                  <button className="GoogleFileSubmitButton" style={{ backgroundColor: '#66B06E' }} type="button" onClick={handleTryAgain}>Try Another File</button>
+                </div>
+
       }
     </div>
   )

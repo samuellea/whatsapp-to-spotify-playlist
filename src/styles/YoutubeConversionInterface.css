@@ -38,14 +38,33 @@
   overflow-y: scroll;
   /* padding: 5%; */
   align-items: center;
-  padding: 15px;
+  padding: 0px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
 .YoutubeConversionsList::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
+}
+
+
+.YoutubeConversionsList::-webkit-scrollbar {
+  width: 1em;
+  height: 40px;
+  /* padding: 0; */
+  /* margin: 0; */
+}
+
+.YoutubeConversionsList::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.YoutubeConversionsList::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+  height: 60px;
+  border-radius: 20px;
 }
 
 .YoutubeConversionsConfirmButton {
