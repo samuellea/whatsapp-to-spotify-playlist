@@ -8,37 +8,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Oval } from 'react-loading-icons';
 import GreenCircleRedCross from './GreenCircleRedCross';
-import jwt_decode from "jwt-decode";
-// import { convertGoogleDocumentToJson, convertJsonToMarkdown } from './googleDocParser.js';
 
 function GoogleDocInterface({
   inputText,
   validInputText,
-  handleChangeTextArea,
+  handleChangeGoogleDriveFileTextArea,
   handleSubmitInputText,
   handleTextAreaClear,
   infoLoading,
 }) {
 
-  // const [googleUserObj, setGoogleUserObj] = useState(null);
   const [tokenClient, setTokenClient] = useState({});
-  // const [googleAccessToken, setGoogleAccessToken] = useState(null); // ?
-
-
-  const [googleLoginFailure, setGoogleLoginFailure] = useState(false);
   const [googleFileURL, setGoogleFileURL] = useState('');
   const [validationError, setValidationError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [getFileError, setGetFileError] = useState(false);
-
-  // const handleCallbackResponse = response => {
-  //   if (!response) {
-  //     console.log(response);
-  //     setGoogleLoginFailure(true);
-  //   };
-  //   const userObject = jwt_decode(response.credential);
-  //   setGoogleUserObj(userObject);
-  // };
 
   useEffect(() => {
     /* global google */
@@ -53,7 +37,7 @@ function GoogleDocInterface({
         const { data } = getGoogleDriveResponse;
         console.log(data)
         // NOW, at this point, you could send data off to our backend endpoint for processing/parsing, keep the spinner spinning
-        handleChangeTextArea(data);
+        handleChangeGoogleDriveFileTextArea(data);
         setLoading(false);
       } else {
         setLoading(false);
@@ -79,10 +63,6 @@ function GoogleDocInterface({
     }));
 
   }, [googleFileURL]);
-
-
-
-
 
   const handleChange = (e) => {
     if (validationError) setValidationError(false);
@@ -124,7 +104,6 @@ function GoogleDocInterface({
   return (
     <div className="GoogleDocInterface Flex Column">
       {
-        // googleUserObj ?
         loading ?
           <Oval stroke="#98FFAD" height={100} width={75} strokeWidth={6} />
           :
@@ -146,38 +125,15 @@ function GoogleDocInterface({
                   <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmitGoogleFileURL} disabled={validationError}>Submit</button>
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
-
               </>
               :
               <div className="GoogleInputTextInterface Flex Column" style={{ flex: 1 }}>
-                <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeTextArea} disabled value={inputText}></textarea>
+                <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeGoogleDriveFileTextArea} disabled value={inputText}></textarea>
                 <div className="GoogleInputTextButtonArea Flex Column">
                   <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Cancel</button>
                   <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText || infoLoading}>Submit</button>
                 </div>
               </div>
-
-        // :
-        // <div className="GoogleLogin Flex Column">
-        //   {!googleLoginFailure ?
-        //     <>
-        //       <div className="LoginToGoogleText Flex Column">
-        //         <span>Login To Google</span>
-        //       </div>
-
-        //       <div id="signInDiv"></div>
-
-        //     </>
-        //     :
-        //     <div className="GoogleErrorDisplayContainer">
-        //       <div className="GoogleErrorGreenCircleContainer">
-        //         <GreenCircleRedCross type="RedCross" height={125} />
-        //       </div>
-        //       <h1>Couldn't log in to Google</h1>
-        //       <h2 className="Message Failure">Please try again later</h2>
-        //     </div>
-        //   }
-        // </div>
       }
     </div>
   )

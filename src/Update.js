@@ -77,6 +77,14 @@ function Update({ userPlaylistMetas }) {
   };
 
   const handleChangeTextArea = (e) => {
+    const inputTextReplaceOne = e.target.value.replace('\n', " ");
+    const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
+    const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
+    setInputText(inputTextReplaceThree);
+    setInfoLoading(false);
+  };
+
+  const handleChangeGoogleDriveFileTextArea = (googleDriveFileText) => {
     // const inputTextNoLineBreaks = googleDriveFileText.replace(/(\r\n|\n|\r)/gm, " "); // <-- this regex was REALLY slow! c. 50 seconds this way vs. c. 5 seconds below!
     // setInputText(inputTextNoLineBreaks);
     const inputTextReplaceOne = googleDriveFileText.replace('\n', " ");
@@ -84,7 +92,7 @@ function Update({ userPlaylistMetas }) {
     const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
     setInputText(inputTextReplaceThree);
     setInfoLoading(false);
-  }
+  };
 
   const handleTextAreaClear = () => {
     setInputText('');
@@ -286,7 +294,7 @@ function Update({ userPlaylistMetas }) {
         <GoogleDocInterface
           inputText={inputText}
           validInputText={validInputText}
-          handleChangeTextArea={handleChangeTextArea}
+          handleChangeGoogleDriveFileTextArea={handleChangeGoogleDriveFileTextArea}
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
           infoLoading={infoLoading}
