@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Oval } from 'react-loading-icons';
 import GreenCircleRedCross from './GreenCircleRedCross';
+import jwt_decode from "jwt-decode";
 // import { convertGoogleDocumentToJson, convertJsonToMarkdown } from './googleDocParser.js';
 
 function GoogleDocInterface({
@@ -18,25 +19,40 @@ function GoogleDocInterface({
   handleTextAreaClear,
   infoLoading,
 }) {
+  const [googleAccessToken, setGoogleAccessToken] = useState(null); // ?
+
+  const [googleUserObj, setGoogleUserObj] = useState(null);
+
   const [googleLoginFailure, setGoogleLoginFailure] = useState(false);
-  const [googleAccessToken, setGoogleAccessToken] = useState(null);
   const [googleFileURL, setGoogleFileURL] = useState('');
   const [validationError, setValidationError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [getFileError, setGetFileError] = useState(false);
 
-  const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-
-  const handleGoogleLoginSuccess = (res) => {
-    console.log('handleGoogleLoginSuccess! ', res.profileObj);
-    const accessToken = gapi.auth.getToken().access_token;
-    console.log(accessToken);
-    setGoogleAccessToken(accessToken);
+  const handleCallbackResponse = response => {
+    if (!response) {
+      console.log(response);
+      setGoogleLoginFailure(true);
+    };
+    const userObject = jwt_decode(response.credential);
+    setGoogleUserObj(userObject);
   };
 
-  const handleGoogleLoginFailure = async (res) => {
-    setGoogleLoginFailure(true);
-  };
+  useEffect(() => {
+    /* global google */
+    google.accounts.id.initialize({
+      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      callback: handleCallbackResponse
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById("signInDiv"), { theme: "outline", size: "large" }
+    )
+  }, []);
+
+
+
+
 
   const handleChange = (e) => {
     if (validationError) setValidationError(false);
@@ -85,7 +101,7 @@ function GoogleDocInterface({
 
   return (
     <div className="GoogleDocInterface Flex Column">
-      {googleAccessToken ?
+      {googleUserObj ?
         loading ?
           <Oval stroke="#98FFAD" height={100} width={75} strokeWidth={6} />
           :
@@ -125,7 +141,10 @@ function GoogleDocInterface({
               <div className="LoginToGoogleText Flex Column">
                 <span>Login To Google</span>
               </div>
-              <GoogleLogin
+
+              <div id="signInDiv"></div>
+
+              {/* <GoogleLogin
                 clientId={GOOGLE_CLIENT_ID}
                 buttonText="Login"
                 onSuccess={handleGoogleLoginSuccess}
@@ -133,7 +152,8 @@ function GoogleDocInterface({
                 cookiePolicy={'single_host_origin'}
                 // cookiePolicy={"http://localhost:3000/"}
                 isSignedIn={true}
-              />
+              /> */}
+
             </>
             :
             <div className="GoogleErrorDisplayContainer">

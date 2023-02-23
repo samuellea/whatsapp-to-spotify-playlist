@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 import GoogleDocInterface from './GoogleDocInterface';
-import { gapi } from 'gapi-script';
+// import { gapi } from 'gapi-script';
 import ChooseInputMenu from './ChooseInputMenu';
 
 function Update({ userPlaylistMetas }) {
@@ -43,6 +43,7 @@ function Update({ userPlaylistMetas }) {
   const spotifyToken = localStorage.getItem('spotifyToken');
 
   useEffect(() => {
+    /*
     const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
     const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     console.log(GOOGLE_API_KEY);
@@ -59,8 +60,10 @@ function Update({ userPlaylistMetas }) {
       })
     };
     gapi.load('client:auth2', start);
+    */
 
     if (!spotifyPlaylistId || !firebasePlaylistId) return history.push('/');
+
   }, []);
 
   useEffect(() => {
