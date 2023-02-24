@@ -134,6 +134,7 @@ function Update({ userPlaylistMetas }) {
           return setScreen('nonew');
         };
 
+        console.log(newPostsRaw)
         setNewPostsRawStored(newPostsRaw); // 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 
 
         // first, get all the Spotify Data for all .linkType = 'spotify' posts
@@ -191,6 +192,7 @@ function Update({ userPlaylistMetas }) {
     // console.log(newPostsRaw, ' <-- newPostsRaw') // this will have our 'spotifyAlbum' and 'spotifyPlaylist' .linkType posts included
 
     const newPostsRaw = [...newPostsRawStored]; // 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 
+    console.log(newPostsRaw)
 
     // get album info for any Spotify albums posted, and map onto those 'spotifyAlbum'-type posts in newPostsRaw
     const albumTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyAlbum');
