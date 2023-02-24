@@ -80,14 +80,14 @@ function Update({ userPlaylistMetas }) {
   };
 
   const handleChangeTextArea = (e) => {
-    const inputTextNoLineBreaks = e.target.value.replace(/(\r\n|\n|\r)/gm, " "); // <-- this regex was REALLY slow! c. 50 seconds this way vs. c. 5 seconds below!
-    setInputText(inputTextNoLineBreaks);
+    // const inputTextNoLineBreaks = e.target.value.replace(/(\r\n|\n|\r)/gm, " "); // <-- this regex was REALLY slow! c. 50 seconds this way vs. c. 5 seconds below!
+    // setInputText(inputTextNoLineBreaks);
 
 
-    // const inputTextReplaceOne = e.target.value.replace('\n', " ");
-    // const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
-    // const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
-    // setInputText(inputTextReplaceThree);
+    const inputTextReplaceOne = e.target.value.replace('\n', " ");
+    const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
+    const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
+    setInputText(inputTextReplaceThree);
 
     // setInfoLoading(false);
   };
@@ -158,11 +158,11 @@ function Update({ userPlaylistMetas }) {
             const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
             // ❓❓❓❓ check spotifyDataObjs
             setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
-            // setInputText('');
+            setInputText('');
             setScreen('youtube');
             setInfoLoading(false);
           } else {
-            // setInputText('');
+            setInputText('');
             setScreen('review');
             setInfoLoading(false);
           }
