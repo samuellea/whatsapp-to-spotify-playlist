@@ -371,16 +371,22 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
         videoData.youtubeID = data.items[0].id;
       }
       return videoData;
-    }).filter(e => e !== null);
+    })
+
+    // UNDER INSPECTION
+    /* ************************************************************************************************ */
+    // .filter(e => e !== null);
     // ^ .filter = remove any 'null' elements in videoDataObjs - these have been returned by youtubeGetResponses because the YT video
     // is now unavailable, private, or deleted. (Wasn't at the time the poster shared it in chat, but is now)
+    /* ************************************************************************************************ */
+
 
     // console.log(videoDataObjs);
     // console.log(`videoDataObjs.length: ${videoDataObjs.length} ************************`)
 
     // search Spotify API using these returned YT titles
     const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${encodeURIComponent(el.title)}&type=track&market=GB&limit=5` : null);
-    console.log(spotifySearchQueries);
+    // console.log(spotifySearchQueries);
 
 
     // one that worked directly from API page
@@ -439,14 +445,16 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     // or the original array of 5 (the limit) tracks returned to us for each search by Spotify.
     const closestMatchInEachSpotifySearchResponse = spotifyGetResponses.map((spotiRes, i) => {
       if (!spotiRes) {
-        return shrekPlaceholder;
+        // return shrekPlaceholder;
+        return null;
       }
       if (!spotiRes.data.tracks.items.length) {
-        return shrekPlaceholder;
+        // return shrekPlaceholder;
+        return null;
       }
 
       const correspondingVideoTitle = videoDataObjs[i] ? accents.remove(videoDataObjs[i].title) : null;
-      console.log(correspondingVideoTitle, ' <-- correspondingVideoTitle')
+      // console.log(correspondingVideoTitle, ' <-- correspondingVideoTitle')
       // if spotiRes has returned no tracks, then Spoti search using this YT vid title has returned zilch. 
       // However, we still want to give the user chance to manually find correct one, so return a placeholder Spoti result.
 
@@ -476,7 +484,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
         const similarity = scoreSimilarity(correspondingVideoTitle, titleAndArtistsJoined);
         return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
       })
-      console.log(fiveTracksScored)
+      // console.log(fiveTracksScored)
 
       // choose the most likely index of spotiRes.data.tracks.items
       const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
@@ -486,6 +494,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     });
 
     const spotifyDataObjs = closestMatchInEachSpotifySearchResponse.map((el, i) => {
+      if (!el) return null;
       const spotifyTrackData = { ...youtubePosts[i] };
       spotifyTrackData.artists = el?.artists.map(artist => artist.name) || null;
 
@@ -803,14 +812,16 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
       console.log('🚫')
       // 400 error eg. 404
       // playlist not found - could have been deleted since posted in W/A chat. Therefore, ignore this playlist.
-      return acc;
+      // return acc; // 🚦 🚦 🚦
+      acc.push(null); // 🚦 🚦 🚦
     }
     if (e.status === 200) {
       // okay, it's a 200, but has data actually been sent back?
-      // if not, ignore
+      // playlist not found - could have been deleted since posted in W/A chat. Therefore, ignore this playlist.
       if (!e.data) {
         console.log('🌱...')
-        return acc;
+        // return acc; // 🚦 🚦 🚦
+        acc.push(null); // 🚦 🚦 🚦
       } else {
         console.log('🌱!')
         console.log(e)
@@ -830,7 +841,11 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
   // if any of the playlist responses failed with a 500 server error status, return null, and handle this up in Update - stop the submission.
   if (getPlaylistResponsesFlattened.some(e => e === 500)) return null;
   // else, all good - recompose playlistPosts to have each original object's kv pairs PLUS the title, thumbnail and owner back
-  const playlistPostsCompleteData = playlistPosts.map((obj, i) => ({ ...obj, ...getPlaylistResponsesFlattened[i] }));
+  const playlistPostsCompleteData = playlistPosts.map((obj, i) => { // 🚦 🚦 🚦
+    if (getPlaylistResponsesFlattened[i] !== null && getPlaylistResponsesFlattened[i] !== 500) return { ...obj, ...getPlaylistResponsesFlattened[i] }; // 🚦 🚦 🚦
+    return { ...obj } // 🚦 🚦 🚦
+  }); // 🚦 🚦 🚦
+
   return playlistPostsCompleteData;
 };
 
@@ -888,4 +903,8 @@ export const getGoogleDriveFile = async (googleDriveFileID, googleToken) => {
     },
   });
   return getGoogleDocResponse;
+};
+
+export const searchSpotifyTrack = async (searchInput) => {
+
 };

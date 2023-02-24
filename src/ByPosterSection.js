@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 import * as h from './helpers';
@@ -15,6 +15,11 @@ import GreenCircleRedCross from './GreenCircleRedCross';
 function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPublicStatsPage = false, authLink }) {
   const history = useHistory();
 
+  console.log('---------------------------------------')
+  console.log('processesPostsLog coming into ByPosterSection:')
+  console.log(posts)
+  console.log('---------------------------------------')
+
   // useEffect(() => {
   //   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ')
   // }, []);
@@ -25,6 +30,8 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
   // console.log(posters)
   // console.log(posts)
   // console.log(lookup)
+
+  const posterPlaylistRef = useRef();
 
   const [posterIndex, setPosterIndex] = useState(0);
   const [posterPosts, setPosterPosts] = useState([]);
@@ -50,6 +57,11 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
     // console.log(postsByPoster)
     setPosterPosts(postsByPoster);
     setIndexPlaying(null);
+    if (posterPlaylistRef) {
+      posterPlaylistRef.current.scroll({
+        top: 0,
+      });
+    }
     // if (prevIndex !== posterIndex) { }
   }, [posterIndex, posters]);
 
@@ -200,7 +212,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
               </div>
               : null}
 
-            <div className="PosterPlaylistContainer">
+            <div className="PosterPlaylistContainer" ref={posterPlaylistRef}>
               {posterPosts.map((post, i) => {
                 // console.log(post)
                 const bgColor = i % 2 === 0 ? 'Odd' : 'Even';

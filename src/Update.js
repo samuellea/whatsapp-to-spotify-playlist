@@ -32,8 +32,10 @@ function Update({ userPlaylistMetas }) {
   const [firebasePlaylistObj, setFirebasePlaylistObj] = useState(null);
   const [infoLoading, setInfoLoading] = useState(false);
   const [validInputText, setValidInputText] = useState(false);
-  const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] })
-  const [newPostsInState, setNewPostsInState] = useState([]);
+
+  const [newPostsInState, setNewPostsInState] = useState([]); // <------------
+  const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] }) // <------------
+
   // const [screen, setScreen] = useState('input');
   const [screen, setScreen] = useState('choose');
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
@@ -95,6 +97,7 @@ function Update({ userPlaylistMetas }) {
   const handleChangeGoogleDriveFileTextArea = (googleDriveFileText) => {
     // const inputTextNoLineBreaks = googleDriveFileText.replace(/(\r\n|\n|\r)/gm, " "); // <-- this regex was REALLY slow! c. 50 seconds this way vs. c. 5 seconds below!
     // setInputText(inputTextNoLineBreaks);
+
     const inputTextReplaceOne = googleDriveFileText.replace('\n', " ");
     const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
     const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
@@ -107,6 +110,7 @@ function Update({ userPlaylistMetas }) {
     setInputText('');
   }
 
+  /* 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️  */
   const handleSubmitInputText = async () => {
     setInfoLoading(true);
     const { data: spotifyPlaylistData, status } = await u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken);
@@ -126,6 +130,7 @@ function Update({ userPlaylistMetas }) {
 
         // determine new posts by comparing input text's posts with .rawPosts
         const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
+        console.log(newPostsRaw)
 
         // if there ARE no new posts found from the input text, feedback to user.
         if (!newPostsRaw.length) {
@@ -133,9 +138,6 @@ function Update({ userPlaylistMetas }) {
           setInfoLoading(false);
           return setScreen('nonew');
         };
-
-        console.log(newPostsRaw)
-        setNewPostsRawStored(newPostsRaw); // 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 
 
         // first, get all the Spotify Data for all .linkType = 'spotify' posts
         const justNewSpotifyPosts = newPostsRaw.filter(e => e.linkType === 'spotify'); // these are just Spotify TRACKs! (not playlists or albums)
@@ -152,18 +154,27 @@ function Update({ userPlaylistMetas }) {
 
           // second, handle any .linkType = 'youtube' posts
           const youtubePosts = [...newPostsRaw.filter(e => e.linkType === 'youtube')];
+          // console.log('🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 ')
+          // console.log('youtubePosts just prior to going and finding possible Spotify matches')
+          // console.log(youtubePosts)
 
           // if any youtube posts in chat, find the closest matching results for these on spotify
           if (youtubePosts.length) {
             const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
             const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
-            // ❓❓❓❓ check spotifyDataObjs
-            setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
-            setInputText('');
+            // console.log('❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ')
+            // console.log('videoDataObjs + spotifyDataObjs ater finding possible Spoti matches for YT vids')
+            // console.log({ videoDataObjs, spotifyDataObjs })
+            // even when a GET for YT vid data returned a deleted/private vid, we still returned a corresponding SpotifyDataObj value
+            // of null. This is to preserve the array length so as not to mess with index-based referencing when re-making arrays.
+            // Now, we need to turn any 'null's in spotifiyDataObjs into an empty obj with a single .include key of 'false'
+            const spotifyDataObjsHandlingNulls = spotifyDataObjs.map(e => !e ? { include: false } : e);
+            setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjsHandlingNulls });
+            // setInputText('');
             setScreen('youtube');
             setInfoLoading(false);
           } else {
-            setInputText('');
+            // setInputText('');
             setScreen('review');
             setInfoLoading(false);
           }
@@ -173,14 +184,26 @@ function Update({ userPlaylistMetas }) {
       }
     }).catch(e => console.log(e))
   }
+  /* 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️  */
+
 
   const handleConvertedPosts = (convertedPosts) => {
+    // console.log('---------------------------------------')
+    // console.log('convertedPosts coming up out from YoutubeConversionInterface:')
+    // console.log(convertedPosts)
+    // console.log('---------------------------------------')
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    // console.log('convertYoutubePosts as stored up in Update state (originals, before YTConversionInterface modified them')
+    // console.log(convertYoutubePosts)
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     // mix convertedPosts with the spotify-type posts already in newPostsInState
     const combinedAndSortedSpotifyAndYoutubePosts = newPostsInState.concat(convertedPosts).sort((a, b) => (a.postId > b.postId) ? 1 : -1);
     setNewPostsInState(combinedAndSortedSpotifyAndYoutubePosts);
     setScreen('review');
   }
 
+
+  /* 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩  */
   const handleFinalSubmission = async (trackIDs) => {
     setInfoLoading(true);
     const { firebasePlaylistId, playlistObj } = firebasePlaylistObj;
@@ -188,11 +211,8 @@ function Update({ userPlaylistMetas }) {
 
 
 
-    // const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
-    // console.log(newPostsRaw, ' <-- newPostsRaw') // this will have our 'spotifyAlbum' and 'spotifyPlaylist' .linkType posts included
-
-    const newPostsRaw = [...newPostsRawStored]; // 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 
-    console.log(newPostsRaw)
+    const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
+    console.log(newPostsRaw, ' <-- newPostsRaw') // this will have our 'spotifyAlbum' and 'spotifyPlaylist' .linkType posts included
 
     // get album info for any Spotify albums posted, and map onto those 'spotifyAlbum'-type posts in newPostsRaw
     const albumTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyAlbum');
@@ -217,6 +237,7 @@ function Update({ userPlaylistMetas }) {
 
     // get playlist info for any Spotify playlists posted, and map onto those 'spotifyPlaylist'-type posts in newPostsRaw
     const playlistTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyPlaylist');
+    console.log(playlistTypePosts, ' <--- playlistTypePosts')
     const spotifyPlaylistsData = await u.getSpotifyPlaylistsData(playlistTypePosts, spotifyToken);
     if (!spotifyPlaylistsData) {
       setInfoLoading(false);
@@ -226,14 +247,20 @@ function Update({ userPlaylistMetas }) {
     }
 
     spotifyPlaylistsData.forEach(obj => {
-      const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyPlaylist' && e.linkID === obj.linkID);
-      newPostsRaw[indexOfCorrespondingRawPostObj] = {
-        ...newPostsRaw[indexOfCorrespondingRawPostObj],
-        thumbnailSmall: obj.thumbnailSmall,
-        thumbnailMed: obj.thumbnailMed,
-        title: obj.title,
-        totalTracks: obj.totalTracks,
-        owner: obj.owner,
+      console.log('???????')
+      console.log(obj)
+      if (obj) { // !== null (ie. playlist data WAS found for it this playlist type post obj...)
+        const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyPlaylist' && e.linkID === obj.linkID);
+        console.log(newPostsRaw[indexOfCorrespondingRawPostObj])
+        console.log('........')
+        newPostsRaw[indexOfCorrespondingRawPostObj] = {
+          ...newPostsRaw[indexOfCorrespondingRawPostObj],
+          thumbnailSmall: obj.thumbnailSmall,
+          thumbnailMed: obj.thumbnailMed,
+          title: obj.title,
+          totalTracks: obj.totalTracks,
+          owner: obj.owner,
+        }
       }
     });
 
@@ -297,6 +324,8 @@ function Update({ userPlaylistMetas }) {
       console.log('failure updating playlist - firebase or spotify')
     }
   }
+  /* 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩  */
+
 
   const screenToRender = () => {
     if (infoLoading) return (
