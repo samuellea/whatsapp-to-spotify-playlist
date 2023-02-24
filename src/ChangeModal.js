@@ -180,7 +180,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
     let r = window.confirm(`Replace ${matchToChange.artists.join(',')} - ${matchToChange.title} with ${spotifyObj.artists.join(',')} - ${spotifyObj.title}?`);
     if (r == true) {
       setReplaceSuccess(true);
-      await mockSleep(1500);
+      await mockSleep(1000);
       handleCorrectASpotifyResult(spotifyObj);
     }
   };

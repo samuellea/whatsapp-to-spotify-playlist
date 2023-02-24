@@ -75,7 +75,7 @@
   /* max-height: 100px; */
   background-color: #60294C;
   display: grid;
-  /* grid-template: 50% 50% / 1fr; */
+  grid-template: 50% 50% / 1fr;
   /* border-radius: 10px; */
   border-radius: 10px 10px 10px 10px;
   overflow: hidden;
@@ -113,15 +113,16 @@
   /* border: 1px solid red; */
   grid-area: 1/1/2/2;
   background-color: black;
-  width: 98%;
+  border: 2px solid #60294C;
+  width: 100%;
   height: 100%;
   margin: auto auto;
-  border: 2px solid #60294C;
   /* border: 1px solid cyan; */
   border-bottom: none;
   border-radius: 10px 10px 0px 0px;
   overflow: hidden;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .YoutubeThumbnail {
@@ -363,10 +364,10 @@
 
 .ChangedAsterisk {
   /* border: 1px solid red; */
-  width: 100%;
+  width: 99%;
   position: absolute;
   top: -8%;
-  left: 5px;
+  /* left: 5px; */
   z-index: 2;
   text-align: right;
   font-size: 42px;
