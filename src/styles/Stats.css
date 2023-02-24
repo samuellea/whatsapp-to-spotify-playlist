@@ -53,6 +53,26 @@
   margin-left: 12px;
 }
 
+.StatsInfoPodOpenButton {
+  color: white;
+  border: none;
+  /* border: 2px solid red; */
+  background: none;
+  margin-top: 5%;
+  height: 50px;
+  width: 100%;
+  /* padding: 12px 50px; */
+  border-radius: 10px;
+  font-family: 'Arial';
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #7316c6;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
 .Stats {
   /* border: 3px solid lime; */
   /* purple */
@@ -118,6 +138,8 @@
   width: 100%;
   text-align: center;
   margin-top: 14px;
+  /* border: 1px solid red; */
+  text-align: left;
 }
 
 

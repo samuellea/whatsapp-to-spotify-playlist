@@ -13,7 +13,7 @@ export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) =>
     headers: { 'Authorization': 'Bearer ' + spotifyToken },
     data: {
       'name': newPlaylistName,
-      'description': 'Created and maintained using whatsapp-to-spotify-playlist',
+      // 'description': 'Created and maintained using whatsapp-to-spotify-playlist',
       'public': true,
     }
   }).catch(e => {
