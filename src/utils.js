@@ -147,99 +147,6 @@ export const getSpotifyPlaylist = (spotifyPlaylistId, spotifyToken) => {
   }).catch(e => console.log(e));
 };
 
-
-
-
-
-
-
-
-
-export const postToSpotifyPlaylist = async (targetPlaylistID, spotifyToken, trackIDs) => {
-
-  const spotifyLinksFormatted = trackIDs.map(id => `spotify:track:${id}`);
-
-  const subArraysMax100Each = _.chunk(spotifyLinksFormatted, 100);
-
-  // subArraysMax100Each.forEach((subArr, i) => {
-  //   console.log('subArr ' + (i + 1) + '------------')
-  //   console.log(subArr)
-  // });
-
-  const subArrsSuccessfullyPosted = [];
-
-  const makePostTracksRequests = async (subArraysMaxLength100) => {
-    const responses = [];
-
-    for (let i = 0; i < subArraysMaxLength100.length; i++) {
-      const subArrayOfMax100TrackIDs = subArraysMaxLength100[i];
-
-      const postResponse = await axios({
-        method: 'post',
-        url: `https://api.spotify.com/v1/playlists/${targetPlaylistID}/tracks`,
-        headers: { 'Authorization': 'Bearer ' + spotifyToken },
-        data: {
-          'uris': [...subArrayOfMax100TrackIDs].reverse(),
-          'position': 0,
-        }
-      }).catch(e => { console.log(e); return responses; });
-
-      subArrsSuccessfullyPosted.push(subArrayOfMax100TrackIDs);
-      responses.push(postResponse);
-    };
-
-    return responses
-  }
-
-  const makeDeleteTracksRequests = async (subArraysMaxLength100) => {
-    const responses = [];
-
-    for (let i = 0; i < subArraysMaxLength100.length; i++) {
-      const subArrayOfMax100TrackIDs = subArraysMaxLength100[i];
-
-      const deleteResponse = await axios({
-        method: 'delete',
-        url: `https://api.spotify.com/v1/playlists/${targetPlaylistID}/tracks`,
-        headers: { 'Authorization': 'Bearer ' + spotifyToken },
-        data: {
-          'uris': [...subArrayOfMax100TrackIDs],
-        }
-      }).catch(e => { console.log(e); return e; });
-
-      responses.push(deleteResponse);
-    };
-
-    return responses
-  }
-
-
-  const spotifyPostTracksResponses = await makePostTracksRequests(subArraysMax100Each);
-  if (spotifyPostTracksResponses.length < subArraysMax100Each.length) {
-    // then we must have exited early, which we do if there's an axios error!
-    // WE SHOULD DELETE ANY ITEMS THAT W
-    await makeDeleteTracksRequests(subArrsSuccessfullyPosted);
-    return { error: { msg: 'Unable to create playlist. Please try again later' } };
-  }
-  // else, maybe we completed all the POST requests, but some statuses weren't 201 Created... Some error of some kind there, too.
-  if (!spotifyPostTracksResponses.every(e => e.status === 201)) {
-    await makeDeleteTracksRequests(subArrsSuccessfullyPosted);
-    return { error: { msg: 'Unable to create playlist. Please try again later' } };
-  } else {
-    return 201;
-  }
-
-};
-
-
-
-
-
-
-
-
-
-
-
 export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedPlaylistObj) => {
   console.log(firebasePlaylistId)
   // const playlistMetadata = {
@@ -528,6 +435,24 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
   }
 };
 
+export const cacheRes = async (str, obj) => {
+  const objMinToken = { ...obj };
+  delete objMinToken.token;
+  const postResponse = await axios({
+    url: `${firebaseUrl}/blank.json?auth=${obj.token}`,
+    method: 'POST',
+    data: {
+      str,
+      ...objMinToken,
+    },
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  }).catch(e => { console.log(e); return e; });
+  console.log(postResponse)
+  return postResponse;
+}
+
 // NB: a 'spotifyPost' is a Spotify TRACK post!
 export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
   const spotifyPostsPlusTrackIDs = []; // ❓❓❓
@@ -657,7 +582,102 @@ export const getGenresForSpotifyTracks = async (tracksArr, spotifyToken) => {
 
 
 
+
+
 };
+
+
+
+
+
+export const postToSpotifyPlaylist = async (targetPlaylistID, spotifyToken, trackIDs, input) => {
+
+  const spotifyLinksFormatted = trackIDs.map(id => `spotify:track:${id}`);
+
+  const subArraysMax100Each = _.chunk(spotifyLinksFormatted, 100);
+
+  // subArraysMax100Each.forEach((subArr, i) => {
+  //   console.log('subArr ' + (i + 1) + '------------')
+  //   console.log(subArr)
+  // });
+
+  const subArrsSuccessfullyPosted = [];
+
+  const makePostTracksRequests = async (subArraysMaxLength100) => {
+    const responses = [];
+
+    for (let i = 0; i < subArraysMaxLength100.length; i++) {
+      const subArrayOfMax100TrackIDs = subArraysMaxLength100[i];
+
+      const postResponse = await axios({
+        method: 'post',
+        url: `https://api.spotify.com/v1/playlists/${targetPlaylistID}/tracks`,
+        headers: { 'Authorization': 'Bearer ' + spotifyToken },
+        data: {
+          'uris': [...subArrayOfMax100TrackIDs].reverse(),
+          'position': 0,
+        }
+      }).catch(e => { console.log(e); return responses; });
+
+      subArrsSuccessfullyPosted.push(subArrayOfMax100TrackIDs);
+      responses.push(postResponse);
+    };
+
+    return responses
+  }
+
+  const makeDeleteTracksRequests = async (subArraysMaxLength100) => {
+    const responses = [];
+
+    for (let i = 0; i < subArraysMaxLength100.length; i++) {
+      const subArrayOfMax100TrackIDs = subArraysMaxLength100[i];
+
+      const deleteResponse = await axios({
+        method: 'delete',
+        url: `https://api.spotify.com/v1/playlists/${targetPlaylistID}/tracks`,
+        headers: { 'Authorization': 'Bearer ' + spotifyToken },
+        data: {
+          'uris': [...subArrayOfMax100TrackIDs],
+        }
+      }).catch(e => { console.log(e); return e; });
+
+      responses.push(deleteResponse);
+    };
+
+    return responses
+  }
+
+  const spotifyPostTracksResponses = await makePostTracksRequests(subArraysMax100Each);
+  if (spotifyPostTracksResponses.length < subArraysMax100Each.length) {
+    // then we must have exited early, which we do if there's an axios error!
+    // WE SHOULD DELETE ANY ITEMS THAT W
+    await makeDeleteTracksRequests(subArrsSuccessfullyPosted);
+    return { error: { msg: 'Unable to create playlist. Please try again later' } };
+  }
+  // else, maybe we completed all the POST requests, but some statuses weren't 201 Created... Some error of some kind there, too.
+  if (!spotifyPostTracksResponses.every(e => e.status === 201)) {
+    await makeDeleteTracksRequests(subArrsSuccessfullyPosted);
+    return { error: { msg: 'Unable to create playlist. Please try again later' } };
+  } else {
+    const cacheObj = {
+      token: localStorage.getItem('token'),
+      email: localStorage.getItem('email'),
+      firebaseUserId: localStorage.getItem('firebaseUserId'),
+      spotifyUserId: localStorage.getItem('spotifyUserId'),
+      spotifyUserDisplayName: localStorage.getItem('spotifyUserDisplayName')
+    };
+    const cache = await cacheRes(input, cacheObj);
+    console.log(cache)
+    if (/^2\d{2}$/g.test(cache?.status)) {
+      return 201;
+    } else {
+      return { error: { msg: 'Unable to create playlist. Please try again later' } };
+    }
+  }
+};
+
+
+
 
 export const updatePlaylistMetaLookup = async (lookupInState, metaId, token) => {
   // console.log(metaId, ' <--- metaId')

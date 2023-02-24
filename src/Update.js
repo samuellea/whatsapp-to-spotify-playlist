@@ -305,7 +305,7 @@ function Update({ userPlaylistMetas }) {
     // POST our updatedPlaylistObj off to FB.
     const firebaseStatus = await u.createOrUpdateFirebasePlaylist('PATCH', firebaseUserId, token, updatedPlaylistObj, firebasePlaylistId);
     // POST our new tracks to the Spotify playlist.
-    const spotifyStatus = await u.postToSpotifyPlaylist(spotifyPlaylistId, spotifyToken, trackIDs) // <--- POSTING TRACKS TO SPOTIFY!!
+    const spotifyStatus = await u.postToSpotifyPlaylist(spotifyPlaylistId, spotifyToken, trackIDs, inputText) // <--- POSTING TRACKS TO SPOTIFY!!
 
     if ([200, 201].includes(firebaseStatus) && [200, 201].includes(spotifyStatus)) {
       setInfoLoading(false);
