@@ -56,7 +56,7 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
   };
 
   // if (!sharedNotAddedItemsPresent()) return null;
-
+  console.log(rawPostsLog)
   const excludedYoutubePosts = rawPostsLog.filter(e => isExcludedYoutubePost(e));
   const spotifyAlbums = rawPostsLog.filter(e => isSpotifyAlbum(e));
   const spotifyPlaylists = rawPostsLog.filter(e => isSpotifyPlaylist(e));

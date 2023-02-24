@@ -7,7 +7,8 @@
   justify-content: center;
   align-items: center;
   /* border: 1px solid yellow; */
-  padding: 5%;
+  /* padding: 5%; */
+  padding-top: 0;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -27,12 +28,142 @@
   /* border: none; */
 }
 
-
-.TrackInfo {
+.ChangeModalContentContainer {
   /* border: 3px solid white; */
   width: 100%;
   height: 100%;
+  position: relative;
+  box-sizing: border-box;
+}
+
+
+.TrackInfo {
+  /* border: 3px solid white; */
   justify-content: space-between;
+  padding: 5%;
+  box-sizing: border-box;
+  border-radius: 0px 0px 15px 15px;
+}
+
+.SearchResultsInfo {
+  position: absolute;
+  /* border: 3px solid red; */
+  background-color: #292b3e;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  border-radius: 15px;
+  z-index: 7;
+  padding: 5%;
+  box-sizing: border-box;
+}
+
+.SearchResultsDisplay {
+  height: 76%;
+  width: 100%;
+  background-color: #1a1b27;
+  border-radius: 10px;
+  overflow-y: scroll;
+}
+
+.SearchResultsDisplay::-webkit-scrollbar {
+  height: 40px;
+}
+
+.SearchResultsDisplay::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.SearchResultsDisplay::-webkit-scrollbar-thumb {
+  background-color: #a2a4bb;
+  outline: none;
+  height: 10px;
+  border-radius: 20px;
+}
+
+.ChangeModalPreviewContainer {
+  /* border: 1px solid red; */
+  margin-left: auto;
+  /* margin-left: 8px; */
+  height: 100%;
+  width: 40px;
+  display: flex;
+  position: relative;
+}
+
+.ChangeModalPreviewContainer>.Preview {
+  position: absolute;
+  top: 7px;
+  left: 0;
+}
+
+
+#ChangeModalDuration {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 100%;
+  /* margin-left: 8px; */
+  /* margin-left: auto; */
+  /* margin-right: 3px; */
+  /* border: 1px solid red; */
+  font-size: 10px;
+}
+
+.SearchResultsInfo button {
+  height: 50px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background-color: #7316C6;
+  font-family: "Raleway-Bold";
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 5%;
+  color: white;
+}
+
+#ChangeModelOpen {
+  width: 47.5% !important;
+  height: 50px;
+  border-radius: 10px;
+  border: none;
+  background-color: #7316C6;
+  font-family: "Raleway-Bold";
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 5%;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ResultsSelectCancelButtons {
+  justify-content: space-between;
+}
+
+.ResultsSelectCancelButtons button {
+  width: 47.5% !important
+}
+
+#ChangeModalSelect {
+  background-color: #66b06e !important;
+}
+
+#ChangeModalSelect:disabled {
+  background-color: #7316C6 !important;
+  opacity: 0.5;
+}
+
+
+.Selected-true {
+  /* border: 3px solid white; */
+  /* border-top: 3px solid white !important; */
+  background-color: #66b06e !important;
 }
 
 .ChangeModalInfoContainer {
@@ -57,7 +188,7 @@
 }
 
 .TitleArtistsContainer {
-  /* border: 1px solid white; */
+  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -81,7 +212,7 @@
 }
 
 .ChangeModalControlsContainer {
-  /* border: 1px solid red; */
+  /* border: 1px solid green; */
   width: 100%;
   /* flex: 1; */
 }
@@ -125,7 +256,7 @@
 }
 
 .ChangeModalControlsContainer button:nth-child(4) {
-  background-color: #66B06E;
+  /* background-color: #66B06E; */
 }
 
 .ErrorAndSearchContainer {
@@ -146,7 +277,7 @@
 }
 
 .ErrorContainer {
-  /* border: 1px solid red; */
+  /* border: 3px dashed red; */
   height: 100%;
   justify-content: center;
   align-items: center;
@@ -195,4 +326,51 @@
   width: 100%;
   justify-content: center;
   align-items: center;
+}
+
+
+.ChangeOptionsContainer {
+  /* border: 3px solid cyan; */
+  justify-content: space-between;
+  /* margin-bottom: 5%; */
+  border-radius: 15px;
+}
+
+.ChangeOptionsContainer button {
+  height: 50px;
+  width: 50%;
+  /* border-radius: 10px; */
+  border: none;
+  /* background-color: #7316C6; */
+  font-family: "Raleway-Regular";
+  font-size: 16px;
+  font-weight: 800;
+  color: white;
+}
+
+.ChangeSearchButton {
+  /* border: 2px solid red; */
+  border-radius: 15px 0px 0px 0px;
+}
+
+.ChangePasteButton {
+  /* border: 2px solid red; */
+  border-radius: 0px 15px 0px 0px;
+  /* border-left: 1px solid rgba(255, 255, 255, 0.253) !important; */
+}
+
+
+.ChangeMode-true {
+  /* border: 3px solid white; */
+  /* border: none; */
+  background-color: #292b3e;
+  /* text-decoration: underline; */
+  /* border-top: 2px solid rgba(255, 255, 255, 0.253) !important; */
+  color: #98FFAD !important;
+}
+
+.ChangeMode-false {
+  border: none;
+  /* color: rgba(255, 255, 255, 0.491) !important; */
+  background-color: #161723;
 }

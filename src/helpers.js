@@ -562,6 +562,12 @@ export const stringContainsKaraoke = (str) => {
   return false;
 };
 
+export const millisToMinsAndSecs = (millis) => {
+  const minutes = Math.floor(millis / 60000);
+  const seconds = ((millis % 60000) / 1000).toFixed(0);
+  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+};
+
 /*
 RED e74c3c
 BLUE 3498db

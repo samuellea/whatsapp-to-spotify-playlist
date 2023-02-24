@@ -37,6 +37,7 @@ function Update({ userPlaylistMetas }) {
   // const [screen, setScreen] = useState('input');
   const [screen, setScreen] = useState('choose');
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
+  const [newPostsRawStored, setNewPostsRawStored] = useState([]);
 
   const firebaseUserId = localStorage.getItem('firebaseUserId');
   const token = localStorage.getItem('token');
@@ -79,10 +80,15 @@ function Update({ userPlaylistMetas }) {
   };
 
   const handleChangeTextArea = (e) => {
-    const inputTextReplaceOne = e.target.value.replace('\n', " ");
-    const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
-    const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
-    setInputText(inputTextReplaceThree);
+    const inputTextNoLineBreaks = e.target.value.replace(/(\r\n|\n|\r)/gm, " "); // <-- this regex was REALLY slow! c. 50 seconds this way vs. c. 5 seconds below!
+    setInputText(inputTextNoLineBreaks);
+
+
+    // const inputTextReplaceOne = e.target.value.replace('\n', " ");
+    // const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
+    // const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
+    // setInputText(inputTextReplaceThree);
+
     // setInfoLoading(false);
   };
 
@@ -93,6 +99,7 @@ function Update({ userPlaylistMetas }) {
     const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
     const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
     setInputText(inputTextReplaceThree);
+
     // setInfoLoading(false);
   };
 
@@ -113,6 +120,10 @@ function Update({ userPlaylistMetas }) {
         setFirebasePlaylistObj({ firebasePlaylistId, playlistObj });
 
         const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
+
+        console.log(inputText);
+        console.log(rawPostsLog);
+
         // determine new posts by comparing input text's posts with .rawPosts
         const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
 
@@ -122,6 +133,8 @@ function Update({ userPlaylistMetas }) {
           setInfoLoading(false);
           return setScreen('nonew');
         };
+
+        setNewPostsRawStored(newPostsRaw); // 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 
 
         // first, get all the Spotify Data for all .linkType = 'spotify' posts
         const justNewSpotifyPosts = newPostsRaw.filter(e => e.linkType === 'spotify'); // these are just Spotify TRACKs! (not playlists or albums)
@@ -141,15 +154,15 @@ function Update({ userPlaylistMetas }) {
 
           // if any youtube posts in chat, find the closest matching results for these on spotify
           if (youtubePosts.length) {
-            console.log('giraffe')
             const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
             const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
             // ❓❓❓❓ check spotifyDataObjs
             setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
+            // setInputText('');
             setScreen('youtube');
             setInfoLoading(false);
           } else {
-            console.log('hippo')
+            // setInputText('');
             setScreen('review');
             setInfoLoading(false);
           }
@@ -172,8 +185,12 @@ function Update({ userPlaylistMetas }) {
     const { firebasePlaylistId, playlistObj } = firebasePlaylistObj;
     const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
 
-    const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
-    console.log(newPostsRaw, ' <-- newPostsRaw') // this will have our 'spotifyAlbum' and 'spotifyPlaylist' .linkType posts included
+
+
+    // const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
+    // console.log(newPostsRaw, ' <-- newPostsRaw') // this will have our 'spotifyAlbum' and 'spotifyPlaylist' .linkType posts included
+
+    const newPostsRaw = [...newPostsRawStored]; // 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 🐟 
 
     // get album info for any Spotify albums posted, and map onto those 'spotifyAlbum'-type posts in newPostsRaw
     const albumTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyAlbum');

@@ -101,7 +101,7 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
       <div className="YoutubeConversionsHeader Flex Column">
         <span>YouTube videos were found.</span>
         <span>
-          Do they match these Spotify tracks? (Tap an item to edit)
+          Convert to these Spotify tracks? (Tap an item to edit)
         </span>
       </div>
 

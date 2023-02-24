@@ -75,6 +75,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(async (spotifyRes) => {
         setSpotifyPlaylistData({ ...spotifyPlaylistData, artwork: spotifyRes.data.images[0].url })
         const { data } = firebasePlaylistRes;
+        console.log(data, ' <<<<<<<<<<<')
         const firebasePlaylistId = Object.entries(data)[0][0];
         const firebasePlaylistObj = Object.entries(data)[0][1];
         setFirebasePlaylist({ id: firebasePlaylistId, obj: firebasePlaylistObj });
