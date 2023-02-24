@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRightFromBracket, faArrowsRotate, faBan, faCaretDown, faCircleStop, faClose, faRotateLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightFromBracket, faArrowsRotate, faAsterisk, faBan, faCaretDown, faCircleStop, faClose, faRotateLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
 import './styles/ConversionCard.css';
 
 function ConversionCard({
   conversion,
   index,
-  handleCancelInspect,
   handleUndoMatchChanges,
   handleChangeMatch,
   handleExcludeMatch,
-  handleConversionCardClick,
   handleIncludeMatch,
-  matchInspected,
   spotifyMatches,
 }) {
 
@@ -25,26 +22,24 @@ function ConversionCard({
         <span>Youtube video not found</span>
       </div>
     )
-    // return null;
   }
 
   const youtubeSegmentContent = (index) => {
     const { thumbnail, title } = youtubePost;
     return (
-      <div className="YoutubeSegment">
+      <div className="SegmentWrapper YoutubeSegmentWrapper">
+        <div className="YoutubeSegment">
 
-        <div className="YoutubeThumbContainer Flex" onClick={() => handleConversionCardClick(index)}>
-          <img className="YoutubeThumbnail" src={thumbnail} alt="Youtube Thumbnail" />
+          <div className="YoutubeThumbContainer Flex">
+            <img className="YoutubeThumbnail" src={thumbnail} alt="Youtube Thumbnail" />
+          </div>
+
+          <div className="YoutubeInfoContainer Flex">
+            <span className="CurtailText Curtail2">{title}</span>
+          </div>
+
         </div>
-
-        <div className="YoutubeInfoContainer Flex" onClick={() => handleConversionCardClick(index)}>
-          <span className="CurtailText Curtail2">{title}</span>
-
-        </div>
-        <a href={`https://youtu.be/${youtubePost.youtubeID}`} target="_blank">
-          <FontAwesomeIcon icon={faArrowRightFromBracket} pointerEvents="none" />
-        </a>
-
+        <a href={`https://youtu.be/${youtubePost.youtubeID}`} target="_blank" />
       </div>
 
     )
@@ -59,100 +54,73 @@ function ConversionCard({
       )
     }
 
-    const { artists, title, thumbnailSmall, thumbnailMed } = spotifyMatch;
+    const { artists, title, thumbnailMed } = spotifyMatch;
 
     return (
-      <div className="SpotifySegment Flex">
-        <img className="ConversionSpotifyThumbnail" src={thumbnailMed} alt="Spotify Thumbnail" />
+      <div className="SegmentWrapper SpotifySegmentWrapper">
 
-        <div className="ConversionSpotifyInfoContainer Flex Column" onClick={() => handleConversionCardClick(index)}>
-          <div className="SpotifyTitle Flex Column">
-            <span className="CurtailText Curtail3">{title}</span>
+        <div className="SpotifySegment Flex Row">
+          <div className="ConversionSpotifyThumbnailContainer Flex Column">
+            <img className="ConversionSpotifyThumbnail" src={thumbnailMed} alt="Spotify Thumbnail" />
           </div>
 
-          <div className="SpotifyArtists Flex Column" onClick={() => handleConversionCardClick(index)}>
-            <span className="CurtailText Curtail3">{artists.join(', ')}</span>
-          </div>
+          <div className="ConversionSpotifyInfoContainer Flex Column">
+            <div className="SpotifyTitle Flex Column">
+              <span className="CurtailText Curtail3">{title} </span>
+            </div>
 
+            <div className="SpotifyArtists Flex Column">
+              <span className="CurtailText Curtail2">{artists.join(', ')} </span>
+            </div>
+          </div>
         </div>
-        <a href={`https://open.spotify.com/track/${spotifyMatch.spotifyTrackID}`} target="_blank">
-          <FontAwesomeIcon icon={faArrowRightFromBracket} pointerEvents="none" />
-        </a>
+        <a href={`https://open.spotify.com/track/${spotifyMatch.spotifyTrackID}`} target="_blank" />
       </div>
+
     )
   };
 
-  const matchInspectedMenu = () => {
-    console.log('matchInspectedMenu!')
-    console.log(`matchInspected: ${matchInspected}`)
-    console.log('------')
+
+  const conversionCard = () => {
     const { include } = spotifyMatch;
+    console.log(include)
     const undoEnabled = spotifyMatch.spotifyTrackID !== spotifyMatches[index].spotifyTrackID;
-    const matchInspectedMenuContent = () => {
-      if (matchInspected === index && include) {
-        // menu options when post is set to be included .include = true
-        return (
-          <div className="MatchInspectedMenuInclude Flex Column">
-            <button type="button" onClick={() => handleCancelInspect()}>Cancel</button>
-            <button type="button" onClick={() => handleUndoMatchChanges(index)} disabled={!undoEnabled} >Undo Change
-              <FontAwesomeIcon icon={faArrowsRotate} pointerEvents="none" />
-            </button>
-            <button type="button" onClick={() => handleChangeMatch(spotifyMatch, index)}>Change
-              <FontAwesomeIcon icon={faSearch} pointerEvents="none" />
-            </button>
-            <button type="button" onClick={() => handleExcludeMatch(index)}>Exclude
-              <FontAwesomeIcon icon={faClose} pointerEvents="none" />
-            </button>
-          </div>
-        )
-      }
-      if (matchInspected === index && !include) {
-        // menu options when post is set to be excluded .include = false
-        return (
-          <div className="MatchInspectedMenuInclude Flex Column">
-            <button type="button" id="ReIncludeButton" onClick={() => handleIncludeMatch(index)}>
-              Include
-              <FontAwesomeIcon icon={faRotateLeft} pointerEvents="none" />
-            </button>
-          </div>
-
-        )
-      }
-    };
     return (
-      <div className="MatchInspectedMenu">
-        {matchInspectedMenuContent()}
-      </div>
+      <div className="YTC-Wrapper Flex Row">
+        <div className="ChangedAsterisk">
+          {undoEnabled && include ? <FontAwesomeIcon icon={faAsterisk} pointerEvents="none" /> : null}
+        </div>
+
+        <div className={`YTC-ButtonsMenuContainer Flex Column ButtonsMenuContainer-Include-${include}`}>
+          <button className={`CC-Side-Top2-${include}`} onClick={() => handleUndoMatchChanges(index)} disabled={!undoEnabled}> <FontAwesomeIcon icon={faArrowsRotate} pointerEvents="none" /></button>
+          <button className={`CC-Side-Top2-${include}`} onClick={() => handleChangeMatch(spotifyMatch, index)} disabled={!include}><FontAwesomeIcon icon={faSearch} pointerEvents="none" /></button>
+          <button className={`CC-Side-Exclude-${include}`} onClick={() => include ? handleExcludeMatch(index) : handleIncludeMatch(index)}>
+            {include ?
+              <FontAwesomeIcon icon={faClose} pointerEvents="none" /> :
+              <FontAwesomeIcon icon={faRotateLeft} pointerEvents="none" />
+            }
+          </button>
+        </div>
+
+        <div className={`YoutubeConversionCard Flex Column`}>
+
+          {!spotifyMatch.include ?
+            <div className="ConversionExcludeWrapper">
+              <div className="ConversionExcludeTint" />
+              <div className="ConversionExcludeCrossIcon">
+                <FontAwesomeIcon icon={faBan} pointerEvents="none" />
+              </div>
+            </div>
+            : null}
+          {youtubeSegmentContent(index)}
+          {spotifySegmentContent(index)}
+        </div>
+      </div >
     )
   };
-
-  const conversionCardInspectedState = () => (
-    <div className="YoutubeConversionCard YTCC-Inspected Flex Column">
-      {matchInspectedMenu()}
-    </div>
-  );
-
-  const conversionCardNotInspectedState = () => (
-    <div className={`YoutubeConversionCard Flex Column ${!spotifyMatch.include ? 'YTCC-Excluded' : null}`}>
-      {!spotifyMatch.include ?
-        <div className="ConversionExcludeWrapper" onClick={() => handleConversionCardClick(index)}>
-          <div className="ConversionExcludeTint" />
-          <div className="ConversionExcludeCrossIcon">
-            <FontAwesomeIcon icon={faBan} pointerEvents="none" />
-          </div>
-        </div>
-        : null}
-      {youtubeSegmentContent(index)}
-      <FontAwesomeIcon id="caretDown" icon={faCaretDown} pointerEvents="none" />
-      {spotifySegmentContent(index)}
-
-    </div>
-  );
 
   return (
-    matchInspected === index
-      ? conversionCardInspectedState()
-      : conversionCardNotInspectedState()
+    conversionCard()
   )
 
 

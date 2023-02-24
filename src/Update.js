@@ -237,7 +237,6 @@ function Update({ userPlaylistMetas }) {
 
     // get playlist info for any Spotify playlists posted, and map onto those 'spotifyPlaylist'-type posts in newPostsRaw
     const playlistTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyPlaylist');
-    console.log(playlistTypePosts, ' <--- playlistTypePosts')
     const spotifyPlaylistsData = await u.getSpotifyPlaylistsData(playlistTypePosts, spotifyToken);
     if (!spotifyPlaylistsData) {
       setInfoLoading(false);
@@ -247,20 +246,14 @@ function Update({ userPlaylistMetas }) {
     }
 
     spotifyPlaylistsData.forEach(obj => {
-      console.log('???????')
-      console.log(obj)
-      if (obj) { // !== null (ie. playlist data WAS found for it this playlist type post obj...)
-        const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyPlaylist' && e.linkID === obj.linkID);
-        console.log(newPostsRaw[indexOfCorrespondingRawPostObj])
-        console.log('........')
-        newPostsRaw[indexOfCorrespondingRawPostObj] = {
-          ...newPostsRaw[indexOfCorrespondingRawPostObj],
-          thumbnailSmall: obj.thumbnailSmall,
-          thumbnailMed: obj.thumbnailMed,
-          title: obj.title,
-          totalTracks: obj.totalTracks,
-          owner: obj.owner,
-        }
+      const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyPlaylist' && e.linkID === obj.linkID);
+      newPostsRaw[indexOfCorrespondingRawPostObj] = {
+        ...newPostsRaw[indexOfCorrespondingRawPostObj],
+        thumbnailSmall: obj.thumbnailSmall,
+        thumbnailMed: obj.thumbnailMed,
+        title: obj.title,
+        totalTracks: obj.totalTracks,
+        owner: obj.owner,
       }
     });
 

@@ -562,6 +562,18 @@ export const stringContainsKaraoke = (str) => {
   return false;
 };
 
+export const stringContainsAcoustic = (str) => {
+  if (str.toLowerCase().includes('acoustic')) return true;
+  return false;
+};
+
+
+export const stringContainsLive = (str) => {
+  if (str.toLowerCase().includes('live')) return true;
+  return false;
+};
+
+
 export const millisToMinsAndSecs = (millis) => {
   const minutes = Math.floor(millis / 60000);
   const seconds = ((millis % 60000) / 1000).toFixed(0);

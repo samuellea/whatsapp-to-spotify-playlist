@@ -468,24 +468,31 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
       const fiveTracksScored = fiveTracksCondensed.map((titleAndArtistsJoined, i) => {
 
         const scoreSimilarity = (aVideoTitle, aString) => {
+          console.log('aString:')
+          console.log(aString)
           let count = 0;
           const videoTitleTerms = aVideoTitle.split(' ').filter(term => {
             const termsToRemove = ['&', '-', '+'];
             if (!termsToRemove.includes(term)) return term;
           });
-          videoTitleTerms.forEach(term => aString.includes(term) ? count++ : null);
+          console.log('videoTitleTerms:')
+          console.log(videoTitleTerms)
+          videoTitleTerms.forEach(term => aString.split(' ').includes(term) ? count++ : null);
 
           // handle karaoke versions - if 'karaoke' not in vid title, and 'karoke' found in Spoti result title, set similarity = 0
           if (!h.stringContainsKaraoke(aVideoTitle) && h.stringContainsKaraoke(aString)) count = 0;
+          if (!h.stringContainsAcoustic(aVideoTitle) && h.stringContainsAcoustic(aString)) count = 0;
+          if (!h.stringContainsLive(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
 
           return count;
         };
 
-        const similarity = scoreSimilarity(correspondingVideoTitle, titleAndArtistsJoined);
+        const similarity = scoreSimilarity(correspondingVideoTitle.toLowerCase(), titleAndArtistsJoined.toLowerCase());
         return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
       })
       // console.log(fiveTracksScored)
-
+      console.log(correspondingVideoTitle)
+      console.log(fiveTracksScored)
       // choose the most likely index of spotiRes.data.tracks.items
       const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
       const highestScoringCandidates = fiveTracksScored.filter(e => e.similarity === highestScore);
@@ -728,14 +735,17 @@ export const createPosterPlaylist = async (
 };
 
 export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
+  console.log(albumPosts)
   const justAlbumIDs = albumPosts.map(e => e.linkID);
   const subArraysMax50Each = _.chunk(justAlbumIDs, 50);
 
   const spotifyGetAlbumsQueries = subArraysMax50Each.map(arrayOfMax50IDs => {
     const max50IDsJoined = arrayOfMax50IDs.join(',')
-    const spotifyQuery = `https://api.spotify.com/v1/albums?ids=${max50IDsJoined}xyz&market=GB`;
+    const spotifyQuery = `https://api.spotify.com/v1/albums?ids=${max50IDsJoined}&market=GB`;
     return spotifyQuery;
   });
+
+  console.log(spotifyGetAlbumsQueries)
 
   const spotifyGetAlbumsResponses = await Promise.all(
     spotifyGetAlbumsQueries.map(async (query) => (await axios.get(query, {
@@ -758,9 +768,12 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
 
     if (e.status === 200) {
       e.data.albums.forEach(obj => {
+        console.log(obj)
         // this element in the response's .albums array could be null - album deleted or doesn't exist for some reason. Ignore in that case.
-        // But if this element ISN'T null, actual album data has been returned! Album exists. So push into acc.
-        if (obj) {
+        if (!obj) {
+          acc.push(null);
+        } else {
+          // But if this element ISN'T null, actual album data has been returned! Album exists. So push into acc.
           acc.push({
             artists: obj.artists.map(artist => artist.name),
             thumbnailSmall: obj.images[2].url || obj.images[1].url || obj.images[0].url,
@@ -779,13 +792,23 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
   // if any of the playlist responses failed with a 500 server error status, return null, and handle this up in Update - stop the submission.
   if (getAlbumsResponsesFlattened.some(e => e === 500)) return null;
   // else, all good - recompose albumPosts to have each original object's kv pairs PLUS the title, thumbnail and owner back
-  const albumPostsCompleteData = albumPosts.map((obj, i) => ({ ...obj, ...getAlbumsResponsesFlattened[i] }));
+
+  // const albumPostsCompleteData = albumPosts.map((obj, i) => ({ ...obj, ...getAlbumsResponsesFlattened[i] }));
+
+  console.log(albumPosts)
+  console.log(getAlbumsResponsesFlattened);
+
+  const albumPostsCompleteData = albumPosts.map((obj, i) => { // 🚦 🚦 🚦
+    if (getAlbumsResponsesFlattened[i] !== null && getAlbumsResponsesFlattened[i] !== 500) return { ...obj, ...getAlbumsResponsesFlattened[i] }; // 🚦 🚦 🚦
+    return { ...obj } // 🚦 🚦 🚦
+  }); // 🚦 🚦 🚦
   return albumPostsCompleteData;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
+  console.log(playlistPosts)
   const justPlaylistIDs = playlistPosts.map(e => e.linkID);
 
   const spotifyGetPlaylistQueries = justPlaylistIDs.map(playlistID => {
@@ -801,7 +824,7 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
     }).catch(e => { console.log(e); return e })))
   );
 
-  const getPlaylistResponsesFlattened = spotifyGetPlaylistResponses.reduce((acc, e) => {
+  const getPlaylistsResponsesFlattened = spotifyGetPlaylistResponses.reduce((acc, e, i) => { // 🚦 🚦 🚦
     console.log(e.response)
     if (/^5\d{2}$/g.test(e.response?.status)) {
       console.log('🚨')
@@ -813,7 +836,8 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
       // 400 error eg. 404
       // playlist not found - could have been deleted since posted in W/A chat. Therefore, ignore this playlist.
       // return acc; // 🚦 🚦 🚦
-      acc.push(null); // 🚦 🚦 🚦
+      // acc.push({ ...playlistPosts[i] }); // 🚦 🚦 🚦
+      acc.push(null);
     }
     if (e.status === 200) {
       // okay, it's a 200, but has data actually been sent back?
@@ -821,12 +845,14 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
       if (!e.data) {
         console.log('🌱...')
         // return acc; // 🚦 🚦 🚦
-        acc.push(null); // 🚦 🚦 🚦
+        // acc.push({ ...playlistPosts[i] }); // 🚦 🚦 🚦
+        acc.push(null);
       } else {
         console.log('🌱!')
         console.log(e)
         // playlist data actually present. Package this up in an object, merge into posts array etc. etc.
         acc.push({
+          // ...playlistPosts[i],
           thumbnailSmall: e.data?.images[2]?.url || e.data?.images[1]?.url || e.data?.images[0]?.url,
           thumbnailMed: e.data?.images[1]?.url || e.data?.images[0]?.url || e.data?.images[2]?.url,
           title: e.data?.name,
@@ -839,14 +865,13 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
   }, []);
 
   // if any of the playlist responses failed with a 500 server error status, return null, and handle this up in Update - stop the submission.
-  if (getPlaylistResponsesFlattened.some(e => e === 500)) return null;
+  if (getPlaylistsResponsesFlattened.some(e => e === 500)) return null; // 🚦 🚦 🚦
   // else, all good - recompose playlistPosts to have each original object's kv pairs PLUS the title, thumbnail and owner back
   const playlistPostsCompleteData = playlistPosts.map((obj, i) => { // 🚦 🚦 🚦
-    if (getPlaylistResponsesFlattened[i] !== null && getPlaylistResponsesFlattened[i] !== 500) return { ...obj, ...getPlaylistResponsesFlattened[i] }; // 🚦 🚦 🚦
+    if (getPlaylistsResponsesFlattened[i] !== null && getPlaylistsResponsesFlattened[i] !== 500) return { ...obj, ...getPlaylistsResponsesFlattened[i] }; // 🚦 🚦 🚦
     return { ...obj } // 🚦 🚦 🚦
   }); // 🚦 🚦 🚦
-
-  return playlistPostsCompleteData;
+  return playlistPostsCompleteData; // 🚦 🚦 🚦
 };
 
 

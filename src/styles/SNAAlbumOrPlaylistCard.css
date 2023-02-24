@@ -7,6 +7,12 @@
   flex-direction: column;
 }
 
+#SNAAOP-Link {
+  text-decoration: none !important;
+  color: white;
+}
+
+
 .SNA-AOP-PosterAndTracksContainer {
   /* border: 1px solid red; */
   height: 20px;
