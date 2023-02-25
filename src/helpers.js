@@ -36,18 +36,46 @@ export const splitTextIntoIndividualMessages = (inputText) => {
   return individualMessages;
 };
 
+export const msgTimeComponents = (singleMessage) => {
+  // handles times in 12hr or 24hr format, as well as glitched ASCII as can be copied/pasted
+  // from exports handled on mobile (eg. '12:30^£_pm);
+  const dateTime = singleMessage.slice(0, singleMessage.indexOf('-') - 1);
+  console.log(dateTime)
+  const timePortion = dateTime.slice(12);
+  const colonIndex = timePortion.indexOf(':');
+  let hourPortion = timePortion.slice(0, colonIndex); // * NB 'let'
+  const minutePortion = timePortion.slice(colonIndex + 1, colonIndex + 3);
+  const is12Hr = (['am', 'pm'].includes(timePortion.slice(-2)));
+  if (is12Hr) {
+    const amOrPm = timePortion.slice(-2);
+    if (amOrPm === 'am') hourPortion = `0${hourPortion}`.slice(-2);
+    if (amOrPm === 'pm' && hourPortion !== '12') hourPortion = +hourPortion + 12;
+    if (amOrPm === 'am' && hourPortion === '12') hourPortion = '00';
+  };
+  return {
+    day: dateTime.slice(0, 2),
+    month: dateTime.slice(3, 5),
+    year: dateTime.slice(6, 10),
+    hour: `${hourPortion}`,
+    minute: minutePortion,
+  };
+};
+
 export const splitIndividualMessagesIntoPosts = (individualMessages) => {
   // iterate over individualMessages
-  const messageDateTimeRegex = /\w{2}\/\w{2}\/\w{4},\s{1}\w{2}\:\w{2}/g
+  // const messageDateTimeRegex = /\w{2}\/\w{2}\/\w{4},\s{1}.*(?=\s{1}-\s{1}.*\:)/g
   const allPostsCrude = [];
   let postCounter = 0;
+
+  // (1[0-2]|0?[1-9]):[0-5][0-9].*((am|pm)(?=\s{1}-\s{1}.*\:))
 
   for (let i = 0; i <= individualMessages.length; i++) {
     const singleMessage = individualMessages[i];
 
     if (spotiTrackAlbumPlaylistOrYTRegex().test(singleMessage)) { // if this msg contains one or more Spoti (track/album/pl) or YT links...
       // grab required data
-      const dateTime = singleMessage.match(messageDateTimeRegex)[0]; // 14/01/2023, 15:00
+      const timeComponentsObj = msgTimeComponents(singleMessage);
+
       const poster = singleMessage.match(/(?<=-).*?(?=:)/g)[0].trim();
 
       const spotiOrYTLinks = [...singleMessage.matchAll(spotiTrackAlbumPlaylistOrYTRegex())].map(arrEl => arrEl[0].trim());
@@ -78,13 +106,7 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
           poster: poster,
           linkType: linkType,
           linkID: linkID,
-          time: {
-            day: dateTime.slice(0, 2),
-            month: dateTime.slice(3, 5),
-            year: dateTime.slice(6, 10),
-            hour: dateTime.slice(12, 14),
-            minute: dateTime.slice(15, 17),
-          },
+          time: timeComponentsObj,
         };
         // then push this postObj into allPostsCrude
         allPostsCrude.push(postObj);
@@ -94,19 +116,52 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
   return allPostsCrude;
 };
 
+export const timeObjInMs = (timeObj) => {
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const timeAsString = `${months[+timeObj.month - 1]} ${+timeObj.day}, ${timeObj.year} ${timeObj.hour}:${timeObj.minute}:00`;
+  const timeStringAsDate = new Date(timeAsString);
+  const timeAsMilliseconds = timeStringAsDate.getTime();
+  return timeAsMilliseconds;
+};
+
+export const findInputPostInRawPostsLog = (inputPost, rawPostsLog) => {
+  const postWithSameLinkAndWithin24HrsAlreadyInRawPostsLog = rawPostsLog.find(rawPost => {
+    const sameLink = rawPost.linkID === inputPost.linkID && rawPost.linkType === inputPost.linkType;
+    const rawPostTimeMs = timeObjInMs(rawPost.time);
+    const inputPostTimeMs = timeObjInMs(inputPost.time);
+    const hrs24InMs = 86400000;
+    const inputPostTimePlus24HrsMs = inputPostTimeMs + hrs24InMs;
+    const inputPostTimeMinus24HrsMs = inputPostTimeMs - hrs24InMs;
+    const within24Hrs = rawPostTimeMs < inputPostTimePlus24HrsMs && rawPostTimeMs > inputPostTimeMinus24HrsMs;
+    return within24Hrs && sameLink;
+  });
+  return postWithSameLinkAndWithin24HrsAlreadyInRawPostsLog; // 'undefined' if not found, a matching rawPostsLog obj if found
+};
+
 export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
-  const onlyRequiredKeys = (obj) => ({
-    poster: obj.poster, // could remove this
-    linkType: obj.linkType,
-    linkID: obj.linkID,
-    time: obj.time,
-  })
-  const inputTextAsRawPostsOnlyReqKeys = inputTextAsRawPosts.map(e => onlyRequiredKeys(e));
-  const rawPostsOnlyReqKeys = rawPostsLog.map(e => onlyRequiredKeys(e));
-  const onlyNewPosts = inputTextAsRawPostsOnlyReqKeys.reduce((acc, post, i) => {
-    if (!_.find(rawPostsOnlyReqKeys, post)) acc.push(inputTextAsRawPosts[i]);
+  console.log('inputTextAsRawPosts');
+  console.log(inputTextAsRawPosts);
+  console.log('----------------------');
+  console.log('rawPostsLog');
+  console.log(rawPostsLog);
+
+  // when checking new inputText against rawPostsLog from previous updates,
+  // poster cannot be relied upon (this can change based on user's contacts list at the time of exporting WhatsApp chat)
+  // time cannot be relied upon - time on exported chats is based on phone's system time, so times on msgs in exported chats can be different
+  //                            - 12 hour / 24 hour mode might have been changes on phone, or user might be using network time in a different timezone
+  // interestingly, day, month and year are preserved - the issue is with the HH:MM / H:MM(am|pm) time.
+  // So we've decided to check - is there an obj in rawPostsLog with linkID === input post linkID && linkType === input post linkType?
+  //                           - AND is this rawPostsLog obj's time IN MS LESS than input post + 24 hours (in MS) AND GREATER than input post - 24 hours (in MS)?
+
+
+  const onlyNewPosts = inputTextAsRawPosts.reduce((acc, inputPost, i) => {
+    const samePostFound = findInputPostInRawPostsLog(inputPost, rawPostsLog); // 'undefined' if not found, a matching rawPostsLog obj if found
+    // if undefined, no objects exist in rawPostsLog that a) have inputPost's link, and b) have a time within +24/-24 hours of inputPost's time
+    // therefore, our inputPost hasn't been made before. It's new. So add it to our onlyNewPosts array!
+    if (!samePostFound) acc.push(inputPost);
     return acc;
   }, []);
+
   return onlyNewPosts;
 };
 
