@@ -7,6 +7,7 @@ import './styles/Signup.css';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
+import logo from './whatsapp-to-spotify-icon-large.png'
 
 function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login page if an existing user
 
@@ -99,18 +100,14 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
 
   return (
     <div className="Signup Flex Column">
+      <div className="InvisiBox" style={{ flex: 0.5 }} />
       <div className="AuthHeaders">
+        <img src={logo} />
         <h1 className="Raleway-SemiBold">WhatsApp to Spotify</h1>
         <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
       </div>
 
       <div className="InvisiBox" style={{ flex: 0.25 }} />
-
-      <div className="SignupErrorContainer Flex Row">
-        {error ? <span className="SignupErrorMsg Flex">
-          <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
-          {error}</span> : null}
-      </div>
 
       {!signupPending ?
         <form className="Flex Column" onSubmit={(event) => event.preventDefault()}>
@@ -135,11 +132,16 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
           <Link to="/login">Already have an account? Login</Link>
         </form>
         :
-        <div className="AuthSpinnerContainer">
+        <div className="AuthSpinnerContainer Flex Column">
           <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
         </div>
       }
       {/* <div className="InvisiBox" style={{ height: '20%' }} /> */}
+      <div className="SignupErrorContainer Flex Row">
+        {error ? <span className="SignupErrorMsg Flex">
+          <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
+          {error}</span> : null}
+      </div>
       <div className="InvisiBox" style={{ flex: 1 }} />
 
     </div>
