@@ -34,7 +34,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
       <div className="InputTextInterface Flex Column">
 
         {!infoLoading ?
-          <textarea id="w3review" name="w3review" onChange={handleChangeTextArea} disabled={inputText.length} value={inputText}></textarea>
+          <textarea autofocus id="w3review" name="w3review" onChange={handleChangeTextArea} disabled={inputText.length} value={inputText}></textarea>
           :
           <Oval className="InputTextAreaSpinner" stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
         }
