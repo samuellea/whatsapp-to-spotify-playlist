@@ -678,8 +678,10 @@ export const postToSpotifyPlaylist = async (targetPlaylistID, spotifyToken, trac
       spotifyUserId: localStorage.getItem('spotifyUserId'),
       spotifyUserDisplayName: localStorage.getItem('spotifyUserDisplayName')
     };
-    const cache = await cacheRes(input, cacheObj);
-    console.log(cache)
+
+    // const cache = await cacheRes(input, cacheObj);
+    // console.log(cache)
+
     if (/^2\d{2}$/g.test(cache?.status)) {
       return 201;
     } else {
