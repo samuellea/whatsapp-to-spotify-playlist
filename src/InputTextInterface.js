@@ -6,6 +6,14 @@ import Oval from 'react-loading-icons/dist/esm/components/oval';
 
 function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear, infoLoading }) {
 
+  const [inputTextLoaded, setInputTextLoaded] = useState(false);
+
+  useEffect(() => {
+    if (inputText) {
+      if (inputText.length > 0) setInputTextLoaded(true);
+    }
+  }, [inputText]);
+
   const inputTextInfo = () => {
     if (!inputText.length) return <span>Paste a WhatsApp chat export .txt file here</span>
     if (inputText.length && !validInputText) {
