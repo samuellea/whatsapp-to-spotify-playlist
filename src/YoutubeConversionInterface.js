@@ -63,6 +63,7 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
 
   const handleConfirmConversions = () => {
     let r = window.confirm(`Convert these Youtube videos to Spotify tracks?`);
+    console.log(spotifyMatchesAfterReview)
     if (r == true) {
       const onlySpotifyMatchesWhereIncludeIsTrue = spotifyMatchesAfterReview.filter(e => e.include)
       const matchesMinusIncludeKey = onlySpotifyMatchesWhereIncludeIsTrue.map(obj => {

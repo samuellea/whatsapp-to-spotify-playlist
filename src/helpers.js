@@ -139,12 +139,6 @@ export const findInputPostInRawPostsLog = (inputPost, rawPostsLog) => {
 };
 
 export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
-  console.log('inputTextAsRawPosts');
-  console.log(inputTextAsRawPosts);
-  console.log('----------------------');
-  console.log('rawPostsLog');
-  console.log(rawPostsLog);
-
   // when checking new inputText against rawPostsLog from previous updates,
   // poster cannot be relied upon (this can change based on user's contacts list at the time of exporting WhatsApp chat)
   // time cannot be relied upon - time on exported chats is based on phone's system time, so times on msgs in exported chats can be different
@@ -152,7 +146,6 @@ export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
   // interestingly, day, month and year are preserved - the issue is with the HH:MM / H:MM(am|pm) time.
   // So we've decided to check - is there an obj in rawPostsLog with linkID === input post linkID && linkType === input post linkType?
   //                           - AND is this rawPostsLog obj's time IN MS LESS than input post + 24 hours (in MS) AND GREATER than input post - 24 hours (in MS)?
-
 
   const onlyNewPosts = inputTextAsRawPosts.reduce((acc, inputPost, i) => {
     const samePostFound = findInputPostInRawPostsLog(inputPost, rawPostsLog); // 'undefined' if not found, a matching rawPostsLog obj if found
@@ -617,17 +610,25 @@ export const stringContainsKaraoke = (str) => {
   return false;
 };
 
-export const stringContainsAcoustic = (str) => {
-  if (str.toLowerCase().includes('acoustic')) return true;
-  return false;
-};
+export const stringContainsAcoustic = (str) => str.toLowerCase().includes('acoustic') ? true : false;
 
+export const stringContainsLive = (str) => str.toLowerCase().includes('live') ? true : false;
 
-export const stringContainsLive = (str) => {
-  if (str.toLowerCase().includes('live')) return true;
-  return false;
-};
+export const stringContainsRemix = (str) => str.toLowerCase().includes('remix') ? true : false;
 
+export const stringContainsMix = (str) => str.toLowerCase().includes('mix') ? true : false;
+
+export const stringContainsEdit = (str) => str.toLowerCase().includes('edit') ? true : false;
+
+export const stringContainsExtended = (str) => str.toLowerCase().includes('extended') ? true : false;
+
+export const stringContainsVersion = (str) => str.toLowerCase().includes('version') ? true : false;
+
+export const stringContainsCover = (str) => str.toLowerCase().includes('cover') ? true : false;
+
+export const stringContainsPiano = (str) => str.toLowerCase().includes('piano') ? true : false;
+
+export const stringContainsDub = (str) => str.toLowerCase().includes('dub') ? true : false;
 
 export const millisToMinsAndSecs = (millis) => {
   const minutes = Math.floor(millis / 60000);

@@ -77,6 +77,7 @@ function FinalReviewInterface({
               <div className="FinalReviewPostsDisplay Flex Column">
                 {
                   newPosts.map((post, i) => {
+                    console.log(post)
                     return (<FinalReviewPost post={post} index={i} />)
                   })
                 }

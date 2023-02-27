@@ -182,9 +182,25 @@
 }
 
 .SpotifyArtwork {
-  height: 100%;
-  width: auto;
+  height: 135px;
+  width: 135px;
+  /* width: auto; */
   box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.3);
+  /* border: 1px solid white; */
+}
+
+.SpotifyArtworkNull {
+  display: flex;
+  height: 135px;
+  width: 135px;
+  font-size: 100px;
+  /* width: auto; */
+  /* box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.3); */
+  border: 1px solid #4c4f73;
+  color: #4c4f73;
+  /* border: 1px solid white; */
+  justify-content: center;
+  align-items: center;
 }
 
 .TitleArtistsContainer {

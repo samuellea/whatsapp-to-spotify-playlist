@@ -8,8 +8,11 @@ import * as h from './helpers';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 import GreenCircleRedCross from './GreenCircleRedCross';
 import Preview from './Preview';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBan, faCircleStop } from '@fortawesome/free-solid-svg-icons';
 
 function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyResult }) {
+  console.log(matchToChange)
   const spotifyToken = localStorage.getItem('spotifyToken');
 
   const [validTrackID, setValidTrackID] = useState('');
@@ -177,7 +180,8 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   };
 
   const handleSubmit = async () => {
-    let r = window.confirm(`Replace ${matchToChange.artists.join(',')} - ${matchToChange.title} with ${spotifyObj.artists.join(',')} - ${spotifyObj.title}?`);
+    const confirmMessage = matchToChange.artists && matchToChange.title ? `Replace ${matchToChange.artists.join(',') || 'null'} - ${matchToChange.title} with ${spotifyObj.artists.join(',')} - ${spotifyObj.title}?` : `Add ${spotifyObj.artists.join(',')} - ${spotifyObj.title}?`;
+    let r = window.confirm(confirmMessage);
     if (r == true) {
       setReplaceSuccess(true);
       await mockSleep(1000);
@@ -295,15 +299,19 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
 
 
           <div className="TrackArtContainer">
-            <img className="SpotifyArtwork" src={thumbnailMed} alt="Spotify Artwork" />
+            {thumbnailMed ?
+              <img className="SpotifyArtwork" src={thumbnailMed} alt="Spotify Artwork" />
+              : <div className="SpotifyArtworkNull"><FontAwesomeIcon icon={faBan} pointerEvents="none" /></div>
+
+            }
           </div>
 
           <div className="TitleArtistsContainer Flex Column">
             <div className="TitleContainer CurtailText Curtail3">
-              {title}
+              {title || '-'}
             </div>
             <div className="ArtistsContainer TitleContainer CurtailText Curtail3">
-              {artists.join(', ')}
+              {artists?.join(', ') || '-'}
             </div>
           </div>
 
@@ -325,7 +333,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
             </div>
 
             <button type="button" onClick={handleCancel}>Cancel</button>
-            <button type="button" onClick={handleSubmit} disabled={trackIsUnchanged()} style={{ backgroundColor: trackIsUnchanged() ? '#7316C6' : '#66B06E' }}>Replace</button>
+            <button type="button" onClick={handleSubmit} disabled={trackIsUnchanged()} style={{ backgroundColor: trackIsUnchanged() ? '#7316C6' : '#66B06E' }}>{matchToChange.artists && matchToChange.title ? 'Replace' : 'Add'}</button>
 
           </div>
 

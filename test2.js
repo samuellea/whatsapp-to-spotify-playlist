@@ -16,7 +16,6 @@ const rawPostsLog = [
 
 const inputPost = { id: 2, linkType: 'youtube', linkID: 'def456', time: { year: 2020, month: 02, day: 01, hour: 00, minute: 00 } };
 
-
 const postWithSameLinkAndWithin24HrsAlreadyInRawPostsLog = rawPostsLog.find(rawPost => {
   const sameLink = rawPost.linkID === inputPost.linkID && rawPost.linkType === inputPost.linkType;
   const rawPostTimeMs = timeObjInMs(rawPost.time);

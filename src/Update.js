@@ -162,14 +162,20 @@ function Update({ userPlaylistMetas }) {
           if (youtubePosts.length) {
             const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
             const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
+            console.log(spotifyDataObjs)
             // console.log('❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ')
             // console.log('videoDataObjs + spotifyDataObjs ater finding possible Spoti matches for YT vids')
             // console.log({ videoDataObjs, spotifyDataObjs })
             // even when a GET for YT vid data returned a deleted/private vid, we still returned a corresponding SpotifyDataObj value
             // of null. This is to preserve the array length so as not to mess with index-based referencing when re-making arrays.
             // Now, we need to turn any 'null's in spotifiyDataObjs into an empty obj with a single .include key of 'false'
-            const spotifyDataObjsHandlingNulls = spotifyDataObjs.map(e => !e ? { include: false } : e);
-            setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjsHandlingNulls });
+
+            // const spotifyDataObjsHandlingNulls = spotifyDataObjs.map(e => !e.spotifyTrackID ? { include: false } : e);
+            // const spotifyDataObjsHandlingNulls = spotifyDataObjs.map(e => !e ? { include: false } : e);
+
+            // setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjsHandlingNulls });
+            setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
+
             // setInputText('');
             setScreen('youtube');
             setInfoLoading(false);
@@ -188,6 +194,7 @@ function Update({ userPlaylistMetas }) {
 
 
   const handleConvertedPosts = (convertedPosts) => {
+    console.log(convertedPosts)
     // console.log('---------------------------------------')
     // console.log('convertedPosts coming up out from YoutubeConversionInterface:')
     // console.log(convertedPosts)
@@ -197,7 +204,8 @@ function Update({ userPlaylistMetas }) {
     // console.log(convertYoutubePosts)
     // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     // mix convertedPosts with the spotify-type posts already in newPostsInState
-    const combinedAndSortedSpotifyAndYoutubePosts = newPostsInState.concat(convertedPosts).sort((a, b) => (a.postId > b.postId) ? 1 : -1);
+    const convertedPostsMinusNullSpotifyResults = convertedPosts.filter(e => e.spotifyTrackID);
+    const combinedAndSortedSpotifyAndYoutubePosts = newPostsInState.concat(convertedPostsMinusNullSpotifyResults).sort((a, b) => (a.postId > b.postId) ? 1 : -1);
     setNewPostsInState(combinedAndSortedSpotifyAndYoutubePosts);
     setScreen('review');
   }

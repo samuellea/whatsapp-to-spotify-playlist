@@ -391,13 +391,24 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
           if (!h.stringContainsAcoustic(aVideoTitle) && h.stringContainsAcoustic(aString)) count = 0;
           if (!h.stringContainsLive(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
 
+          if (!h.stringContainsRemix(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+          if (!h.stringContainsMix(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+          if (!h.stringContainsEdit(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+          if (!h.stringContainsExtended(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+          if (!h.stringContainsVersion(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+          if (!h.stringContainsCover(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+          if (!h.stringContainsPiano(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+          if (!h.stringContainsDub(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+
+
+
+
           return count;
         };
 
         const similarity = scoreSimilarity(correspondingVideoTitle.toLowerCase(), titleAndArtistsJoined.toLowerCase());
         return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
       })
-      // console.log(fiveTracksScored)
       // console.log(correspondingVideoTitle)
       // console.log(fiveTracksScored)
       // choose the most likely index of spotiRes.data.tracks.items
@@ -408,8 +419,9 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     });
 
     const spotifyDataObjs = closestMatchInEachSpotifySearchResponse.map((el, i) => {
-      if (!el) return null;
-      const spotifyTrackData = { ...youtubePosts[i] };
+      // if (!el) return null;
+      const spotifyTrackData = { ...youtubePosts[i], include: true };
+      if (!el) return spotifyTrackData;
       spotifyTrackData.artists = el?.artists.map(artist => artist.name) || null;
 
       spotifyTrackData.title = el?.name || null;

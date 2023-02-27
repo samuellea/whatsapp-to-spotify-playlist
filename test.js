@@ -108,5 +108,15 @@ const singleMessage = indivMess4.trim();
 const dateTime = singleMessage.substring(0, singleMessage.indexOf('-') - 1);
 console.log(dateTime)
 
-const timePortion = dateTime.substring(12)
+const timePortion = dateTime.substring(12);
 console.log(timePortion.length)
+
+
+/*
+if last 2 chars of time portion are 'pm' or 'am', it's a 12hr time
+
+either 12hr or 24hr, get substring(0, indexOfFirstColon) + : + substring(indexOfFirstColon, [end])
+
+if 12 hr, convert to 24hr
+
+*/

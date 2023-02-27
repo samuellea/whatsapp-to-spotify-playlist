@@ -48,8 +48,10 @@ function ConversionCard({
   const spotifySegmentContent = (index) => {
     if (!spotifyMatch.spotifyTrackID) {
       return (
-        <div className="SpotifyNullSegment" onClick={(e) => e.stopPropagation()} key={`matchCard-${index}`}>
-          <p>Spotify match not found</p>
+        <div className="SegmentWrapper SpotifySegmentWrapper">
+          <div className="SpotifyNullSegment Flex Column" onClick={(e) => e.stopPropagation()} key={`matchCard-${index}`}>
+            <p>No match found on Spotify - no track will be added to the Spotify playlist for this</p>
+          </div>
         </div>
       )
     }

@@ -29,7 +29,7 @@
   width: 80%;
   max-width: 80%;
   box-sizing: border-box;
-  /* border: 1px solid red; */
+  border: 1px solid red;
   height: 216px;
   max-height: 250px;
   background-color: #09090D;
@@ -167,31 +167,36 @@
 /* SPOTIFY SEGMENT */
 
 .SpotifyNullSegment {
-  height: 100px;
-  max-height: 100px;
-  background-color: gainsboro;
-  border-radius: 10px;
-  overflow: hidden;
+  height: 100%;
   width: 100%;
-  color: gray;
+  max-width: 100%;
+  background-color: rgb(147, 147, 147);
+  border-radius: 10px 10px 10px 10px;
+  overflow: hidden;
+  align-items: center;
+  box-sizing: border-box;
+  color: rgb(84, 84, 84);
+  justify-content: center;
+  font-size: 12px;
+  padding: 10px;
 }
 
 .SpotifySegment {
-  /* height: 100px; */
   height: 100%;
-  /* max-height: 100px; */
-  background-color: #245E47;
-  /* border: 1px solid yellow; */
-  /* border-radius: 10px; */
-  border-radius: 10px 10px 10px 10px;
-  overflow: hidden;
   width: 100%;
   max-width: 100%;
+  background-color: #245E47;
+  border-radius: 10px 10px 10px 10px;
+  overflow: hidden;
+  align-items: center;
+  box-sizing: border-box;
+  /* height: 100px; */
+  /* max-height: 100px; */
+  /* border: 1px solid yellow; */
+  /* border-radius: 10px; */
   /* padding: 00px 0px 00px 10px; */
   /* margin: 4px 8px 8px 8px; */
 
-  align-items: center;
-  box-sizing: border-box;
 }
 
 .SpotifySegment a {
