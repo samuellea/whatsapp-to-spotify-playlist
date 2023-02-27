@@ -6,17 +6,16 @@ import Oval from 'react-loading-icons/dist/esm/components/oval';
 
 function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear, infoLoading }) {
 
-  const [inputTextLoaded, setInputTextLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (inputText) {
-      if (inputText.length > 0) setInputTextLoaded(true);
-    }
-  }, [inputText]);
+    if (!inputText.length) setError(false);
+    if (inputText.length && !validInputText) setError(true)
+  }, [validInputText, inputText]);
 
   const inputTextInfo = () => {
-    if (!inputText.length) return <span>Paste a WhatsApp chat export .txt file here</span>
-    if (inputText.length && !validInputText) {
+    if (!inputText.length && !error) return <span>Paste a WhatsApp chat export .txt file here</span>
+    if (error) {
       return (
         <div className="InputTextWarning Flex Column">
 
@@ -28,7 +27,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
         </div>
       );
     }
-    if (inputText.length && validInputText) return (
+    if (inputText.length && !error) return (
       <div className="ValidTextFeedback Flex Row">
         <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
       </div>
@@ -48,7 +47,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
         }
         <div className="InputTextButtonArea Flex Column">
           <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Clear</button>
-          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText || infoLoading}>Submit</button>
+          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={error || infoLoading}>Submit</button>
         </div>
 
 
