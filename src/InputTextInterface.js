@@ -6,19 +6,19 @@ import Oval from 'react-loading-icons/dist/esm/components/oval';
 
 function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear, infoLoading }) {
 
-  const [error, setError] = useState(false);
+  const [validError, setValidError] = useState(false);
 
   useEffect(() => {
-    if (!inputText.length) setError(false);
-    if (inputText.length && !validInputText) setError(true)
+    if (!inputText.length) setValidError(false);
+    if (inputText.length && validInputText) setValidError(false);
+    if (inputText.length && !validInputText) setValidError(true);
   }, [validInputText, inputText]);
 
   const inputTextInfo = () => {
-    if (!inputText.length && !error) return <span>Paste a WhatsApp chat export .txt file here</span>
-    if (error) {
+    if (!inputText.length && !validError) return <span>Paste a WhatsApp chat export .txt file here</span>
+    if (validError) {
       return (
         <div className="InputTextWarning Flex Column">
-
           <span><FontAwesomeIcon icon={faWarning} pointerEvents="none" />The text you've pasted does not appear to either: </span>
           <ul>
             <li>be a correctly formatted WhatsApp chat text export</li>
@@ -27,7 +27,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
         </div>
       );
     }
-    if (inputText.length && !error) return (
+    if (inputText.length && !validError) return (
       <div className="ValidTextFeedback Flex Row">
         <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
       </div>
@@ -47,7 +47,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
         }
         <div className="InputTextButtonArea Flex Column">
           <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Clear</button>
-          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={error || infoLoading}>Submit</button>
+          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={validError || infoLoading}>Submit</button>
         </div>
 
 

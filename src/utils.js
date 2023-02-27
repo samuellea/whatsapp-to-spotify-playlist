@@ -292,7 +292,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     // console.log(`videoDataObjs.length: ${videoDataObjs.length} ************************`)
 
     // search Spotify API using these returned YT titles
-    const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${encodeURIComponent(el.title)}&type=track&market=GB&limit=5` : null);
+    const spotifySearchQueries = videoDataObjs.map(el => el?.title ? `https://api.spotify.com/v1/search?q=${encodeURIComponent(el.title)}&type=track&market=GB&limit=10` : null);
     // console.log(spotifySearchQueries);
 
 
@@ -372,33 +372,37 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
         return titleAndArtists;
       })
 
+      console.log()
+
       const fiveTracksScored = fiveTracksCondensed.map((titleAndArtistsJoined, i) => {
 
         const scoreSimilarity = (aVideoTitle, aString) => {
-          // console.log('aString:')
-          // console.log(aString)
+
+          // aVideoTitle = Dream Theater - Learning to Live (Live 2000) [HQ]
+
+          console.log('aString:')
+          console.log(aString)
           let count = 0;
           const videoTitleTerms = aVideoTitle.split(' ').filter(term => {
             const termsToRemove = ['&', '-', '+'];
             if (!termsToRemove.includes(term)) return term;
           });
-          // console.log('videoTitleTerms:')
-          // console.log(videoTitleTerms)
+          console.log('videoTitleTerms:')
+          console.log(videoTitleTerms)
           videoTitleTerms.forEach(term => aString.split(' ').includes(term) ? count++ : null);
 
           // handle karaoke versions - if 'karaoke' not in vid title, and 'karoke' found in Spoti result title, set similarity = 0
           if (!h.stringContainsKaraoke(aVideoTitle) && h.stringContainsKaraoke(aString)) count = 0;
           if (!h.stringContainsAcoustic(aVideoTitle) && h.stringContainsAcoustic(aString)) count = 0;
           if (!h.stringContainsLive(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
-
-          if (!h.stringContainsRemix(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
-          if (!h.stringContainsMix(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
-          if (!h.stringContainsEdit(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
-          if (!h.stringContainsExtended(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
-          if (!h.stringContainsVersion(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
-          if (!h.stringContainsCover(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
-          if (!h.stringContainsPiano(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
-          if (!h.stringContainsDub(aVideoTitle) && h.stringContainsLive(aString)) count = 0;
+          if (!h.stringContainsRemix(aVideoTitle) && h.stringContainsRemix(aString)) count = 0;
+          if (!h.stringContainsMix(aVideoTitle) && h.stringContainsMix(aString)) count = 0;
+          if (!h.stringContainsEdit(aVideoTitle) && h.stringContainsEdit(aString)) count = 0;
+          if (!h.stringContainsExtended(aVideoTitle) && h.stringContainsExtended(aString)) count = 0;
+          if (!h.stringContainsVersion(aVideoTitle) && h.stringContainsVersion(aString)) count = 0;
+          if (!h.stringContainsCover(aVideoTitle) && h.stringContainsCover(aString)) count = 0;
+          if (!h.stringContainsPiano(aVideoTitle) && h.stringContainsPiano(aString)) count = 0;
+          if (!h.stringContainsDub(aVideoTitle) && h.stringContainsDub(aString)) count = 0;
 
 
 
@@ -409,8 +413,8 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
         const similarity = scoreSimilarity(correspondingVideoTitle.toLowerCase(), titleAndArtistsJoined.toLowerCase());
         return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
       })
-      // console.log(correspondingVideoTitle)
-      // console.log(fiveTracksScored)
+      console.log(correspondingVideoTitle)
+      console.log(fiveTracksScored)
       // choose the most likely index of spotiRes.data.tracks.items
       const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
       const highestScoringCandidates = fiveTracksScored.filter(e => e.similarity === highestScore);

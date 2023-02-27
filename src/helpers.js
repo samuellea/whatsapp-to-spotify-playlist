@@ -613,7 +613,10 @@ export const stringContainsKaraoke = (str) => {
 
 export const stringContainsAcoustic = (str) => str.toLowerCase().includes('acoustic') ? true : false;
 
-export const stringContainsLive = (str) => str.toLowerCase().includes('live') ? true : false;
+export const stringContainsLive = (str) => {
+  console.log(str, ' <')
+  return str.toLowerCase().includes('live') ? true : false
+};
 
 export const stringContainsRemix = (str) => str.toLowerCase().includes('remix') ? true : false;
 
