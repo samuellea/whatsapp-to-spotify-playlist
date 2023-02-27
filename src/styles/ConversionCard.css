@@ -29,7 +29,7 @@
   width: 80%;
   max-width: 80%;
   box-sizing: border-box;
-  border: 1px solid red;
+  /* border: 1px solid red; */
   height: 216px;
   max-height: 250px;
   background-color: #09090D;
@@ -304,7 +304,8 @@
 }
 
 .MatchInspectedMenu button:nth-child(4) {
-  background-color: rgb(144, 0, 0);
+  /* background-color: rgb(144, 0, 0); */
+  background-color: #4c4f73;
 }
 
 
@@ -396,7 +397,7 @@
 
 .ButtonsMenuContainer-Include-false {
   background-color: #6a292b;
-
+  /* background-color: #4c4f73; */
 }
 
 .YTC-ButtonsMenuContainer button {
@@ -404,7 +405,9 @@
   width: 40px;
   border-radius: 0px 10px 10px 0px;
   border: none;
+  /* background-color: #7316C6; */
   background-color: #7316C6;
+
   font-family: Arial;
   font-size: 16px;
   font-weight: 600;
@@ -437,10 +440,13 @@
 }
 
 .CC-Side-Exclude-true {
-  background-color: #900000 !important;
+  /* background-color: #900000 !important; */
+  background-color: #7316C6;
+
 }
 
 .CC-Side-Exclude-false {
-  background-color: #66B06E !important;
+  background-color: #66b08c !important;
   border-radius: 10px 10px 10px 10px !important;
+  box-shadow: inset 2px 2px px 0px #38633d;
 }
