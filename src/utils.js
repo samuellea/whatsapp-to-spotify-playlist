@@ -679,14 +679,17 @@ export const postToSpotifyPlaylist = async (targetPlaylistID, spotifyToken, trac
       spotifyUserDisplayName: localStorage.getItem('spotifyUserDisplayName')
     };
 
+    // 🚧 🚧 🚧
     // const cache = await cacheRes(input, cacheObj);
     // console.log(cache)
 
-    if (/^2\d{2}$/g.test(cache?.status)) {
-      return 201;
-    } else {
-      return { error: { msg: 'Unable to create playlist. Please try again later' } };
-    }
+    // if (/^2\d{2}$/g.test(cache?.status)) {
+    return 201;
+    // } else {
+    //   return { error: { msg: 'Unable to create playlist. Please try again later' } };
+    // }
+    // 🚧 🚧 🚧
+
   }
 };
 

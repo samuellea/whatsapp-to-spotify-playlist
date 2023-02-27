@@ -167,7 +167,8 @@ export const findInputTextNewPosts = (inputText, rawPostsLog) => {
 
 export const inputTextIsValid = (inputText) => {
   let isValid = false;
-  const whatsAppMessageRegex = /(\d{2}\/\d{2}\/\d{4}\,\s{1}\d{2}\:\d{2}\s{1}\-{1}\s{1}.*\:\s{1})+/g
+  // const whatsAppMessageRegex = /(\d{2}\/\d{2}\/\d{4}\,\s{1}\d{2}\:\d{2}\s{1}\-{1}\s{1}.*\:\s{1})+/g;
+  const whatsAppMessageRegex = /\d{2}\/\d{2}\/\d{4}\,\s{1}([0-2]{0,2}|[0-9]{1,2}):[0-5][0-9].*((\s{1}\-{1}\s{1}.*\:\s{1})+)/g;
   const containsWhatsAppMsgs = whatsAppMessageRegex.test(inputText.trim());
   if (containsWhatsAppMsgs) {
     const individualMessages = splitTextIntoIndividualMessages(inputText);
