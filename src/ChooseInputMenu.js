@@ -17,13 +17,13 @@ function ChooseInputMenu({ setScreen, handleTextAreaClear }) {
       <div className="ChooseInputMenuText Flex Column">
         <span>How do you want to input your WhatsApp chat?</span>
       </div>
-      <button type="button" onClick={() => setScreen('input')}>
-        Paste Text
-        <FontAwesomeIcon id="ChooseInputMenuButtonIcon" icon={faPaste} pointerEvents="none" />
-      </button>
       <button type="button" id="ChooseInputMenuGoogleButton" onClick={() => setScreen('google')}>
         Google Drive File
         <FontAwesomeIcon id="ChooseInputMenuButtonIcon" icon={faLink} pointerEvents="none" />
+      </button>
+      <button type="button" onClick={() => setScreen('input')}>
+        Paste Text
+        <FontAwesomeIcon id="ChooseInputMenuButtonIcon" icon={faPaste} pointerEvents="none" />
       </button>
     </div>
   )

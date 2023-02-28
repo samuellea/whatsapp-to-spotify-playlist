@@ -5,10 +5,11 @@ import * as u from './utils';
 import * as h from './helpers';
 import PlaylistCard from './PlaylistCard';
 import CreatePlaylistCard from './CreatePlaylistCard';
+import Help from './Help';
 import { Oval } from 'react-loading-icons';
 import './styles/Home.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowAltCircleRight, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleRight, faCircleQuestion, faQuestion, faQuestionCircle, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import RecordSleeveIcon from './RecordSleeveIcon';
 
 function Home({
@@ -31,6 +32,7 @@ function Home({
   console.log(spotifyToken);
 
   const [fontsLoaded, setFontsLoaded] = useState(false)
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     const fontsArr = ['Raleway-Regular', 'Raleway-Bold', 'Raleway-Thin', 'Raleway-SemiBold']
@@ -119,6 +121,10 @@ function Home({
     <div className="HomeScreenLoggedInSpotify Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
       <div className="HomeContainer Flex Column">
 
+        <div className="HowToButtonContainer Flex Row">
+          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)}>?</button>
+        </div>
+
         <div className="UserContainer Flex Row" style={{ opacity: fontsLoaded ? 1 : 0 }}>
           <FontAwesomeIcon icon={faUserCircle} pointerEvents="none" />
           <div className="UsernameAndSignOut Flex Column">
@@ -131,13 +137,7 @@ function Home({
         </div>
 
         {
-          // userPlaylistsLoading ?
-          //   <div className="HomePlaylistCardsContainer HPCC-Spinner">
-          //     <Oval className="HomePlaylistCardsContainerSpinner" stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
-          //   </div>
-          //   :
           <>
-
             <div className="HomePlaylistCardsContainer">
               {userPlaylistMetas?.length > 0 ?
                 alphabetizedMetas(userPlaylistMetas).map((metaObj, i) => <PlaylistCard metaObj={metaObj} firebaseUserId={firebaseUserId} token={token} key={`card-${i}`} deletePlaylistSuccess={deletePlaylistSuccess} />)
@@ -149,15 +149,6 @@ function Home({
                   </div>}
             </div>
 
-
-            {/* <CreatePlaylistCard
-            spotifyToken={spotifyToken}
-            newPlaylistSuccess={newPlaylistSuccess}
-            firebaseUserId={firebaseUserId}
-            setViewCreateModal={setViewCreateModal}
-          /> */}
-
-
             <div className="HomeCreatePlaylistButtonContainer Flex Column">
               {userPlaylistsLoading ? null : <button type="button" onClick={() => setViewCreateModal(true)}>Create</button>}
             </div>
@@ -167,7 +158,7 @@ function Home({
                 <div className="HomeCreatePlaylistModal Flex Column">
                   {!creatingNewPlaylist ?
                     <div className="HomeCreatePlaylistModalContents Flex Column">
-                      <input type="text" onChange={handlePlaylistNameChange}></input>
+                      <input type="text" onChange={handlePlaylistNameChange} placeholder="Enter new playlist name"></input>
                       <button type="button" onClick={handleCancelCreate}>Cancel</button>
                       <button type="button" onClick={handleSubmitNewPlaylist} disabled={!newPlaylistName.length}>Create New Playlist</button>
                     </div> :
@@ -182,6 +173,7 @@ function Home({
             </div>
           </>
         }
+        {showHelp ? <Help location="home" setShowHelp={setShowHelp} /> : null}
 
       </div>
 

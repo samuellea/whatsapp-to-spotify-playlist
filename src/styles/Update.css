@@ -7,12 +7,14 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  /* position: relative; */
 }
 
 .UpdateGoBackContainer {
   /* border: 1px solid lime; */
   justify-content: flex-start;
   align-items: center;
+  justify-content: space-between;
   height: 5%;
 }
 

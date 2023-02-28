@@ -9,6 +9,7 @@ import * as u from './utils';
 import * as h from './helpers';
 import { mockSleep } from './helpers';
 import NoNew from './NoNew';
+import Help from './Help';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
@@ -39,7 +40,9 @@ function Update({ userPlaylistMetas }) {
   // const [screen, setScreen] = useState('input');
   const [screen, setScreen] = useState('choose');
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
-  const [newPostsRawStored, setNewPostsRawStored] = useState([]);
+  // const [newPostsRawStored, setNewPostsRawStored] = useState([]);
+  const [showHelp, setShowHelp] = useState(false);
+
 
   const firebaseUserId = localStorage.getItem('firebaseUserId');
   const token = localStorage.getItem('token');
@@ -398,18 +401,21 @@ function Update({ userPlaylistMetas }) {
 
   return (
     <div className="Update Flex Column">
-      <div className="UpdateGoBackContainer Flex">
+      <div className="UpdateGoBackContainer Flex Row">
         <button className="Flex Row" type="button" onClick={handleGoBack}>
           <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
           <span>Back</span>
         </button>
+        {!['review'].includes(screen) ?
+          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)}>?</button>
+          : null}
       </div>
 
       <div className="InfoArea Flex Column">
         {screenToRender()}
-        <Toaster />
       </div>
-
+      {showHelp ? <Help location={screen} setShowHelp={setShowHelp} /> : null}
+      <Toaster />
     </div>
   )
 };
