@@ -190,8 +190,14 @@
   /* position: relative; */
 }
 
-.PosterPlaylistContainer>a {
+.PosterPlaylistCard>a {
   text-decoration: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* border: 1px solid red; */
+  height: 100%;
+  width: 75%;
 }
 
 
@@ -212,6 +218,7 @@
   padding: 0px 10px;
   align-items: center;
   box-sizing: border-box;
+  position: relative;
 }
 
 .PosterPlaylistCardInfo {

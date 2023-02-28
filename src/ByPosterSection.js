@@ -217,19 +217,18 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
                 // console.log(post)
                 const bgColor = i % 2 === 0 ? 'Odd' : 'Even';
                 return (
-                  <a href={`https://open.spotify.com/track/${post.spotifyTrackID}`} target="_blank" >
-                    <div className={`PosterPlaylistCard Flex Row ${bgColor}`}>
+                  <div className={`PosterPlaylistCard Flex Row ${bgColor}`}>
+                    <a href={`https://open.spotify.com/track/${post.spotifyTrackID}`} target="_blank" />
 
-                      <img src={post.thumbnailSmall} onLoad={() => onLoad(i)} />
+                    <img src={post.thumbnailSmall} onLoad={() => onLoad(i)} />
 
-                      <div className="PosterPlaylistCardInfo Flex Column">
-                        <span className="CurtailText Curtail2">{post.title}</span>
-                        <span className="CurtailText Curtail2">{post.artists.join(', ')}</span>
-                        {/* <span>{post.time.day + '/' + post.time.month + '/' + post.time.year + ' ' + post.time.hour + ':' + post.time.minute}</span> */}
-                      </div>
-                      <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} post={post} />
+                    <div className="PosterPlaylistCardInfo Flex Column">
+                      <span className="CurtailText Curtail2">{post.title}</span>
+                      <span className="CurtailText Curtail2">{post.artists.join(', ')}</span>
+                      {/* <span>{post.time.day + '/' + post.time.month + '/' + post.time.year + ' ' + post.time.hour + ':' + post.time.minute}</span> */}
                     </div>
-                  </a>
+                    <Preview index={i} url={post.previewURL} setIndexPlaying={setIndexPlaying} indexPlaying={indexPlaying} post={post} />
+                  </div>
                 )
               })
               }
