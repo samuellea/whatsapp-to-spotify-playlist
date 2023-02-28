@@ -142,7 +142,7 @@ function PublicStats({ authLink, handleLogout }) {
                 <h1>{publicStatsObj.firebasePlaylistObj.obj.spotifyPlaylistName}</h1>
                 <h2><span>{publicStatsObj.firebasePlaylistObj.obj.processedPostsLog.length}</span> tracks</h2>
                 <span>last updated: {h.getLastUpdatedFromMeta(publicStatsObj.firebaseMetaObj)}</span>
-
+                <a className="StatsInfoPodOpenButton Flex" href={`https://open.spotify.com/playlist/${publicStatsObj.firebaseMetaObj.spotifyPlaylistId}`} target="_blank">Open</a>
               </div>
 
 
