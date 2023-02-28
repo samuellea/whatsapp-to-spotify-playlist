@@ -190,6 +190,10 @@
   /* position: relative; */
 }
 
+.PosterPlaylistContainer>a {
+  text-decoration: none;
+}
+
 
 
 
