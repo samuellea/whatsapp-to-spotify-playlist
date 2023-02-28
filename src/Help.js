@@ -19,7 +19,7 @@ function Help({ location, setShowHelp }) {
       <div className="HelpChooseContent Flex Column">
         <ul>
           <li>If your WhatsApp chat is very active (many messages almost every day), pick <span id="HelpLiBold">Google Drive File</span></li>
-          <li>If your WhatsApp is fairly or not very active (several messages a week or less), pick <span id="HelpLiBold">Paste Text</span></li>
+          <li>If your WhatsApp chat is fairly or not very active (several messages a week or less), pick <span id="HelpLiBold">Paste Text</span></li>
         </ul>
         <span>If you have any issues copying and pasting text, try the Google Drive method instead</span>
       </div>
