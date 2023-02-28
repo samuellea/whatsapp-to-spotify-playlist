@@ -249,14 +249,25 @@
   position: relative;
 }
 
-.PublicRegisterLoginContainer svg {
-  /* transform: rotate(-12deg); */
+#PRLC-Star-1 {
+  transform: rotate(-12deg);
   position: absolute;
-  top: -0px;
-  left: -12px;
-  font-size: 48px;
-  color: #ffffff;
+  top: -14px;
+  left: -17px;
+  font-size: 42px;
+  color: #66B06E;
 }
+
+#PRLC-Star-2 {
+  transform: rotate(-12deg);
+  position: absolute;
+  top: -17px;
+  left: -20px;
+  font-size: 47px;
+  color: white;
+}
+
+
 
 .PublicRegisterLoginContainer>span {
   width: 80%;

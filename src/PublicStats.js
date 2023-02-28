@@ -138,8 +138,13 @@ function PublicStats({ authLink, handleLogout }) {
               </div> */}
 
               {!token ?
-                <div className="PublicRegisterLoginContainer Flex Column" style={{ borderRadius: '0px', background: 'none' }}>
-                  {/* <FontAwesomeIcon icon={faStar} pointerEvents="none" /> */}
+                <div className="PublicRegisterLoginContainer Flex Column" style={{
+                  backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.289), transparent) !important',
+                  backgroundColor: 'transparent !important',
+                  borderRadius: '15px 15px 0px 0px',
+                }}>
+                  <FontAwesomeIcon icon={faStar} pointerEvents="none" id="PRLC-Star-2" />
+                  <FontAwesomeIcon icon={faStar} pointerEvents="none" id="PRLC-Star-1" />
                   <span>Turn your WhatsApp chats into Spotify playlists - sign up and try it out </span>
                   <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
                 </div>
