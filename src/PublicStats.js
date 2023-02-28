@@ -201,7 +201,7 @@ function PublicStats({ authLink, handleLogout }) {
                 <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
               </div>
               : null}
-            <div className="CopyrightFooter">
+            <div className="CopyrightFooter" style={{ backgroundColor: '#4A4964', borderRadius: '0px 0px 15px 15px', marginBottom: '5%', paddingBottom: '5%' }}>
               <span> © Sam Lea 2023</span>
               <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
             </div>
