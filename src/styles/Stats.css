@@ -255,8 +255,8 @@
 #PRLC-Star-1 {
   transform: rotate(-12deg);
   position: absolute;
-  top: -14px;
-  left: -17px;
+  top: -13.5px;
+  left: -15px;
   font-size: 42px;
   color: #66B06E;
 }
@@ -265,8 +265,8 @@
   transform: rotate(-12deg);
   position: absolute;
   top: -17px;
-  left: -20px;
-  font-size: 47px;
+  left: -19px;
+  font-size: 49px;
   color: white;
 }
 
