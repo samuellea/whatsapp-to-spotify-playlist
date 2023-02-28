@@ -9,7 +9,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
-function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleExportStats, sharingLink, appToast, isPublicStatsPage = false }) {
+function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleExportStats, sharingLink, appToast, isPublicStatsPage = false, token }) {
 
   const [isExporting, setIsExporting] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -73,7 +73,7 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
   };
 
   return (
-    <div className="SharedNotAddedSection Flex Column">
+    <div className="SharedNotAddedSection Flex Column" style={{ borderBottomLeftRadius: token && isPublicStatsPage || !isPublicStatsPage ? '15px' : '0px', borderBottomRightRadius: token && isPublicStatsPage || !isPublicStatsPage ? '15px' : '0px' }}>
       {sharedNotAddedItemsPresent() ?
         <>
           < div className="BackgroundGradientBlock" />

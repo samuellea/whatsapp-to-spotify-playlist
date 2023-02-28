@@ -121,7 +121,7 @@ function PublicStats({ authLink, handleLogout }) {
       {
         pageLoading ?
           null :
-          <div className="Stats" >
+          <div className="Stats">
             {spotifyLoggedInBanner ?
               <div className="SpotifyLoggedInBanner">
                 Logged in Spotify
@@ -193,7 +193,7 @@ function PublicStats({ authLink, handleLogout }) {
               </div>
 
             </div>
-            <SharedNotAddedSection rawPostsLog={publicStatsObj.firebasePlaylistObj.obj.rawPostsLog} lookupInState={publicStatsObj.firebaseMetaObj.lookup || {}} colourMap={colourMap} isPublicStatsPage={true} />
+            <SharedNotAddedSection rawPostsLog={publicStatsObj.firebasePlaylistObj.obj.rawPostsLog} lookupInState={publicStatsObj.firebaseMetaObj.lookup || {}} colourMap={colourMap} isPublicStatsPage={true} token={token} />
 
             {!token ?
               <div className="PublicRegisterLoginContainer Flex Column">
@@ -201,7 +201,7 @@ function PublicStats({ authLink, handleLogout }) {
                 <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
               </div>
               : null}
-            <div className="CopyrightFooter" style={{ backgroundColor: '#4A4964', borderRadius: '0px 0px 15px 15px', marginBottom: '5%', paddingBottom: '5%' }}>
+            <div className="CopyrightFooter" style={{ borderRadius: '0px 0px 15px 15px', margin: '5% 0%' }}>
               <span> © Sam Lea 2023</span>
               <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
             </div>

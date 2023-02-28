@@ -192,7 +192,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
     }
     const { name } = exportSuccessResponse.data;
     const sharingUrl = `https://whatsapp-to-spotify.netlify.app/publicStats/${name}`;
-    // const sharingUrl = `http://localhost:30000/publicStats/${name}`;
+    // const sharingUrl = `http://localhost:3000/publicStats/${name}`;
     console.log(sharingUrl);
     setSharingLink(sharingUrl);
   }
@@ -275,8 +275,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
               </div>
 
             </div>
-            <SharedNotAddedSection rawPostsLog={firebasePlaylist.obj.rawPostsLog} lookupInState={lookupInState} colourMap={colourMap} handleExportStats={handleExportStats} sharingLink={sharingLink} appToast={appToast} />
-            <div className="CopyrightFooter">
+            <SharedNotAddedSection rawPostsLog={firebasePlaylist.obj.rawPostsLog} lookupInState={lookupInState} colourMap={colourMap} handleExportStats={handleExportStats} sharingLink={sharingLink} appToast={appToast} token={token} />
+            <div className="CopyrightFooter" style={{ borderRadius: '0px 0px 15px 15px', margin: '5% 0%' }}>
               <span> © Sam Lea 2023</span>
               <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
             </div>
