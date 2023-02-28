@@ -246,6 +246,16 @@
   align-items: center;
   border-radius: 0px 0px 15px 15px;
   /* margin-bottom: 5%; */
+  position: relative;
+}
+
+.PublicRegisterLoginContainer svg {
+  /* transform: rotate(-12deg); */
+  position: absolute;
+  top: -0px;
+  left: -12px;
+  font-size: 48px;
+  color: #ffffff;
 }
 
 .PublicRegisterLoginContainer>span {

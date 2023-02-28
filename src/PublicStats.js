@@ -16,7 +16,7 @@ import ByPosterSection from './ByPosterSection';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 import SharedNotAddedSection from './SharedNotAddedSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCheckCircle, faStar } from '@fortawesome/free-solid-svg-icons';
 import FontFaceObserver from 'fontfaceobserver';
 
 function PublicStats({ authLink, handleLogout }) {
@@ -137,6 +137,14 @@ function PublicStats({ authLink, handleLogout }) {
                 </button>
               </div> */}
 
+              {!token ?
+                <div className="PublicRegisterLoginContainer Flex Column" style={{ borderRadius: '0px', background: 'none' }}>
+                  {/* <FontAwesomeIcon icon={faStar} pointerEvents="none" /> */}
+                  <span>Turn your WhatsApp chats into Spotify playlists - sign up and try it out </span>
+                  <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
+                </div>
+                : null}
+
               <div className="StatsInfoPod Flex Column" style={{ fontSize: `${((100 / publicStatsObj.firebasePlaylistObj.obj.spotifyPlaylistName.length) * 2000) ** (0.3)}px` }}>
                 <img src={publicStatsObj.spotifyPlaylistData.artwork} onLoad={() => setPlaylistArtworkLoaded(true)} className="SpotifyPlaylistArtwork" alt="Spotify Artwork" />
                 <h1>{publicStatsObj.firebasePlaylistObj.obj.spotifyPlaylistName}</h1>
@@ -197,7 +205,7 @@ function PublicStats({ authLink, handleLogout }) {
 
             {!token ?
               <div className="PublicRegisterLoginContainer Flex Column">
-                <span>Turn your WhatsApp chats into Spotify playlists! Sign up and try it out yourself </span>
+                <span>Turn your WhatsApp chats into Spotify playlists - sign up and try it out </span>
                 <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
               </div>
               : null}
