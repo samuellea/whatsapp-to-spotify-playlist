@@ -227,7 +227,10 @@
   margin-top: 5%;
   padding: 2%;
   border-radius: 10px;
-  background-color: #66B06E;
+  /* background-color: #66B06E; */
+  background: none;
+  border: 1px solid #66B06E;
+  /* color: white; */
   color: white;
   font-size: 20px;
   font-family: "Raleway-Regular";
@@ -236,11 +239,11 @@
 
 .SpotifyLoggedInBanner>svg {
   padding-left: 2%;
+  color: #66B06E;
 }
 
 .PublicRegisterLoginContainer {
   /* border: 1px solid white; */
-  background-color: #4A4964;
   padding: 5%;
   justify-content: center;
   align-items: center;

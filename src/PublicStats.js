@@ -24,6 +24,7 @@ function PublicStats({ authLink, handleLogout }) {
 
   let { publicStatsId } = useParams();
   const token = localStorage.getItem('token');
+  const spotifyToken = localStorage.getItem('spotifyToken');
   if (!token && publicStatsId !== 'undefined') localStorage.setItem('publicStatsHashNonAuth', publicStatsId)
   if (publicStatsId === 'undefined') {
     localStorage.removeItem(publicStatsId);
@@ -130,21 +131,25 @@ function PublicStats({ authLink, handleLogout }) {
               : null}
             <div className="StatsPadding">
 
-              {/* <div className="StatsGoBackContainer Flex">
+              {token ? <div className="StatsGoBackContainer Flex">
                 <button className="Flex Row" type="button" onClick={handleGoBack}>
                   <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
                   <span>Back</span>
                 </button>
-              </div> */}
+              </div> : null}
 
               {!token ?
                 <div className="PublicRegisterLoginContainer Flex Column" style={{
-                  backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.289), transparent) !important',
-                  backgroundColor: 'transparent !important',
+                  backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.289), transparent)',
+                  // backgroundColor: 'transparent !important',
                   borderRadius: '15px 15px 0px 0px',
                 }}>
-                  <FontAwesomeIcon icon={faStar} pointerEvents="none" id="PRLC-Star-2" />
-                  <FontAwesomeIcon icon={faStar} pointerEvents="none" id="PRLC-Star-1" />
+                  {!spotifyToken ?
+                    <>
+                      <FontAwesomeIcon icon={faStar} pointerEvents="none" id="PRLC-Star-2" />
+                      <FontAwesomeIcon icon={faStar} pointerEvents="none" id="PRLC-Star-1" />
+                    </>
+                    : null}
                   <span>Turn your WhatsApp chats into Spotify playlists - sign up and try it out </span>
                   <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
                 </div>
@@ -209,7 +214,7 @@ function PublicStats({ authLink, handleLogout }) {
             <SharedNotAddedSection rawPostsLog={publicStatsObj.firebasePlaylistObj.obj.rawPostsLog} lookupInState={publicStatsObj.firebaseMetaObj.lookup || {}} colourMap={colourMap} isPublicStatsPage={true} token={token} />
 
             {!token ?
-              <div className="PublicRegisterLoginContainer Flex Column">
+              <div className="PublicRegisterLoginContainer Flex Column" style={{ backgroundColor: '#4A4964' }}>
                 <span>Turn your WhatsApp chats into Spotify playlists - sign up and try it out </span>
                 <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
               </div>
