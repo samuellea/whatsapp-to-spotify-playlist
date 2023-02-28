@@ -151,7 +151,7 @@
   font-family: "Raleway-Regular";
   height: 35px;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   justify-content: center;
   align-items: center;
   padding: 4%;
@@ -163,4 +163,5 @@
 
 .CopyrightFooter a {
   color: #66B06E !important;
+  font-size: 12px !important;
 }

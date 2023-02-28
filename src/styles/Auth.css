@@ -60,7 +60,8 @@
 
 .Auth form {
   /* border: 3px solid yellow; */
-  height: 400px;
+  height: 55%;
+  min-height: 370px;
   background-color: #09090D;
   border-radius: 15px;
   /* padding: 15px; */
@@ -68,7 +69,6 @@
   justify-content: center;
   padding-bottom: 8%;
   box-sizing: border-box;
-
 }
 
 .Auth input {
@@ -167,18 +167,13 @@
 }
 
 .AuthSpinnerContainer {
-  /* border: 1px solid red; */
-  width: 100%;
-  max-width: 100%;
-  align-items: center;
-  justify-content: center;
-
-  /* border: 3px solid yellow; */
-  height: 400px;
-
+  height: 55%;
+  min-height: 370px;
+  /* background-color: #09090D; */
   border-radius: 15px;
   /* padding: 15px; */
   padding: 4.2%;
-  box-sizing: border-box;
+  justify-content: center;
   padding-bottom: 8%;
+  box-sizing: border-box;
 }

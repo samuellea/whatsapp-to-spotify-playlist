@@ -102,8 +102,9 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
           <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
           Could not login - please try again</span> : null}
       </div>
-      <div className="CopyrightFooter">
+      <div className="CopyrightFooter" style={{ paddingTop: 0, paddingBottom: '10%' }}>
         <span> © Sam Lea 2023</span>
+        <span>|</span>
         <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
       </div>
       <div className="InvisiBox" style={{ flex: 1 }} />

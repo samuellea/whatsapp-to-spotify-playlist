@@ -191,8 +191,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       appToast('Sharing failed. Please try again later', { duration: 1500 });
     }
     const { name } = exportSuccessResponse.data;
-    const sharingUrl = `https://whatsapp-to-spotify.netlify.app/publicStats/${name}`;
-    // const sharingUrl = `http://localhost:3000/publicStats/${name}`;
+    // const sharingUrl = `https://whatsapp-to-spotify.netlify.app/publicStats/${name}`;
+    const sharingUrl = `http://localhost:3000/publicStats/${name}`;
     console.log(sharingUrl);
     setSharingLink(sharingUrl);
   }
@@ -278,6 +278,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
             <SharedNotAddedSection rawPostsLog={firebasePlaylist.obj.rawPostsLog} lookupInState={lookupInState} colourMap={colourMap} handleExportStats={handleExportStats} sharingLink={sharingLink} appToast={appToast} token={token} />
             <div className="CopyrightFooter" style={{ borderRadius: '0px 0px 15px 15px', margin: '5% 0%' }}>
               <span> © Sam Lea 2023</span>
+              <span>|</span>
               <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
             </div>
           </ div>

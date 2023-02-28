@@ -16,7 +16,7 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState({ email: false, password: false });
-  const [signupPending, setSignupPending] = useState(false)
+  const [signupPending, setSignupPending] = useState(false);
   const [error, setError] = useState(null);
 
   const validEmailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/gi;
@@ -142,8 +142,9 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
           <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
           {error}</span> : null}
       </div>
-      <div className="CopyrightFooter">
+      <div className="CopyrightFooter" style={{ paddingTop: 0, paddingBottom: '10%' }}>
         <span> © Sam Lea 2023</span>
+        <span>|</span>
         <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
       </div>
       <div className="InvisiBox" style={{ flex: 1 }} />
