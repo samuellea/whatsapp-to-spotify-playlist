@@ -250,23 +250,24 @@
   border-radius: 0px 0px 15px 15px;
   /* margin-bottom: 5%; */
   position: relative;
+  font-family: "Raleway-Regular";
 }
 
 #PRLC-Star-1 {
   transform: rotate(-12deg);
   position: absolute;
-  top: -13.5px;
+  top: -10.5px;
   left: -15px;
-  font-size: 42px;
+  font-size: 41px;
   color: #66B06E;
 }
 
 #PRLC-Star-2 {
   transform: rotate(-12deg);
   position: absolute;
-  top: -17px;
+  top: -14px;
   left: -19px;
-  font-size: 49px;
+  font-size: 48px;
   color: white;
 }
 
