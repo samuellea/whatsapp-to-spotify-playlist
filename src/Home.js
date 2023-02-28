@@ -153,6 +153,8 @@ function Home({
               {userPlaylistsLoading ? null : <button type="button" onClick={() => setViewCreateModal(true)}>Create</button>}
             </div>
 
+            <div className="InvisiBox" style={{ flex: 0.1 }} />
+
             {viewCreateModal ?
               <div className="HomeCreatePlaylistModalContainer Flex Column">
                 <div className="HomeCreatePlaylistModal Flex Column">

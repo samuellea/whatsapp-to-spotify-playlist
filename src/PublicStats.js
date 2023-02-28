@@ -201,6 +201,10 @@ function PublicStats({ authLink, handleLogout }) {
                 <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
               </div>
               : null}
+            <div className="CopyrightFooter">
+              <span> © Sam Lea 2023</span>
+              <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
+            </div>
           </ div>
       }
       <Toaster />

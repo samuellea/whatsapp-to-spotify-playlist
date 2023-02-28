@@ -142,6 +142,10 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
           <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
           {error}</span> : null}
       </div>
+      <div className="CopyrightFooter">
+        <span> © Sam Lea 2023</span>
+        <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
+      </div>
       <div className="InvisiBox" style={{ flex: 1 }} />
 
     </div>

@@ -276,6 +276,10 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
 
             </div>
             <SharedNotAddedSection rawPostsLog={firebasePlaylist.obj.rawPostsLog} lookupInState={lookupInState} colourMap={colourMap} handleExportStats={handleExportStats} sharingLink={sharingLink} appToast={appToast} />
+            <div className="CopyrightFooter">
+              <span> © Sam Lea 2023</span>
+              <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
+            </div>
           </ div>
       }
       <Toaster />

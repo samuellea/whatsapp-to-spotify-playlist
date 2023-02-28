@@ -143,3 +143,24 @@
   padding-top: 2px;
   padding-left: 7.5px;
 }
+
+.CopyrightFooter {
+  /* border: 1px solid red; */
+  color: white;
+  font-size: 12px;
+  font-family: "Raleway-Regular";
+  height: 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4%;
+}
+
+.CopyrightFooter span {
+  margin: 5px;
+}
+
+.CopyrightFooter a {
+  color: #66B06E;
+}
