@@ -55,7 +55,7 @@ function FinalReviewInterface({
   };
 
   const screenToRender = () => {
-    console.log(processedPostsLog)
+    // console.log(processedPostsLog)
     const firebasePLAndSpotifyPLInSync = processedPostsLog?.length || 0 === spotifyPlaylistObj.tracks.total;
 
     if (!submissionFeedback) {
@@ -77,7 +77,7 @@ function FinalReviewInterface({
               <div className="FinalReviewPostsDisplay Flex Column">
                 {
                   newPosts.map((post, i) => {
-                    console.log(post)
+                    // console.log(post)
                     return (<FinalReviewPost post={post} index={i} />)
                   })
                 }

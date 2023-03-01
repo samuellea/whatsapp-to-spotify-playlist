@@ -57,7 +57,7 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
 
   const performSignup = () => {
     // need to do some form validation for this at some point!!!
-    console.log('performSignup')
+    // console.log('performSignup')
     const signupData = { email, password, returnSecureToken: true };
     console.log(signupData);
     axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_API_KEY}`, signupData)
@@ -65,7 +65,9 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
         console.log(data, ' <--- data in .then of Auth')
         const expirationDate = new Date(new Date().getTime() + (data.expiresIn * 1000))
         localStorage.setItem('token', data.idToken);
+        localStorage.setItem('firebaseUserId', data.localId);
         localStorage.setItem('expirationDate', expirationDate);
+        localStorage.setItem('email', data.email);
         setSignupPending(false);
         updateLoggedIn(data);
       })
@@ -80,8 +82,8 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
   };
 
   const handleClick = () => {
-    console.log(email)
-    console.log(password)
+    // console.log(email)
+    // console.log(password)
     let updatedFormError = { ...formError };
     if (!email.length) updatedFormError.email = true;
     if (email.length && !validEmailRegex.test(email)) updatedFormError.email = true;

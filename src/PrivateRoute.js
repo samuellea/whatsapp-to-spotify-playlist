@@ -5,15 +5,15 @@ import * as h from './helpers'
 import { Route, Redirect } from "react-router-dom";
 
 function PrivateRoute({ publicStatsHashNonAuth, children, ...rest }) {
-  console.log(publicStatsHashNonAuth);
+  // console.log(publicStatsHashNonAuth);
   const token = localStorage.getItem('token');
   return (
     <Route
       {...rest}
       render={({ location }) => {
         if (publicStatsHashNonAuth) {
-          console.log(publicStatsHashNonAuth)
-          console.log('publicStatsHashNonAuth!')
+          // console.log(publicStatsHashNonAuth)
+          // console.log('publicStatsHashNonAuth!')
           if (location.hash) {
             // conditional logic for non-firebase auth'd users logging into Spoti on the publicStats page when making playlists
             // - grab spotifyToken from redirected URL and set in localStorage

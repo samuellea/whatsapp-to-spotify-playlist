@@ -21,15 +21,15 @@ function Home({
   appToast,
   spotifyUserDisplayName,
 }) {
-  console.log(userPlaylistMetas)
+  // console.log(userPlaylistMetas)
   const history = useHistory();
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
   const firebaseUserId = localStorage.getItem('firebaseUserId');
 
-  console.log(token);
-  console.log(spotifyToken);
-  console.log(spotifyToken);
+  // console.log(token);
+  // console.log(spotifyToken);
+  // console.log(spotifyToken);
 
   const [fontsLoaded, setFontsLoaded] = useState(false)
   const [showHelp, setShowHelp] = useState(false);

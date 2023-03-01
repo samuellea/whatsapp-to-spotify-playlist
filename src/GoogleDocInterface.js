@@ -30,13 +30,13 @@ function GoogleDocInterface({
     const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
     const handleGetGoogleDriveFile = async (accessToken) => {
-      console.log(googleFileURL, ' <-- googleFileURL');
-      console.log(accessToken, ' <-- accessToken');
+      // console.log(googleFileURL, ' <-- googleFileURL');
+      // console.log(accessToken, ' <-- accessToken');
       const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
       const getGoogleDriveResponse = await u.getGoogleDriveFile(googleDriveFileID, accessToken);
       if ([200, 201].includes(getGoogleDriveResponse.status)) {
         const { data } = getGoogleDriveResponse;
-        console.log(data)
+        // console.log(data)
         // NOW, at this point, you could send data off to our backend endpoint for processing/parsing, keep the spinner spinning
         handleChangeGoogleDriveFileTextArea(data);
         // setLoading(false);
@@ -51,8 +51,8 @@ function GoogleDocInterface({
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       scope: SCOPES,
       callback: async (tokenResponse) => {
-        console.log(tokenResponse)
-        console.log(googleFileURL)
+        // console.log(tokenResponse)
+        // console.log(googleFileURL)
         // We now have access to a live token to use for ANY google API (based on our SCOPES)
         if (tokenResponse && tokenResponse.access_token) {
           handleGetGoogleDriveFile(tokenResponse.access_token)
@@ -73,7 +73,7 @@ function GoogleDocInterface({
 
   const handleSubmitGoogleFileURL = async () => {
     const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
-    console.log(googleDriveFileID)
+    // console.log(googleDriveFileID)
     if (!googleDriveFileID) return setValidationError(true);
     // setLoading(true);
     setInfoLoading(true);

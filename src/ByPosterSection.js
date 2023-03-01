@@ -15,10 +15,10 @@ import GreenCircleRedCross from './GreenCircleRedCross';
 function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPublicStatsPage = false, authLink }) {
   const history = useHistory();
 
-  console.log('---------------------------------------')
-  console.log('processesPostsLog coming into ByPosterSection:')
-  console.log(posts)
-  console.log('---------------------------------------')
+  // console.log('---------------------------------------')
+  // console.log('processesPostsLog coming into ByPosterSection:')
+  // console.log(posts)
+  // console.log('---------------------------------------')
 
   // useEffect(() => {
   //   console.log('⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ⭐ ')

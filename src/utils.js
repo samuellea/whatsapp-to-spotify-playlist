@@ -52,10 +52,10 @@ export const createOrUpdateFirebasePlaylistMetadata = async (
   let lookup = { grouped: [], renamed: [] };
 
   if (method === 'PATCH') {
-    console.log('🧵')
+    // console.log('🧵')
     const { data } = await axios.get(`${firebaseUrl}/playlistMetas.json?orderBy="firebasePlaylistId"&equalTo="${firebasePlaylistId}"&auth=${token}`)
     const playlistMetaId = Object.entries(data)[0][0];
-    console.log(playlistMetaId)
+    // console.log(playlistMetaId)
     const existingMetaData = Object.entries(data)[0][1];
     if (existingMetaData.lookup) lookup = existingMetaData.lookup;
     url = `${firebaseUrl}/playlistMetas/${playlistMetaId}.json?auth=${token}`

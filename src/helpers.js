@@ -40,7 +40,7 @@ export const msgTimeComponents = (singleMessage) => {
   // handles times in 12hr or 24hr format, as well as glitched ASCII as can be copied/pasted
   // from exports handled on mobile (eg. '12:30^£_pm);
   const dateTime = singleMessage.slice(0, singleMessage.indexOf('-') - 1);
-  console.log(dateTime)
+  // console.log(dateTime)
   const timePortion = dateTime.slice(12);
   const colonIndex = timePortion.indexOf(':');
   let hourPortion = timePortion.slice(0, colonIndex); // * NB 'let'
@@ -587,7 +587,7 @@ export const getLastUpdatedFromMeta = (playlistMetaInAppState) => {
 
 export const setLoadedFonts = async (fontsArr, fontsLoadedSetter) => {
   const promises = fontsArr.map(e => new FontFaceObserver(e).load());
-  console.log(promises)
+  // console.log(promises)
   Promise.all([promises]).then(function () {
     fontsLoadedSetter(true);
   });
@@ -614,7 +614,7 @@ export const stringContainsKaraoke = (str) => {
 export const stringContainsAcoustic = (str) => str.toLowerCase().includes('acoustic') ? true : false;
 
 export const stringContainsLive = (str) => {
-  console.log(str, ' <')
+  // console.log(str, ' <')
   return str.toLowerCase().includes('live') ? true : false
 };
 

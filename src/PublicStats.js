@@ -53,7 +53,7 @@ function PublicStats({ authLink, handleLogout }) {
     const spotifyToken = window.localStorage.getItem('spotifyToken');
     const spotifyUserId = window.localStorage.getItem('spotifyUserId');
     if (spotifyToken && !spotifyUserId) {
-      console.log('BINGO')
+      // console.log('BINGO')
       // We are a public user (not a registered, logged-in user with FB auth) who has logged into Spotify for making a playlist in ByPosters
       setSpotifyLoggedInBanner(true);
     }
@@ -62,7 +62,7 @@ function PublicStats({ authLink, handleLogout }) {
       const getPublicStatsResponse = await u.getPublicStats(publicStatsId);
       if ([200, 204].includes(getPublicStatsResponse.status)) {
         const { data } = getPublicStatsResponse;
-        console.log(data);
+        // console.log(data);
         setPublicStatsObj(data);
       } else {
         setPublicStatsError(true);

@@ -74,12 +74,17 @@ function App() {
     setUserPlaylistsLoading(true);
     const token = localStorage.getItem('token');
     const firebaseUserId = localStorage.getItem('firebaseUserId');
+    console.log(token);
+    console.log(firebaseUserId);
     return await u.getUserFirebasePlaylistsMetadata(firebaseUserId, token).then(async ({ data, status }) => {
       if (status === 200) {
+        console.log('BOP')
         // console.log(status, ' <-- fetchAndSetFirebasePlaylistMetasStatus!');
         // await mockSleep(5000) // ❓ ❓ ❓ ❓
         if (data) {
+          console.log('BLEP')
           const userPlaylistMetas = Object.entries(data).map(e => ({ metaId: e[0], ...e[1] }));
+          console.log(userPlaylistMetas)
           setUserPlaylistMetas(userPlaylistMetas);
           setUserPlaylistsLoading(false);
           return true;

@@ -75,7 +75,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(async (spotifyRes) => {
         setSpotifyPlaylistData({ ...spotifyPlaylistData, artwork: spotifyRes.data.images[0].url })
         const { data } = firebasePlaylistRes;
-        console.log(data, ' <<<<<<<<<<<')
+        // console.log(data, ' <<<<<<<<<<<')
         const firebasePlaylistId = Object.entries(data)[0][0];
         const firebasePlaylistObj = Object.entries(data)[0][1];
         setFirebasePlaylist({ id: firebasePlaylistId, obj: firebasePlaylistObj });
@@ -164,8 +164,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
     const lookupOnFB = playlistMetaInAppState?.lookup || {};
     if (!_.isEqual(lookupOnFB, lookupInState)) {
       setPageLoading(true);
-      console.log('🌳')
-      console.log(lookupInState);
+      // console.log('🌳')
+      // console.log(lookupInState);
       // console.log(lookupOnFB);
       // console.log(lookupInState);
       // console.log('----------')
@@ -185,7 +185,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
 
   const handleExportStats = async () => {
     const exportSuccessResponse = await u.exportStatsPage(firebasePlaylist, playlistMetaInAppState, spotifyPlaylistData, token);
-    console.log(exportSuccessResponse)
+    // console.log(exportSuccessResponse)
     const { status } = exportSuccessResponse;
     if (![200, 201].includes(status)) {
       appToast('Sharing failed. Please try again later', { duration: 1500 });
@@ -193,7 +193,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
     const { name } = exportSuccessResponse.data;
     const sharingUrl = `https://whatsapp-to-spotify.netlify.app/publicStats/${name}`;
     // const sharingUrl = `http://localhost:3000/publicStats/${name}`;
-    console.log(sharingUrl);
+    // console.log(sharingUrl);
     setSharingLink(sharingUrl);
   }
 

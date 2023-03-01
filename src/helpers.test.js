@@ -293,7 +293,7 @@ describe.only('findInputPostInRawPostsLog()', () => {
     const inputPost = { id: 2, linkType: 'youtube', linkID: 'def456', time: { year: '2020', month: '02', day: '01', hour: '00', minute: '00' } };
     const res = findInputPostInRawPostsLog(inputPost, rawPostsLog);
     const expected = undefined;
-    console.log(res)
+    // console.log(res)
     expect(res).not.toEqual(expected);
   });
   it('', () => {
@@ -305,7 +305,7 @@ describe.only('findInputPostInRawPostsLog()', () => {
     const inputPost = { id: 9, linkType: 'youtube', linkID: 'xyz101112', time: { year: '2020', month: '02', day: '01', hour: '00', minute: '00' } };
     const res = findInputPostInRawPostsLog(inputPost, rawPostsLog);
     const expected = undefined;
-    console.log(res)
+    // console.log(res)
     expect(res).toEqual(expected);
   });
   it('', () => {
