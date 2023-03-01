@@ -57,6 +57,7 @@ function App() {
           url: 'https://api.spotify.com/v1/me',
           headers: { 'Authorization': 'Bearer ' + spotifyToken },
         }).then(({ data }) => {
+          console.log(data, ' <---- spotify data after login')
           window.localStorage.setItem('spotifyUserId', data.id);
           window.localStorage.setItem('spotifyUserDisplayName', data.display_name);
           let spotifyUserDisplayName = window.localStorage.getItem('spotifyUserDisplayName');
