@@ -30,9 +30,10 @@ function GoogleDocInterface({
     const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
     const handleGetGoogleDriveFile = async (accessToken) => {
-      // console.log(googleFileURL, ' <-- googleFileURL');
-      // console.log(accessToken, ' <-- accessToken');
+      console.log(googleFileURL, ' <-- googleFileURL');
+      console.log(accessToken, ' <-- accessToken');
       const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
+      console.log(googleDriveFileID, ' <-- googleDriveFileID');
       const getGoogleDriveResponse = await u.getGoogleDriveFile(googleDriveFileID, accessToken);
       if ([200, 201].includes(getGoogleDriveResponse.status)) {
         const { data } = getGoogleDriveResponse;
@@ -51,7 +52,7 @@ function GoogleDocInterface({
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       scope: SCOPES,
       callback: async (tokenResponse) => {
-        // console.log(tokenResponse)
+        console.log(tokenResponse.access_token);
         // console.log(googleFileURL)
         // We now have access to a live token to use for ANY google API (based on our SCOPES)
         if (tokenResponse && tokenResponse.access_token) {
@@ -72,8 +73,9 @@ function GoogleDocInterface({
   }
 
   const handleSubmitGoogleFileURL = async () => {
+    console.log(googleFileURL)
     const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
-    // console.log(googleDriveFileID)
+    console.log(googleDriveFileID)
     if (!googleDriveFileID) return setValidationError(true);
     // setLoading(true);
     setInfoLoading(true);
@@ -125,7 +127,7 @@ function GoogleDocInterface({
 
                 <div className="GoogleInputTextInterface Flex Column" style={{ height: '180px' }}>
                   <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here"></input>
-                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmitGoogleFileURL} disabled={validationError}>Submit</button>
+                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmitGoogleFileURL} disabled={validationError}>Submitto</button>
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
               </>
