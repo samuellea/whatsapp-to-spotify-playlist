@@ -946,56 +946,16 @@ export const getPublicStats = async (publicStatsId) => {
   return getPublicStatsResponse;
 };
 
-// export const getGoogleDoc = async (googleDocID, googleToken) => {
-//   const getGoogleDocResponse = await axios({
-//     url: `https://docs.googleapis.com/v1/documents/${googleDocID}`,
-//     method: 'GET',
-//     headers: {
-//       'Authorization': 'Bearer ' + googleToken,
-//       'Content-Type': 'application/json'
-//     },
-//   });
-//   return getGoogleDocResponse;
-// };
-
-// https://drive.google.com/file/d/1PhxQyS3tmPBGD9KudAWi2qxqGiPPE1Tg/view?usp=share_link
-
-// 1PhxQyS3tmPBGD9KudAWi2qxqGiPPE1Tg
-
-// https://content.googleapis.com/drive/v2/files/1gMQb3RgP2-WXC48sgC6BL0zThor4YzQf?key=AIzaSyAa8yy0GdcGPHdtD083HiGGx_S0vMPScDM
-
-// https://www.googleapis.com/drive/v2/files/MY_FILE_ID?alt=media&source=downloadUrl
-
-// https://www.googleapis.com/auth/drive.file *******
-
-// https://www.googleapis.com/drive/v3/files/fileId
-
 export const getGoogleDriveFile = async (googleDriveFileID, googleToken) => {
   console.log(googleToken);
-  const url = `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}`; // removing ?alt=media doesn't make difference, still 404
-  // https://www.googleapis.com/drive/v2/files/1ZLwk0HofuUDaTrPS8jV-W_BANzIB_xZ2 // <-- tried this on the googleapis demo, 200
-
-  // https://www.googleapis.com/drive/v2/files/1ZLwk0HofuUDaTrPS8jV-W_BANzIB_xZ2?alt=media
-
-  // https://www.googleapis.com/drive/v2/files/1ZLwk0HofuUDaTrPS8jV-W_BANzIB_xZ2
-
-  // 1ZLwk0HofuUDaTrPS8jV-W_BANzIB_xZ2
-
-  /*
-  Bearer ya29.a0AVvZVsrkFqoO9HnjU1oURg-4AauBUH7qUWQcEg5bJKuVQqsM0ki-POdgSgzyxTyycc27OKlDlcCubDM1QR5tWTWmxZWhaxQiQm80bytu6pY2jR6j3a596AHo1kSB10n2jK02Ymifld_4lTSf3FJPsTZGMSWlR7HDERZeOQ7SFpIlnwaCgYKASUSARISFQGbdwaIUeRBYBNfso-_UNUeKIDPrA0181
-  */
-
-  console.log(url);
   const getGoogleDocResponse = await axios({
     url: `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}?alt=media`,
-    // url: url,
     method: 'GET',
     headers: {
       'Authorization': 'Bearer ' + googleToken,
       'Content-Type': 'application/json'
     },
   });
-  console.log(getGoogleDocResponse)
   return getGoogleDocResponse;
 };
 
