@@ -987,8 +987,8 @@ export const getGoogleDriveFile = async (googleDriveFileID, googleToken) => {
 
   console.log(url);
   const getGoogleDocResponse = await axios({
-    // url: `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}?alt=media`,
-    url: url,
+    url: `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}?alt=media`,
+    // url: url,
     method: 'GET',
     headers: {
       'Authorization': 'Bearer ' + googleToken,

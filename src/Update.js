@@ -98,6 +98,7 @@ function Update({ userPlaylistMetas }) {
   };
 
   const handleChangeGoogleDriveFileTextArea = (googleDriveFileText) => {
+    console.log(googleDriveFileText);
     // const inputTextNoLineBreaks = googleDriveFileText.replace(/(\r\n|\n|\r)/gm, " "); // <-- this regex was REALLY slow! c. 50 seconds this way vs. c. 5 seconds below!
     // setInputText(inputTextNoLineBreaks);
 

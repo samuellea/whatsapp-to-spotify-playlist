@@ -27,7 +27,7 @@ function GoogleDocInterface({
 
   useEffect(() => {
     /* global google */
-    const SCOPES = "https://www.googleapis.com/auth/drive.file";
+    const SCOPES = "https://www.googleapis.com/auth/drive";
 
     const handleGetGoogleDriveFile = async (accessToken) => {
       console.log(googleFileURL, ' <-- googleFileURL');
