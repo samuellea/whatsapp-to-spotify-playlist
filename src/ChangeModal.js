@@ -10,6 +10,8 @@ import GreenCircleRedCross from './GreenCircleRedCross';
 import Preview from './Preview';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCircleStop } from '@fortawesome/free-solid-svg-icons';
+import SpotifyLogo from './SpotifyLogo';
+import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
 
 function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyResult }) {
   console.log(matchToChange)
@@ -251,6 +253,10 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
 
         {searchResults !== null ?
           <div className="SearchResultsInfo Flex Column">
+            <div className="ChangeModalSpotifyArtworkLink Flex Row">
+              <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+              <span>TAP ARTWORK TO OPEN IN SPOTIFY</span>
+            </div>
             {searchResults !== null && searchResults.length
               ?
               <div className="SearchResultsDisplay">
@@ -260,10 +266,14 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
                   const selected = selectedResult === i;
                   return (
                     <div className={`PosterPlaylistCard Flex Row ${bgColor} Selected-${selected}`} style={{ width: '100%' }} onClick={() => { setSelectedResult(i) }}>
-                      <img src={result.album.images[2].url || result.album.images[1].url} />
-                      <div className="PosterPlaylistCardInfo Flex Column">
-                        <span className="CurtailText Curtail2">{result.name}</span>
-                        <span className="CurtailText Curtail2">{result.artists.map(e => e.name).join(', ')}</span>
+                      <div className="ChangeModalTrackCardInfo Flex Row">
+                        <a href={`https://open.spotify.com/track/${result.id}`} target="_blank">
+                          <img src={result.album.images[2].url || result.album.images[1].url} />
+                        </a>
+                        <div className="PosterPlaylistCardInfo Flex Column">
+                          <span className="CurtailText Curtail2">{result.name}</span>
+                          <span className="CurtailText Curtail2">{result.artists.map(e => e.name).join(', ')}</span>
+                        </div>
                       </div>
 
 
@@ -298,9 +308,16 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
         <div className="TrackInfo Flex Column" style={{ opacity: searchResults === null ? 1 : 0 }}>
 
 
-          <div className="TrackArtContainer">
+          <div className="TrackArtContainer Flex Column">
             {thumbnailMed ?
-              <img className="SpotifyArtwork" src={thumbnailMed} alt="Spotify Artwork" />
+              <>
+                <div className="TrackInfoOpenInSpotify Flex Row"><img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+                  <a href={`https://open.spotify.com/track/${spotifyTrackID}`} target="_blank">
+                    <span>OPEN IN SPOTIFY</span>
+                  </a>
+                </div>
+                <img className="SpotifyArtwork" src={thumbnailMed} alt="Spotify Artwork" />
+              </>
               : <div className="SpotifyArtworkNull"><FontAwesomeIcon icon={faBan} pointerEvents="none" /></div>
 
             }

@@ -19,6 +19,7 @@ import SharedNotAddedSection from './SharedNotAddedSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import FontFaceObserver from 'fontfaceobserver';
+import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
 
 function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading, appToast }) {
 
@@ -191,8 +192,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       appToast('Sharing failed. Please try again later', { duration: 1500 });
     }
     const { name } = exportSuccessResponse.data;
-    const sharingUrl = `https://whatsapp-to-spotify.netlify.app/publicStats/${name}`;
-    // const sharingUrl = `http://localhost:3000/publicStats/${name}`;
+    // const sharingUrl = `https://whatsapp-to-spotify.netlify.app/publicStats/${name}`;
+    const sharingUrl = `http://localhost:3000/publicStats/${name}`;
     // console.log(sharingUrl);
     setSharingLink(sharingUrl);
   }
@@ -225,7 +226,9 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
                 <h1>{spotifyPlaylistName}</h1>
                 <h2><span>{processedPostsLog.length}</span> tracks</h2>
                 <span>last updated: {h.getLastUpdatedFromMeta(playlistMetaInAppState)}</span>
-                <a className="StatsInfoPodOpenButton Flex" href={`https://open.spotify.com/playlist/${spotifyPlaylistId}`} target="_blank">Open</a>
+                <a className="StatsInfoPodOpenButton Flex" href={`https://open.spotify.com/playlist/${spotifyPlaylistId}`} target="_blank">
+                  <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+                  Open In Spotify</a>
               </div>
 
 

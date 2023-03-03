@@ -66,12 +66,21 @@
   font-family: 'Arial';
   font-size: 16px;
   font-weight: 600;
-  background-color: #7316c6;
+  background-color: #1DB954;
   /* background-color: #66B06E; */
   align-items: center;
   justify-content: center;
   align-items: center;
   text-decoration: none;
+  padding-top: 2px;
+  padding-right: 15px;
+  box-sizing: border-box;
+}
+
+.StatsInfoPodOpenButton img {
+  height: 30px !important;
+  width: 30px !important;
+  padding: 15px !important;
 }
 
 .Stats {
@@ -88,6 +97,8 @@
 
 .StatsPadding {
   padding: 5%;
+  padding-bottom: 10%;
+  /* border: 3px solid lime; */
 }
 
 

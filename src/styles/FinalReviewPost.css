@@ -4,13 +4,23 @@
   width: 100%;
   min-height: 80px;
   height: 100px;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding: 7px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   color: white;
+  position: relative;
+}
+
+.FinalReviewPost a {
+  position: absolute;
+  /* border: 1px solid white; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  width: 100%;
+  height: 100%;
 }
 
 .Odd {
@@ -24,8 +34,9 @@
 .FinalReviewPostThumb {
   height: 60px;
   width: 80px;
-  border: 1px solid white;
+  /* border: 1px solid white; */
 }
+
 
 .FinalReviewPostThumb img {
   max-width: 100%;
@@ -36,7 +47,7 @@
 .FinalReviewInfoContainer {
   /* border: 1px solid cyan; */
   height: 100%;
-  width: 100%;
+  width: 50%;
   display: grid;
   text-align: left;
   padding-left: 10px;

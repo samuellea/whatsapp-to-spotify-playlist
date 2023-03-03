@@ -7,6 +7,14 @@ import { Route, Redirect } from "react-router-dom";
 function PrivateRoute({ publicStatsHashNonAuth, children, ...rest }) {
   // console.log(publicStatsHashNonAuth);
   const token = localStorage.getItem('token');
+  const firebaseUserId = localStorage.getItem('firebaseUserId');
+  const email = localStorage.getItem('email');
+
+  const hasNecessaries = () => {
+    if (token && firebaseUserId && email) return true;
+    return false;
+  };
+
   return (
     <Route
       {...rest}
@@ -23,7 +31,7 @@ function PrivateRoute({ publicStatsHashNonAuth, children, ...rest }) {
           }
         }
         // if no token, check if using publicStats page. If not, redirect to login
-        return (token ? (
+        return (hasNecessaries() ? (
           children
         ) : publicStatsHashNonAuth !== null ? (
           <Redirect

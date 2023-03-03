@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Redirect, Link } from "react-router-dom";
+import { Redirect, Link, useLocation } from "react-router-dom";
 import axios from 'axios';
 import Spinner from './Spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +9,7 @@ import Oval from 'react-loading-icons/dist/esm/components/oval';
 import * as h from './helpers';
 import logo from './whatsapp-to-spotify-icon-large.png'
 
-function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an existing user
+function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our Login page if an existing user
 
   localStorage.removeItem('publicStatsHashNonAuth');
 
@@ -18,6 +18,12 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
   useEffect(() => {
     const fontsArr = ['Raleway-Regular', 'Raleway-ExtraLight', 'Raleway-SemiBold']
     h.setLoadedFonts(fontsArr, setFontsLoaded);
+  }, []);
+
+  useEffect(() => {
+    return function cleanup() {
+      showPrivacyPolicy(false);
+    }
   }, []);
 
   const [email, setEmail] = useState({});
@@ -65,8 +71,8 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
     <div className="Auth Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
       <div className="InvisiBox" style={{ flex: 0.5 }} />
       <div className="AuthHeaders">
-        <img src={logo} />
-        <h1 className="Raleway-SemiBold">WhatsApp to Spotify</h1>
+        {/* <img src={logo} /> */}
+        <h1 className="Raleway-SemiBold">Chats To Playlist</h1>
         <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
       </div>
 
@@ -106,6 +112,8 @@ function Auth({ updateLoggedIn, loggedIn }) { // this is our Login page if an ex
         <span> © Sam Lea 2023</span>
         <span>|</span>
         <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
+        <span>|</span>
+        <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span>
       </div>
       <div className="InvisiBox" style={{ flex: 1 }} />
     </div>

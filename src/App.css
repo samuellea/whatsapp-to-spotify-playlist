@@ -1,5 +1,6 @@
 :root {
   color-scheme: light only;
+  font-family: sans-serif, Helvetica, Arial, sans-serif;
 }
 
 .App {
@@ -15,6 +16,7 @@
   justify-content: center;
   /* border: 2px solid orange; */
   box-sizing: border-box;
+  font-family: sans-serif, Helvetica, Arial, sans-serif;
 }
 
 .AppView {
@@ -27,6 +29,8 @@
   max-width: 362px;
   box-sizing: border-box;
   overflow: hidden;
+  font-family: sans-serif, Helvetica, Arial, sans-serif;
+  position: relative;
 }
 
 
@@ -88,9 +92,10 @@
 
 .SpotifyLoginContainer {
   height: 100vh;
-  /* border: 2px solid red; */
   justify-content: center;
+  align-items: center;
   padding: 5%;
+  font-size: 12px;
 }
 
 .SpotifyLoginScreen {
@@ -114,20 +119,30 @@
   margin-bottom: 15px;
 }
 
-.SpotifyLoginScreen a {
-  background-color: #66B06E;
+.SpotifyLoginContainer a {
+  background-color: white;
   width: 100%;
   min-height: 50px;
-  color: white;
-  font-family: Arial;
-  font-size: 16px;
+  color: #292B3E;
+  font-family: sans-serif, Helvetica, Arial;
+  font-size: 18px;
   font-weight: 700;
   text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 15px;
+  margin-bottom: 5%;
+  /* padding-top: 2px; */
 }
+
+.SpotifyLoginContainer img {
+  height: 30px;
+  padding: 15px;
+  width: auto;
+  /* margin-bottom: 2px; */
+}
+
 
 .HelpButton {
   border: 1px solid white !important;
@@ -141,7 +156,7 @@
   justify-content: center !important;
   align-items: center !important;
   padding-top: 2px;
-  padding-left: 7.5px;
+  padding-left: 6.5px;
 }
 
 .CopyrightFooter {
@@ -154,14 +169,40 @@
   /* flex-direction: column; */
   justify-content: center;
   align-items: center;
-  padding: 4%;
+  /* padding: 4%; */
 }
 
 .CopyrightFooter span {
-  margin: 5px;
+  margin: 4px;
 }
 
 .CopyrightFooter a {
   color: #66B06E !important;
   font-size: 12px !important;
+}
+
+#PrivacyPolicyLink {
+  text-decoration: underline;
+}
+
+#SpotifyIconWhite {
+  height: 21px;
+  width: 21px;
+  padding: 10px;
+}
+
+#SpotifyLogoWhiteLarge {
+  height: 70.8px;
+  width: 236.8px;
+  /* width: auto; */
+  padding: 36px;
+}
+
+#SpotifyLoginPrivacyPolicy {
+  text-decoration: underline;
+}
+
+#MobileWarning {
+  font-size: 12px;
+  font-weight: 100;
 }

@@ -4,6 +4,7 @@ import ChangeModal from './ChangeModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import ConversionCard from './ConversionCard';
+import SpotifyLogo from './SpotifyLogo';
 
 function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts }) {
 
@@ -87,6 +88,11 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
         <span>
           Convert to these Spotify tracks? (Tap an item to edit)
         </span>
+      </div>
+
+      <div className="YTCI-ProvidedBySpotify Flex Row">
+        <span>Tap <div className="YTCI-Legend" /> to open track in</span>
+        <SpotifyLogo />
       </div>
 
       <div className="YoutubeConversionsDisplayContainer Flex Column">

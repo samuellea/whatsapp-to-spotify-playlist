@@ -40,10 +40,29 @@
 .TrackInfo {
   /* border: 3px solid white; */
   justify-content: space-between;
-  padding: 5%;
+  padding: 0% 5% 5% 5%;
   box-sizing: border-box;
   border-radius: 0px 0px 15px 15px;
 }
+
+.TrackInfoOpenInSpotify {
+  /* border: 1px solid white; */
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  border: 1px solid #292b3e;
+  border-radius: 15px;
+  padding-right: 10px;
+  margin: 5px;
+}
+
+.TrackInfoOpenInSpotify a {
+  text-decoration: none;
+  color: white;
+}
+
+.TrackInfoOpenInSpotify span {}
+
 
 .SearchResultsInfo {
   position: absolute;
@@ -56,12 +75,12 @@
 
   border-radius: 15px;
   z-index: 7;
-  padding: 5%;
+  padding: 0% 5% 5% 5%;
   box-sizing: border-box;
 }
 
 .SearchResultsDisplay {
-  height: 76%;
+  height: 65%;
   width: 100%;
   background-color: #1a1b27;
   border-radius: 10px;
@@ -178,7 +197,9 @@
   align-items: flex-end;
   /* margin-bottom: 10px; */
   margin-top: 10px;
-  height: 135px;
+  height: 185px;
+  justify-content: center;
+  align-items: center;
 }
 
 .SpotifyArtwork {
@@ -195,9 +216,7 @@
   width: 135px;
   font-size: 100px;
   /* width: auto; */
-  /* box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.3); */
-  border: 1px solid #4c4f73;
-  color: #4c4f73;
+  box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.3);
   /* border: 1px solid white; */
   justify-content: center;
   align-items: center;
@@ -389,4 +408,26 @@
   border: none;
   /* color: rgba(255, 255, 255, 0.491) !important; */
   background-color: #161723;
+}
+
+.ChangeModalTrackCardInfo {
+  /* border: 1px solid red; */
+  width: 90%;
+  align-items: center;
+}
+
+.SearchResultsDisplay a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ChangeModalSpotifyArtworkLink {
+  margin: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.ChangeModalSpotifyArtworkLink span {
+  font-size: 12px;
 }

@@ -14,6 +14,9 @@ import Spinner from './Spinner';
 import { mockSleep } from './helpers';
 import toast, { Toaster } from 'react-hot-toast';
 import PublicStats from './PublicStats';
+import SpotifyIconGreen from './Spotify_Icon_RGB_Green.png';
+import SpotifyLogoWhitePNG from './Spotify_Logo_RGB_White.png';
+import PrivacyPolicy from './PrivacyPolicy';
 
 
 function App() {
@@ -28,12 +31,14 @@ function App() {
   const [userPlaylistMetas, setUserPlaylistMetas] = useState([]);
   const [userPlaylistsLoading, setUserPlaylistsLoading] = useState(true);
   const [spotifyUserDisplayName, setSpotifyUserDisplayName] = useState(null);
+  const [privacyPolicy, showPrivacyPolicy] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
-  const REDIRECT_URI = 'https://whatsapp-to-spotify.netlify.app';
-  // const REDIRECT_URI = 'http://localhost:3000/';
+  // const REDIRECT_URI = 'https://whatsapp-to-spotify.netlify.app';
+  const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
   const SCOPES = 'playlist-modify-private playlist-modify-public';
@@ -94,7 +99,13 @@ function App() {
     });
   };
 
+  const handleResize = () => {
+    return window.innerWidth < 720 ? setIsMobile(true) : setIsMobile(false);
+  }
+
   useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    window.innerWidth < 720 ? setIsMobile(true) : setIsMobile(false);
     const token = localStorage.getItem('token');
     if (token) {
       setLoggedIn(true);
@@ -135,18 +146,20 @@ function App() {
     return (
       <div className="SpotifyLoginContainer Flex Column">
         {!spotifyToken ?
-          <div className="SpotifyLoginScreen Flex Column">
-            <div className="InvisiBox" style={{ flex: 1 }} />
-            <h1 className="Raleway-SemiBold">Login to Spotify</h1>
-            <div className="InvisiBox" style={{ flex: 0.25 }} />
-            <a href={authLink}>Login</a>
-            <div className="InvisiBox" style={{ flex: 1 }} />
-          </div>
+          <>
+            <img id="SpotifyLogoWhiteLarge" src={SpotifyLogoWhitePNG} />
+            <a href={authLink}>
+              {/* <img src={SpotifyIconGreen} /> */}
+              Login
+            </a>
+            <span onClick={() => showPrivacyPolicy(true)}>By proceeding, you agree that you have read the terms of our <span id="SpotifyLoginPrivacyPolicy">Privacy Policy</span></span>
+          </>
           :
           publicStatsHashNonAuth !== null ? <Redirect to={`/publicStats/${publicStatsHashNonAuth}`} />
-            : <Redirect to='/' />}
+            : <Redirect to='/' />
+        }
         <div className="InvisiBox" style={{ height: '10%' }} />
-      </div>
+      </div >
     )
   };
 
@@ -155,18 +168,19 @@ function App() {
   return (
     <div className="App">
       <div className="AppView">
+        {isMobile ? null : <span id="MobileWarning">⚠ This webapp is best viewed on mobile</span>}
         <Router>
           <Route path="/publicStats/:publicStatsId">
             <PublicStats authLink={authLink} handleLogout={handleLogout} />
           </Route>
           <Route path="/login">
             {!loggedIn ?
-              <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} />
+              <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} showPrivacyPolicy={showPrivacyPolicy} />
               : !spotifyToken ? <Redirect to='/spotifylogin' /> : <Redirect to='/' />
             }
           </Route>
           <Route path="/signup">
-            <Signup updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} appToast={toast} />
+            <Signup updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} appToast={toast} showPrivacyPolicy={showPrivacyPolicy} />
           </Route>
           <PrivateRoute exact path="/" publicStatsHashNonAuth={publicStatsHashNonAuth}>
             <Home
@@ -196,7 +210,11 @@ function App() {
               : null}
           </PrivateRoute>
           <Toaster />
+
         </Router>
+        {privacyPolicy ?
+          <PrivacyPolicy showPrivacyPolicy={showPrivacyPolicy} />
+          : null}
       </div >
     </div>
   );

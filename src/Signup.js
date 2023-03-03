@@ -9,9 +9,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
 import logo from './whatsapp-to-spotify-icon-large.png'
 
-function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login page if an existing user
+function Signup({ updateLoggedIn, loggedIn, appToast, showPrivacyPolicy }) { // this is our Login page if an existing user
 
   localStorage.removeItem('publicStatsHashNonAuth');
+
+  useEffect(() => {
+    return function cleanup() {
+      showPrivacyPolicy(false);
+    }
+  }, []);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -104,8 +110,8 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
     <div className="Signup Flex Column">
       <div className="InvisiBox" style={{ flex: 0.5 }} />
       <div className="AuthHeaders">
-        <img src={logo} />
-        <h1 className="Raleway-SemiBold">WhatsApp to Spotify</h1>
+        {/* <img src={logo} /> */}
+        <h1 className="Raleway-SemiBold">Chat To Playlist</h1>
         <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
       </div>
 
@@ -148,6 +154,8 @@ function Signup({ updateLoggedIn, loggedIn, appToast }) { // this is our Login p
         <span> © Sam Lea 2023</span>
         <span>|</span>
         <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
+        <span>|</span>
+        <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span>
       </div>
       <div className="InvisiBox" style={{ flex: 1 }} />
 

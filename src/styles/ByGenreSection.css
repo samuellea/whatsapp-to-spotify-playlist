@@ -117,7 +117,7 @@ text {
   flex: 1;
 }
 
-::-webkit-scrollbar {
+.ByGenreRankingContainer::-webkit-scrollbar {
   width: 10px;
 }
 

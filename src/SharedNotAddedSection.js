@@ -8,6 +8,7 @@ import Oval from 'react-loading-icons/dist/esm/components/oval';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
 
 function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleExportStats, sharingLink, appToast, isPublicStatsPage = false, token }) {
 
@@ -134,6 +135,10 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
                   })}
                 </div>
                 <div className="SharedNotAddedSegmentFooter" />
+                <div className="ChangeModalSpotifyArtworkLink Flex Row">
+                  <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+                  <span>Tap album / EP to open in Spotify</span>
+                </div>
               </div>
               : null}
 
@@ -156,6 +161,10 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
                   ))}
                 </div>
                 <div className="SharedNotAddedSegmentFooter" />
+                <div className="ChangeModalSpotifyArtworkLink Flex Row">
+                  <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+                  <span>Tap playlist to open in Spotify</span>
+                </div>
               </div>
               : null}
 
