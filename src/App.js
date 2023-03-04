@@ -38,7 +38,7 @@ function App() {
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
-  // const REDIRECT_URI = 'https://whatsapp-to-spotify.netlify.app';
+  // const REDIRECT_URI = 'https://chatchoons.netlify.app';
   const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
@@ -207,6 +207,8 @@ function App() {
               spotifyUserDisplayName={spotifyUserDisplayName}
               showHelpTooltip={showHelpTooltip}
               setShowHelpTooltip={setShowHelpTooltip}
+              showPrivacyPolicy={showPrivacyPolicy}
+              privacyPolicy={privacyPolicy}
             />
           </PrivateRoute>
           <Route path="/spotifylogin" >

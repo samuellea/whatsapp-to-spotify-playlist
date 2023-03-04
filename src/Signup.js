@@ -7,7 +7,8 @@ import './styles/Signup.css';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWarning } from '@fortawesome/free-solid-svg-icons';
-import logo from './whatsapp-to-spotify-icon-large.png'
+import SpotifyLogo from './SpotifyLogo';
+import logo from './chatchoons-icon-512.png'
 
 function Signup({ updateLoggedIn, loggedIn, appToast, showPrivacyPolicy }) { // this is our Login page if an existing user
 
@@ -110,8 +111,8 @@ function Signup({ updateLoggedIn, loggedIn, appToast, showPrivacyPolicy }) { // 
     <div className="Signup Flex Column">
       <div className="InvisiBox" style={{ flex: 0.5 }} />
       <div className="AuthHeaders">
-        {/* <img src={logo} /> */}
-        <h1 className="Raleway-SemiBold">Chat To Playlist</h1>
+        <img src={logo} />
+        <h1 className="Raleway-SemiBold">Chatchoons</h1>
         <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
       </div>
 
@@ -150,6 +151,14 @@ function Signup({ updateLoggedIn, loggedIn, appToast, showPrivacyPolicy }) { // 
           <FontAwesomeIcon icon={faWarning} pointerEvents="none" />
           {error}</span> : null}
       </div>
+
+      <a href="https://developer.spotify.com/" target="_blank" id="SpotifyCreditFooterLink">
+        <div className="SpotifyCreditFooter Flex Row">
+          <SpotifyLogo />
+          Built using the Spotify Web API
+        </div>
+      </a>
+
       <div className="CopyrightFooter" style={{ paddingTop: 0, paddingBottom: '10%' }}>
         <span> © Sam Lea 2023</span>
         <span>|</span>

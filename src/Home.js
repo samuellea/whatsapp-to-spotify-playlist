@@ -23,6 +23,8 @@ function Home({
   spotifyUserDisplayName,
   showHelpTooltip,
   setShowHelpTooltip,
+  showPrivacyPolicy,
+  privacyPolicy,
 }) {
   // console.log(userPlaylistMetas)
   const history = useHistory();
@@ -48,6 +50,11 @@ function Home({
   const [creatingNewPlaylist, setCreatingNewPlaylist] = useState(false);
   const [showUserSettings, setShowUserSettings] = useState(false);
   const [deleteUserLoading, setDeleteUserLoading] = useState(false);
+
+  useEffect(() => {
+    if (!privacyPolicy) setShowUserSettings(false);
+  }, [privacyPolicy]);
+
 
   const newPlaylistSuccess = async (status) => {
     console.log(status, ' <--- status')
@@ -145,6 +152,9 @@ function Home({
         <div className="HowToButtonContainer Flex Row" style={{
           backgroundColor: showHelpTooltip ? '#0A0A11' : '#292B3E',
         }}>
+          <button type="button" id="UserSettingsButton" onClick={() => setShowUserSettings(true)}>
+            <FontAwesomeIcon icon={faCog} pointerEvents="none" />
+          </button>
           <button className="HelpButton" type="button" onClick={() => setShowHelp(true)}
             style={{
               backgroundColor: showHelpTooltip ? '#292B3E' : 'none',
@@ -179,10 +189,12 @@ function Home({
                     <FontAwesomeIcon icon={faClose} pointerEvents="none" />
                   </button>
                 </div>
+                <span id="UserSettingsHeader">Privacy Policy</span>
+                <span id="UserSettingsDescription">View our privacy policy <button id="UserSettingsPrivacyButton" onClick={() => showPrivacyPolicy(true)}>here</button></span>
                 <span id="UserSettingsHeader">Delete User Account</span>
                 <span id="UserSettingsDescription">Deleting your account permanently removes all your created playlists and playlist data from the app. This data will be unrecoverable.</span>
                 <button type="button" id="DeleteAccountButton" onClick={handleDeleteAccount}>
-                  Delete Account
+                  Delete My Account
                 </button>
               </div>}
           </div>
@@ -196,9 +208,6 @@ function Home({
               <button type="button" onClick={logoutClicked}>
                 sign out
                 <FontAwesomeIcon icon={faArrowAltCircleRight} pointerEvents="none" />
-              </button>
-              <button type="button" id="UserSettingsButton" onClick={() => setShowUserSettings(true)}>
-                <FontAwesomeIcon icon={faCog} pointerEvents="none" />
               </button>
             </div>
           </div>

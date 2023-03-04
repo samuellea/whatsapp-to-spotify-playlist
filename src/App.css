@@ -170,6 +170,7 @@
   justify-content: center;
   align-items: center;
   /* padding: 4%; */
+  /* padding-bottom: 0 !important; */
 }
 
 .CopyrightFooter span {
@@ -205,4 +206,17 @@
 #MobileWarning {
   font-size: 12px;
   font-weight: 100;
+}
+
+.SpotifyCreditFooter {
+  /* border: 1px solid red; */
+  font-size: 14px;
+  /* padding-bottom: 10%; */
+  justify-content: center;
+  align-items: center;
+  font-family: "Raleway-ExtraLight";
+}
+
+#SpotifyCreditFooterLink {
+  text-decoration: none !important;
 }

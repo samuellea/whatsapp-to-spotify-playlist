@@ -1,7 +1,7 @@
 .SpotifyLogo {
   /* border: 1px solid red; */
-  height: 30px;
-  width: 130px;
+  /* height: 30px; */
+  /* width: 130px; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,4 +10,5 @@
 
 .SpotifyLogo img {
   height: 30px;
+  width: 100px;
 }

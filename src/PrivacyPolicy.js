@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import style from './styles/PrivacyPolicy.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 function PrivacyPolicy({ showPrivacyPolicy }) {
   return (
@@ -13,6 +15,15 @@ function PrivacyPolicy({ showPrivacyPolicy }) {
         <h3>Use of chat text</h3>
         <p>By sharing any pasted chat text or chats stored as .txt files in Google Drive, you give permission for this web app to scrape only the stated URL hyperlinks from the chat necessary to compile playlists. <br /><br />Handling and parsing of chat text is done entirely client-side in the user's browser, and only the found URL hyperlinks necessary for compiling playlists are stored on our server. <br /><br />No other portion of the shared text is retained by the app, barring </p>
         <ul><li>any URL hyperlinks to external media present in the shared text</li><li>the time and date these were posted</li><li>the name of the person who posted them, as that name appears in the shared text</li></ul>
+        <h3>Closing your app account</h3>
+        <p>
+          Should you wish to close your account and remove any stored data from the app, this can be done at any time. Once logged in, tap the <FontAwesomeIcon icon={faCog} pointerEvents="none" style={{ margin: '0px 5px' }} /> icon at the top of the screen and then <span style={{
+            fontFamily: "Raleway-Bold",
+            fontWeight: 900,
+            textDecoration: 'none',
+            fontSize: '13px',
+          }}>Delete My Account</span> to permanently delete both your user account and all related data stored in our database.
+        </p>
         <button type="button" onClick={() => showPrivacyPolicy(false)}>Close</button>
       </div>
     </div>

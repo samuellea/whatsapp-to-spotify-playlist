@@ -277,7 +277,7 @@
   /* padding-right: 5.5%; */
   /* background-color: #292B3E; */
   /* border-radius: 10px; */
-  border-right: 1px solid #797979;
+  border-right: 1px solid white;
 }
 
 .HelpTooltipArrowBox {
@@ -308,8 +308,8 @@
   font-size: 16px;
   justify-content: center;
   align-items: center;
-  border-right: 1px solid #797979;
-  border-bottom: 1px solid #797979;
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
   position: relative;
 }
 
@@ -345,11 +345,16 @@
 
 #UserSettingsButton {
   /* border: 1px solid white; */
-  width: 25px;
-  height: 20px;
+  background: none;
+  color: white;
+  width: 30px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 28px;
+  border: none;
+  margin-right: 15px;
 }
 
 #UserSettingsButton svg {
@@ -378,19 +383,23 @@
   padding: 4% 5% 8% 5%;
   box-sizing: border-box;
   text-align: left;
+  line-height: 20px;
 }
 
 #DeleteAccountButton {
   height: 50px;
-  width: 75%;
-  background-color: red;
+  width: 100%;
+  /* background-color: red; */
   border-radius: 10px;
-  border: none;
+  /* border: none; */
+  border: 1px solid red;
+  background: none;
   font-family: Arial;
   font-size: 16px;
   font-weight: 600;
-  color: white;
-  margin-top: 5%;
+  color: red;
+  margin-top: 8%;
+  /* line-height: 20px; */
 }
 
 .UserSettings span {
@@ -404,7 +413,7 @@
 }
 
 #UserSettingsDescription {
-  font-family: "Raleway-Regular";
+  font-family: "Raleway-ExtraLight";
 }
 
 .UserSettingsCloseContainer {
@@ -422,4 +431,14 @@
   background: none;
   color: white;
   font-size: 22px;
+}
+
+#UserSettingsPrivacyButton {
+  color: white;
+  background: none;
+  border: none;
+  font-family: "Raleway-Regular";
+  font-size: 16px;
+  padding: 0px 1px;
+  text-decoration: underline;
 }

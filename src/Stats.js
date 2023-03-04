@@ -192,7 +192,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       appToast('Sharing failed. Please try again later', { duration: 1500 });
     }
     const { name } = exportSuccessResponse.data;
-    // const sharingUrl = `https://whatsapp-to-spotify.netlify.app/publicStats/${name}`;
+    // const sharingUrl = `https://chatchoons.netlify.app/publicStats/${name}`;
     const sharingUrl = `http://localhost:3000/publicStats/${name}`;
     // console.log(sharingUrl);
     setSharingLink(sharingUrl);

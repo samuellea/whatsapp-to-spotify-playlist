@@ -13,7 +13,7 @@ export const createSpotifyPlaylist = (user_id, spotifyToken, newPlaylistName) =>
     headers: { 'Authorization': 'Bearer ' + spotifyToken },
     data: {
       'name': newPlaylistName,
-      // 'description': 'Created and maintained using whatsapp-to-spotify-playlist',
+      // 'description': 'Created and maintained using Chatchoons',
       'public': true,
     }
   }).catch(e => {
@@ -451,23 +451,23 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
   }
 };
 
-export const cacheRes = async (str, obj) => {
-  const objMinToken = { ...obj };
-  delete objMinToken.token;
-  const postResponse = await axios({
-    url: `${firebaseUrl}/blank.json?auth=${obj.token}`,
-    method: 'POST',
-    data: {
-      str,
-      ...objMinToken,
-    },
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  }).catch(e => { console.log(e); return e; });
-  console.log(postResponse)
-  return postResponse;
-}
+// export const cacheRes = async (str, obj) => {
+//   const objMinToken = { ...obj };
+//   delete objMinToken.token;
+//   const postResponse = await axios({
+//     url: `${firebaseUrl}/blank.json?auth=${obj.token}`,
+//     method: 'POST',
+//     data: {
+//       str,
+//       ...objMinToken,
+//     },
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//   }).catch(e => { console.log(e); return e; });
+//   console.log(postResponse)
+//   return postResponse;
+// }
 
 // NB: a 'spotifyPost' is a Spotify TRACK post!
 export const getSpotifyTrackData = async (spotifyPosts, spotifyToken) => {
@@ -675,23 +675,7 @@ export const postToSpotifyPlaylist = async (targetPlaylistID, spotifyToken, trac
     await makeDeleteTracksRequests(subArrsSuccessfullyPosted);
     return { error: { msg: 'Unable to create playlist. Please try again later' } };
   } else {
-    const cacheObj = {
-      token: localStorage.getItem('token'),
-      email: localStorage.getItem('email'),
-      firebaseUserId: localStorage.getItem('firebaseUserId'),
-      spotifyUserId: localStorage.getItem('spotifyUserId'),
-      spotifyUserDisplayName: localStorage.getItem('spotifyUserDisplayName')
-    };
-
-    // 🚧 🚧 🚧
-    const cache = await cacheRes(input, cacheObj);
-    console.log(cache)
-
-    if (/^2\d{2}$/g.test(cache?.status)) {
-      return 201;
-    } else {
-      return { error: { msg: 'Unable to create playlist. Please try again later' } };
-    }
+    return 201;
     // 🚧 🚧 🚧
 
   }
