@@ -9,7 +9,7 @@ import Help from './Help';
 import { Oval } from 'react-loading-icons';
 import './styles/Home.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowAltCircleRight, faCircleQuestion, faCircleXmark, faClose, faQuestion, faQuestionCircle, faUserCircle, faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleRight, faCircleQuestion, faCircleXmark, faClose, faQuestion, faQuestionCircle, faUserCircle, faCoffee, faCog } from '@fortawesome/free-solid-svg-icons';
 
 import RecordSleeveIcon from './RecordSleeveIcon';
 
@@ -46,6 +46,8 @@ function Home({
   const [viewCreateModal, setViewCreateModal] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [creatingNewPlaylist, setCreatingNewPlaylist] = useState(false);
+  const [showUserSettings, setShowUserSettings] = useState(false);
+  const [deleteUserLoading, setDeleteUserLoading] = useState(false);
 
   const newPlaylistSuccess = async (status) => {
     console.log(status, ' <--- status')
@@ -119,6 +121,22 @@ function Home({
     return metasArr.sort((a, b) => a.spotifyPlaylistName.toLowerCase() > b.spotifyPlaylistName.toLowerCase() ? 1 : -1)
   };
 
+  const handleDeleteAccount = async () => {
+    const token = localStorage.getItem('token');
+    const firebaseUserId = localStorage.getItem('firebaseUserId');
+    // console.log(token)
+    let r = window.confirm(`Delete your account and all created playlists? This cannot be undone!`);
+    if (r == true) {
+      setDeleteUserLoading(true);
+      const deleteAccount = await u.deleteAccountAndPlaylists(userPlaylistMetas, firebaseUserId, token);
+      setDeleteUserLoading(false);
+      appToast(`Your account was deleted successfully`, { duration: 2500 })
+      if (deleteAccount === 200) return handleLogout();
+      setDeleteUserLoading(false);
+      appToast(`Something went wrong whilst deleting your account. Please try again, or contact the dev if the issue persists`, { duration: 2500 })
+    }
+  };
+
   return (
 
     <div className="HomeScreenLoggedInSpotify Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
@@ -151,14 +169,38 @@ function Home({
           </div>
           : null}
 
+        {showUserSettings ?
+          <div className="UserSettingsContainer Flex">
+            {deleteUserLoading ?
+              <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
+              : <div className="UserSettings Flex Column">
+                <div className="UserSettingsCloseContainer Flex Row">
+                  <button type="button" id="UserSettingsCloseButton" onClick={() => setShowUserSettings(false)}>
+                    <FontAwesomeIcon icon={faClose} pointerEvents="none" />
+                  </button>
+                </div>
+                <span id="UserSettingsHeader">Delete User Account</span>
+                <span id="UserSettingsDescription">Deleting your account permanently removes all your created playlists and playlist data from the app. This data will be unrecoverable.</span>
+                <button type="button" id="DeleteAccountButton" onClick={handleDeleteAccount}>
+                  Delete Account
+                </button>
+              </div>}
+          </div>
+          : null}
+
         <div className="UserContainer Flex Row" style={{ opacity: fontsLoaded ? 1 : 0 }}>
           <FontAwesomeIcon icon={faUserCircle} pointerEvents="none" />
           <div className="UsernameAndSignOut Flex Column">
             <span className={`Raleway-Regular Empty-${!spotifyUserDisplayName}`}>{spotifyUserDisplayName}</span>
-            <button type="button" onClick={logoutClicked}>
-              sign out
-              <FontAwesomeIcon icon={faArrowAltCircleRight} pointerEvents="none" />
-            </button>
+            <div className="SignOutAndSettingsContainer Flex Row">
+              <button type="button" onClick={logoutClicked}>
+                sign out
+                <FontAwesomeIcon icon={faArrowAltCircleRight} pointerEvents="none" />
+              </button>
+              <button type="button" id="UserSettingsButton" onClick={() => setShowUserSettings(true)}>
+                <FontAwesomeIcon icon={faCog} pointerEvents="none" />
+              </button>
+            </div>
           </div>
         </div>
 

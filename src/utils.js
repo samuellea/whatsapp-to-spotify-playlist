@@ -918,6 +918,7 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
 
 export const exportStatsPage = async (firebasePlaylistObj, firebaseMetaObj, spotifyPlaylistData, token) => {
   const exportStatsData = {
+    firebaseUserId: firebaseMetaObj.userId,
     firebasePlaylistObj,
     firebaseMetaObj,
     spotifyPlaylistData
@@ -962,3 +963,85 @@ export const getGoogleDriveFile = async (googleDriveFileID, googleToken) => {
 export const searchSpotifyTrack = async (searchInput) => {
 
 };
+
+export const deleteAccountAndPlaylists = async (userPlaylistMetas, firebaseUserId, firebaseToken) => {
+  console.log(firebaseToken)
+  // first, try and delete user's playlists, playlistMetas and publicStats
+
+  // first, get all firebase playlist objs' ids
+  const firebasePlaylistIdsAndMetaIds = userPlaylistMetas.map(e => ({
+    firebasePlaylistId: e.firebasePlaylistId,
+    metaId: e.metaId,
+  }));
+
+  // then do deleteFirebasePlaylist() for each of those
+  const deletePlaylistsAndMetaResponses = await Promise.all(
+    firebasePlaylistIdsAndMetaIds.map(async (obj) => (await deleteFirebasePlaylist(obj.firebasePlaylistId, obj.metaId, firebaseToken).then(res => res))
+    ));
+
+  console.log(deletePlaylistsAndMetaResponses)
+
+  const deletePlaylistsAndMetaResponsesAll200Or204 = deletePlaylistsAndMetaResponses.every(e => e === 200 || e === 204);
+
+  if (!deletePlaylistsAndMetaResponsesAll200Or204) return null;
+
+  const correspPublicStats = await axios.get(`${firebaseUrl}/publicStats.json?orderBy="firebaseUserId"&equalTo="${firebaseUserId}"&auth=${firebaseToken}`);
+
+  if (correspPublicStats.status === 200) {
+    console.log('b')
+    const { data } = correspPublicStats;
+    const publicStatsIds = Object.keys(data); // ['-as98a7sduh', ...]
+    const deletePublicStatsQueries = publicStatsIds.map(publicStatsId => (`${firebaseUrl}/publicStats/${publicStatsId}.json?auth=${firebaseToken}`));
+
+    const deletePublicStatsResponses = await Promise.all(deletePublicStatsQueries.map(async (query) => (await axios.delete(query).catch(e => { console.log(e); return e }))));
+
+    const deletePublicStatsResponsesAll200Or204 = deletePublicStatsResponses.every(e => [200, 204].includes(e.status));
+
+    if (!deletePublicStatsResponsesAll200Or204) return null;
+
+    // if that all goes okay, can fully delete the user's account
+    const token = localStorage.getItem('token');
+
+    // exchange refresh token for new ID token
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    const refreshBody = {
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    };
+
+    const refreshResponse = await axios.post(`https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_API_KEY}`, refreshBody).then(res => res).catch(e => e.response);
+
+    console.log(refreshResponse)
+
+    if (refreshResponse.status !== 200) return null;
+
+    const newIdToken = refreshResponse.data.id_token;
+    localStorage.setItem('token', newIdToken);
+
+    const deleteRequestBody = {
+      idToken: newIdToken,
+    };
+
+    const userDeleteResponse = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${process.env.REACT_APP_API_KEY}`, deleteRequestBody).catch(e => { console.log(e); return e.response.status });
+    console.log(userDeleteResponse);
+    if ([200, 204].includes(userDeleteResponse.status)) {
+      return 200;
+    } else {
+      return null;
+    }
+
+  } else {
+    return null;
+  }
+
+};
+
+/*
+.playlistMetas = .userId is firebaseUserId
+and each playlistMeta has a .firebasePlaylistId
+ 
+.playlists on .playlists.json have a -ID which is a .firebasePlaylistId on corresp. playlistMeta
+ 
+.publicStats = .userId is firebaseUserId
+*/
