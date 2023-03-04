@@ -12,6 +12,7 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  z-index: 999;
 }
 
 .ChangeSearchLoading-false {
@@ -40,7 +41,7 @@
 .TrackInfo {
   /* border: 3px solid white; */
   justify-content: space-between;
-  padding: 0% 5% 5% 5%;
+  padding: 2% 5% 5% 5%;
   box-sizing: border-box;
   border-radius: 0px 0px 15px 15px;
 }
@@ -51,9 +52,11 @@
   align-items: center;
   font-size: 12px;
   border: 1px solid #292b3e;
-  border-radius: 15px;
-  padding-right: 10px;
-  margin: 5px;
+  border-radius: 150px;
+  padding-right: 25px;
+  padding-left: 15px;
+  margin-bottom: 14px;
+  background-color: #4c4f73;
 }
 
 .TrackInfoOpenInSpotify a {

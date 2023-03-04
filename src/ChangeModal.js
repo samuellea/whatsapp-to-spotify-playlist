@@ -255,7 +255,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
           <div className="SearchResultsInfo Flex Column">
             <div className="ChangeModalSpotifyArtworkLink Flex Row">
               <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
-              <span>TAP ARTWORK TO OPEN IN SPOTIFY</span>
+              <span>Tap artwork to open in Spotify</span>
             </div>
             {searchResults !== null && searchResults.length
               ?

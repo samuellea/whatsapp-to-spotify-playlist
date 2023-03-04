@@ -32,7 +32,7 @@ export const youtubeVideoIDRegex = () => {
 };
 
 export const splitTextIntoIndividualMessages = (inputText) => {
-  const individualMessages = inputText.trim().split(/(?=\d{1,4}(\/|\.)\d{1,4}(\/|\.)\d{1,4})/m).filter(Boolean).map(e => e.trim())
+  const individualMessages = inputText.trim().split(/(?=\d{1,4}(\/|\.|-)\d{1,4}(\/|\.|-)\d{1,4})/m).filter(Boolean).map(e => e.trim())
   return individualMessages;
 };
 
@@ -40,7 +40,17 @@ export const msgTimeComponents = (singleMessage) => {
   // handles times in 12hr or 24hr format, as well as glitched ASCII as can be copied/pasted
   // from exports handled on mobile (eg. '12:30^£_pm);
   const dateTime = singleMessage.slice(0, singleMessage.indexOf('-') - 1);
-  // console.log(dateTime)
+  console.log(dateTime)
+
+  // let separator = '/';
+  // const datePeriods = dateTime.includes('.');
+  // const dateHyphens = dateTime.includes('-');
+  // const dateSlashes = dateTime.includes('/');
+  // if (datePeriods) separator = '.';
+  // if (dateHyphens) separator = '-';
+  // if (dateSlashes) separator = '/';
+  // const splitBySeperator = dateTime.split(seperator);
+
   const timePortion = dateTime.slice(12);
   const colonIndex = timePortion.indexOf(':');
   let hourPortion = timePortion.slice(0, colonIndex); // * NB 'let'
@@ -168,7 +178,7 @@ export const findInputTextNewPosts = (inputText, rawPostsLog) => {
 export const inputTextIsValid = (inputText) => {
   let isValid = false;
   // const whatsAppMessageRegex = /(\d{2}\/\d{2}\/\d{4}\,\s{1}\d{2}\:\d{2}\s{1}\-{1}\s{1}.*\:\s{1})+/g;
-  const whatsAppMessageRegex = /\d{1,4}(\/|\.)\d{1,4}(\/|\.)\d{1,4}(\,?)\s{1}([0-2]{0,2}|[0-9]{1,2}):[0-5][0-9].*((\s{1}\-{1}\s{1}.*\:\s{1})+)/g;
+  const whatsAppMessageRegex = /\d{1,4}(\/|\.|-)\d{1,4}(\/|\.|-)\d{1,4}(\,?)\s{1}([0-2]{0,2}|[0-9]{1,2}):[0-5][0-9].*((\s{1}\-{1}\s{1}.*\:\s{1})+)/g;
   const containsWhatsAppMsgs = whatsAppMessageRegex.test(inputText.trim());
   if (containsWhatsAppMsgs) {
     const individualMessages = splitTextIntoIndividualMessages(inputText);

@@ -16,9 +16,11 @@ import ByPosterSection from './ByPosterSection';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 import SharedNotAddedSection from './SharedNotAddedSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faCheckCircle, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCheckCircle, faStar, faMusic } from '@fortawesome/free-solid-svg-icons';
 import FontFaceObserver from 'fontfaceobserver';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
+import SpotifyIconBlackPNG from './Spotify_Icon_RGB_Black.png';
+import MusicSlash from './MusicSlash';
 
 function PublicStats({ authLink, handleLogout }) {
   const history = useHistory();
@@ -39,10 +41,10 @@ function PublicStats({ authLink, handleLogout }) {
   }, []);
 
   const [publicStatsObj, setPublicStatsObj] = useState(null);
-  const [publicStatsError, setPublicStatsError] = useState(false);
+  const [publicStatsError, setPublicStatsError] = useState(true);
   const [spotifyLoggedInBanner, setSpotifyLoggedInBanner] = useState(false);
 
-  const [pageLoading, setPageLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(false);
   const [playlistArtworkLoaded, setPlaylistArtworkLoaded] = useState(false);
   const [tallied, setTallied] = useState([]);
   const [overview, setOverview] = useState([]);
@@ -51,6 +53,7 @@ function PublicStats({ authLink, handleLogout }) {
   const [genresTallied, setGenresTallied] = useState({});
 
   useEffect(() => {
+    console.log('!')
     const spotifyToken = window.localStorage.getItem('spotifyToken');
     const spotifyUserId = window.localStorage.getItem('spotifyUserId');
     if (spotifyToken && !spotifyUserId) {
@@ -63,10 +66,17 @@ function PublicStats({ authLink, handleLogout }) {
       const getPublicStatsResponse = await u.getPublicStats(publicStatsId);
       if ([200, 204].includes(getPublicStatsResponse.status)) {
         const { data } = getPublicStatsResponse;
+        if (!data) {
+          setPublicStatsError(true)
+          setPageLoading(false);
+          return;
+        };
         // console.log(data);
         setPublicStatsObj(data);
+        setPageLoading(false);
       } else {
         setPublicStatsError(true);
+        setPageLoading(false);
       }
     };
     getAndSetPublicStatsData();
@@ -114,13 +124,13 @@ function PublicStats({ authLink, handleLogout }) {
   return (
     <div className="StatsContainer Flex Column">
 
-      {pageLoading || !playlistArtworkLoaded || !fontsLoaded ?
-        <div className="StatsSpinnerContainer Flex Column">
-          <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
+      {publicStatsError ?
+        <div className="PublicStatsError Flex Column">
+          <MusicSlash />
+          <h3>*record scratch*</h3>
+          <span>We couldn't find that...</span>
         </div>
-        : null}
-
-      {
+        :
         pageLoading ?
           null :
           <div className="Stats">
@@ -162,8 +172,8 @@ function PublicStats({ authLink, handleLogout }) {
                 <h2><span>{publicStatsObj.firebasePlaylistObj.obj.processedPostsLog.length}</span> tracks</h2>
                 <span>last updated: {h.getLastUpdatedFromMeta(publicStatsObj.firebaseMetaObj)}</span>
                 <a className="StatsInfoPodOpenButton Flex" href={`https://open.spotify.com/playlist/${publicStatsObj.firebaseMetaObj.spotifyPlaylistId}`} target="_blank">
-                  <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
-                  Open In Spotify</a>
+                  <img id="SpotifyIconWhite" src={SpotifyIconBlackPNG} />
+                  OPEN IN SPOTIFY</a>
               </div>
 
 
@@ -229,6 +239,12 @@ function PublicStats({ authLink, handleLogout }) {
             </div>
           </ div>
       }
+
+      {pageLoading || !fontsLoaded ?
+        <div className="StatsSpinnerContainer Flex Column">
+          <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
+        </div>
+        : null}
       <Toaster />
     </div >
   );
