@@ -33,12 +33,13 @@ function App() {
   const [spotifyUserDisplayName, setSpotifyUserDisplayName] = useState(null);
   const [privacyPolicy, showPrivacyPolicy] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
+  const [showHelpTooltip, setShowHelpTooltip] = useState(false);
 
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
-  const REDIRECT_URI = 'https://whatsapp-to-spotify.netlify.app';
-  // const REDIRECT_URI = 'http://localhost:3000/';
+  // const REDIRECT_URI = 'https://whatsapp-to-spotify.netlify.app';
+  const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
   const SCOPES = 'playlist-modify-private playlist-modify-public';
@@ -91,6 +92,17 @@ function App() {
           console.log('BLEP')
           const userPlaylistMetas = Object.entries(data).map(e => ({ metaId: e[0], ...e[1] }));
           console.log(userPlaylistMetas)
+          if (!userPlaylistMetas.length) {
+            const expirationDate = new Date(localStorage.getItem('expirationDate'));
+            console.log(expirationDate)
+            const expirationTime = expirationDate.getTime();
+            const currentDate = new Date();
+            const currentTime = currentDate.getTime();
+            const expirationTimeMinus55M = expirationTime - 3300000; // we set spoti expiration time to be 58 mins in Auth performLogin(), we want tooltip to only show if user has no playlists, and its within 2 minutes of them having logged on, to avoid tooltip showing EVERY time they delete all playlist cards in Home
+            if (currentTime < expirationTimeMinus55M) setShowHelpTooltip(true);
+          } else {
+            setShowHelpTooltip(false);
+          }
           setUserPlaylistMetas(userPlaylistMetas);
           setUserPlaylistsLoading(false);
           return true;
@@ -167,7 +179,9 @@ function App() {
 
   return (
     <div className="App">
-      <div className="AppView">
+      <div className="AppView" style={{
+        backgroundColor: showHelpTooltip ? '#0A0A11' : '#292B3E',
+      }}>
         {isMobile ? null : <span id="MobileWarning">⚠ This webapp is best viewed on mobile</span>}
         <Router>
           <Route path="/publicStats/:publicStatsId">
@@ -191,6 +205,8 @@ function App() {
               userPlaylistsLoading={userPlaylistsLoading}
               appToast={toast}
               spotifyUserDisplayName={spotifyUserDisplayName}
+              showHelpTooltip={showHelpTooltip}
+              setShowHelpTooltip={setShowHelpTooltip}
             />
           </PrivateRoute>
           <Route path="/spotifylogin" >

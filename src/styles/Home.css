@@ -233,3 +233,104 @@
   font-size: 20px;
   background: none;
 } */
+
+
+@keyframes tooltipFadeIn {
+  0% {
+    opacity: 0
+  }
+
+  100% {
+    opacity: 1
+  }
+}
+
+.HelpTooltipContainer {
+  position: absolute;
+  top: 8%;
+  left: 0;
+  /* border: 3px solid red; */
+  width: 100%;
+  height: 92%;
+  background-color: rgba(0, 0, 0, 0.65);
+  justify-content: flex-end;
+  /* padding: 5%; */
+  box-sizing: border-box;
+  padding: 0% 5%;
+  animation: tooltipFadeIn 1s;
+  transition-timing-function: ease-in-out;
+}
+
+.HelpTooltip {
+  width: 75%;
+  height: 200px;
+  /* border: 1px solid white; */
+  /* background-color: #292B3E; */
+  /* border-radius: 10px; */
+  padding-right: 3.5%;
+}
+
+.HelpTooltipArrowContainer {
+  /* border: 1px solid green; */
+  height: 20px;
+  justify-content: flex-end;
+  /* padding-right: 5.5%; */
+  /* background-color: #292B3E; */
+  /* border-radius: 10px; */
+  border-right: 1px solid #797979;
+}
+
+.HelpTooltipArrowBox {
+  /* border: 1px solid yellow; */
+  height: 20px;
+  width: 20px;
+  /* background-color: #292B3E; */
+  /* border-radius: 10px; */
+}
+
+.HelpTooltipArrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 20px 20px;
+  border-color: transparent transparent #292B3E transparent;
+}
+
+.HelpTooltipBody {
+  /* margin-right: 5.5%; */
+  /* border: 1px solid blue; */
+  background-color: #292B3E;
+  border-radius: 10px 0px 10px 10px;
+  flex: 1;
+  padding: 8%;
+  font-family: "Raleway-Regular";
+  /* text-align: left; */
+  font-size: 16px;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #797979;
+  border-bottom: 1px solid #797979;
+  position: relative;
+}
+
+.HelpTooltipBody button {
+  margin-top: 10%;
+  height: 40px;
+  width: 75%;
+  background-color: #7316C6;
+  border-radius: 10px;
+  border: none;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+.HelpTooltipBody svg {
+  color: white;
+}
+
+#TooltipClose {
+  /* height: 25px; */
+  /* width: 25px; */
+}

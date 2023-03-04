@@ -9,7 +9,8 @@ import Help from './Help';
 import { Oval } from 'react-loading-icons';
 import './styles/Home.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowAltCircleRight, faCircleQuestion, faQuestion, faQuestionCircle, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faArrowAltCircleRight, faCircleQuestion, faCircleXmark, faClose, faQuestion, faQuestionCircle, faUserCircle, faCoffee } from '@fortawesome/free-solid-svg-icons';
+
 import RecordSleeveIcon from './RecordSleeveIcon';
 
 function Home({
@@ -20,6 +21,8 @@ function Home({
   userPlaylistsLoading,
   appToast,
   spotifyUserDisplayName,
+  showHelpTooltip,
+  setShowHelpTooltip,
 }) {
   // console.log(userPlaylistMetas)
   const history = useHistory();
@@ -37,7 +40,7 @@ function Home({
   useEffect(() => {
     const fontsArr = ['Raleway-Regular', 'Raleway-Bold', 'Raleway-Thin', 'Raleway-SemiBold']
     h.setLoadedFonts(fontsArr, setFontsLoaded);
-
+    console.log(userPlaylistMetas)
   }, []);
 
   const [viewCreateModal, setViewCreateModal] = useState(false);
@@ -121,9 +124,32 @@ function Home({
     <div className="HomeScreenLoggedInSpotify Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
       <div className="HomeContainer Flex Column">
 
-        <div className="HowToButtonContainer Flex Row">
-          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)}>?</button>
+        <div className="HowToButtonContainer Flex Row" style={{
+          backgroundColor: showHelpTooltip ? '#0A0A11' : '#292B3E',
+        }}>
+          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)}
+            style={{
+              backgroundColor: showHelpTooltip ? '#292B3E' : 'none',
+            }}>?</button>
         </div>
+
+        {showHelpTooltip ?
+          <div className="HelpTooltipContainer Flex">
+            <div className="HelpTooltip Flex Column">
+              <div className="HelpTooltipArrowContainer Flex Row">
+                <div className="HelpTooltipArrowBox">
+                  <div className="HelpTooltipArrow" />
+                </div>
+              </div>
+              <div className="HelpTooltipBody Flex Column">
+                Click the Help button whenever it appears on a page to see instructions!
+                <button type="button" onClick={() => setShowHelpTooltip(false)}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+          : null}
 
         <div className="UserContainer Flex Row" style={{ opacity: fontsLoaded ? 1 : 0 }}>
           <FontAwesomeIcon icon={faUserCircle} pointerEvents="none" />
