@@ -75,9 +75,13 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
 
   return (
     <div className="SharedNotAddedSection Flex Column" style={{ borderBottomLeftRadius: token && isPublicStatsPage || !isPublicStatsPage ? '15px' : '0px', borderBottomRightRadius: token && isPublicStatsPage || !isPublicStatsPage ? '15px' : '0px' }}>
+      {!sharedNotAddedItemsPresent() ?
+        <div className="BackgroundGradientBlock" style={{ height: '50px' }} />
+        : null
+      }
       {sharedNotAddedItemsPresent() ?
         <>
-          < div className="BackgroundGradientBlock" />
+          <div className="BackgroundGradientBlock" />
           <div className="SharedNotAddedSectionPadding">
             <h4 className="SectionHeader">Not added to playlist...</h4>
 

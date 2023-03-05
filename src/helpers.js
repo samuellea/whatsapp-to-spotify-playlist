@@ -39,19 +39,31 @@ export const splitTextIntoIndividualMessages = (inputText) => {
 export const msgTimeComponents = (singleMessage) => {
   // handles times in 12hr or 24hr format, as well as glitched ASCII as can be copied/pasted
   // from exports handled on mobile (eg. '12:30^£_pm);
-  const dateTime = singleMessage.slice(0, singleMessage.indexOf('-') - 1);
+  const dateTime = singleMessage.slice(0, singleMessage.indexOf('-') - 1).trim();
   console.log(dateTime)
 
-  // let separator = '/';
-  // const datePeriods = dateTime.includes('.');
-  // const dateHyphens = dateTime.includes('-');
-  // const dateSlashes = dateTime.includes('/');
-  // if (datePeriods) separator = '.';
-  // if (dateHyphens) separator = '-';
-  // if (dateSlashes) separator = '/';
-  // const splitBySeperator = dateTime.split(seperator);
+  const noCommas = dateTime.replace(',', '');
+  const datePortion = noCommas.split(' ')[0];
+  const timePortion = noCommas.split(' ')[1];
 
-  const timePortion = dateTime.slice(12);
+  let separator = '/';
+  const datePeriods = datePortion.includes('.');
+  const dateHyphens = datePortion.includes('-');
+  const dateSlashes = datePortion.includes('/');
+  if (datePeriods) separator = '.';
+  if (dateHyphens) separator = '-';
+  if (dateSlashes) separator = '/';
+  const splitBySeperator = datePortion.split(separator);
+  console.log(splitBySeperator);
+  const datePortionDoubleDigits = splitBySeperator.map(e => {
+    if (e.length >= 4) return e;
+    if (e.length < 2) return `0${e}`;
+    return e;
+  }).join('/');
+
+  console.log(datePortionDoubleDigits);
+  console.log(timePortion);
+
   const colonIndex = timePortion.indexOf(':');
   let hourPortion = timePortion.slice(0, colonIndex); // * NB 'let'
   const minutePortion = timePortion.slice(colonIndex + 1, colonIndex + 3);
@@ -62,10 +74,11 @@ export const msgTimeComponents = (singleMessage) => {
     if (amOrPm === 'pm' && hourPortion !== '12') hourPortion = +hourPortion + 12;
     if (amOrPm === 'am' && hourPortion === '12') hourPortion = '00';
   };
+
   return {
-    day: dateTime.slice(0, 2),
-    month: dateTime.slice(3, 5),
-    year: dateTime.slice(6, 10),
+    day: datePortionDoubleDigits.slice(0, 2),
+    month: datePortionDoubleDigits.slice(3, 5),
+    year: datePortionDoubleDigits.slice(6, 10),
     hour: `${hourPortion}`,
     minute: minutePortion,
   };
@@ -84,7 +97,7 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
 
     if (spotiTrackAlbumPlaylistOrYTRegex().test(singleMessage)) { // if this msg contains one or more Spoti (track/album/pl) or YT links...
       // grab required data
-      const timeComponentsObj = msgTimeComponents(singleMessage);
+      const timeComponentsObj = msgTimeComponents(singleMessage.trim());
 
       const poster = singleMessage.match(/(?<=-).*?(?=:)/g)[0].trim();
 
