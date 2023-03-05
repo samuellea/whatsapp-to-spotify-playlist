@@ -239,7 +239,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
 
 
           <div className="PosterMakeButtonContainer Flex Row">
-            <button className="ByPosterButtonBig Flex" type="button" onClick={isPublicStatsPage ? () => handleMakePlaylistClickPublic() : () => handleMakePlaylistClickPrivate()}><span>{spotifyToken ? 'Make Playlist' : 'Make Playlist (Log Into Spotify)'}</span></button>
+            <button className="ByPosterButtonBig Flex" type="button" onClick={isPublicStatsPage ? () => handleMakePlaylistClickPublic() : () => handleMakePlaylistClickPrivate()}><span>{spotifyToken ? 'Make Playlist' : 'Make Playlist - Log Into Spotify'}</span></button>
           </div>
         </div>
       );
