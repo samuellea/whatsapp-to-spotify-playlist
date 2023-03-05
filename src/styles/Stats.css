@@ -336,3 +336,8 @@
   margin-bottom: 20px;
   color: white;
 }
+
+.PublicStatsError svg {
+  /* border: 1px solid red; */
+  padding-right: 30px;
+}
