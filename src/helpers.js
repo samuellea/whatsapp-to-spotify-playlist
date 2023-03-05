@@ -1,5 +1,6 @@
 import _, { constant } from "lodash";
 import FontFaceObserver from 'fontfaceobserver';
+import getUserLocale from 'get-user-locale';
 
 export const spotiTrackAlbumPlaylistOrYTRegex = () => {
   const spotiTrackAlbumPlaylistOrYTPattern = /(open.spotify.com\/track\/[^\s]*)|(open.spotify.com\/album\/[^\s]*)|(open.spotify.com\/playlist\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/(?!shorts)[^\s]*)/g
@@ -32,19 +33,45 @@ export const youtubeVideoIDRegex = () => {
 };
 
 export const splitTextIntoIndividualMessages = (inputText) => {
-  const individualMessages = inputText.trim().split(/(?=\d{1,4}(\/|\.|-)\d{1,4}(\/|\.|-)\d{1,4})/m).filter(Boolean).map(e => e.trim())
+  console.log(inputText)
+  // const individualMessages = inputText.trim().split(/(\d{1,2}[\W\D]{1}\d{1,2}[\W\D]{1}\d{4}[^:]*\:{1}[^:]*\:{1}\s{1})/m)
+  // const individualMessages = inputText.trim().split(/(?=\d{2}\/\d{2}\/\d{4})/m).filter(Boolean).map(e => e.trim())
+  const splitByNewline = inputText.split('\n');
+
+  let newStr = '';
+
+  const individualMessages = splitByNewline.reduce((acc, e, i) => {
+    if ((/^\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}[^:]*\:{1}[^-]*\-{1}[^:]*\:{1}/gm).test(e)) {
+      acc.push(newStr);
+      newStr = e;
+    } else {
+      newStr += (' ' + e)
+    }
+    if (i === splitByNewline.length - 1) acc.push(newStr);
+    return acc;
+  }, []);
+
   return individualMessages;
 };
 
-export const msgTimeComponents = (singleMessage) => {
+export const msgTimeComponents = async (singleMessage) => {
+  // const yes = singleMessage.includes('05re487C0a3bJNZnPfDqMp');
   // handles times in 12hr or 24hr format, as well as glitched ASCII as can be copied/pasted
   // from exports handled on mobile (eg. '12:30^£_pm);
+  // if (yes) console.log(singleMessage)
+
+  const userLocale = getUserLocale();
+  console.log(userLocale)
+
+
   const dateTime = singleMessage.slice(0, singleMessage.indexOf('-') - 1).trim();
-  console.log(dateTime)
+  // if (yes) console.log(dateTime)
 
   const noCommas = dateTime.replace(',', '');
   const datePortion = noCommas.split(' ')[0];
   const timePortion = noCommas.split(' ')[1];
+  // if (yes) console.log(timePortion)
+
 
   let separator = '/';
   const datePeriods = datePortion.includes('.');
@@ -61,8 +88,8 @@ export const msgTimeComponents = (singleMessage) => {
     return e;
   }).join('/');
 
-  console.log(datePortionDoubleDigits);
-  console.log(timePortion);
+  // console.log(datePortionDoubleDigits);
+  // console.log(timePortion);
 
   const colonIndex = timePortion.indexOf(':');
   let hourPortion = timePortion.slice(0, colonIndex); // * NB 'let'
@@ -91,6 +118,7 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
   let postCounter = 0;
 
   // (1[0-2]|0?[1-9]):[0-5][0-9].*((am|pm)(?=\s{1}-\s{1}.*\:))
+  console.log(individualMessages)
 
   for (let i = 0; i <= individualMessages.length; i++) {
     const singleMessage = individualMessages[i];
@@ -98,6 +126,7 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
     if (spotiTrackAlbumPlaylistOrYTRegex().test(singleMessage)) { // if this msg contains one or more Spoti (track/album/pl) or YT links...
       // grab required data
       const timeComponentsObj = msgTimeComponents(singleMessage.trim());
+      // console.log(timeComponentsObj);
 
       const poster = singleMessage.match(/(?<=-).*?(?=:)/g)[0].trim();
 
@@ -162,6 +191,9 @@ export const findInputPostInRawPostsLog = (inputPost, rawPostsLog) => {
 };
 
 export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
+  console.log(inputTextAsRawPosts);
+
+  console.log(rawPostsLog);
   // when checking new inputText against rawPostsLog from previous updates,
   // poster cannot be relied upon (this can change based on user's contacts list at the time of exporting WhatsApp chat)
   // time cannot be relied upon - time on exported chats is based on phone's system time, so times on msgs in exported chats can be different
@@ -184,6 +216,7 @@ export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
 export const findInputTextNewPosts = (inputText, rawPostsLog) => {
   const inputTextAsMessages = splitTextIntoIndividualMessages(inputText);
   const inputTextAsRawPosts = splitIndividualMessagesIntoPosts(inputTextAsMessages);
+  console.log(inputTextAsRawPosts);
   const newPosts = newPostsNotInRawPosts(inputTextAsRawPosts, rawPostsLog);
   return newPosts;
 };
@@ -198,7 +231,8 @@ export const inputTextIsValid = (inputText) => {
     const individualPosts = splitIndividualMessagesIntoPosts(individualMessages);
     individualPosts.length ? isValid = true : isValid = false
   }
-  return isValid;
+  // return isValid;
+  return true // 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
 };
 
 export const mockSleep = async (milliseconds) => {

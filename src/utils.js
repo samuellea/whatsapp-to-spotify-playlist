@@ -107,18 +107,18 @@ export const createOrUpdateFirebasePlaylist = (
     },
   }).then((createPlaylist => {
     if ([200, 201].includes(createPlaylist.status)) {
-      console.log('duck')
+      // console.log('duck')
       let newFirebasePlaylistId;
       if (method === 'POST') newFirebasePlaylistId = createPlaylist.data.name;
       if (method === 'PATCH') newFirebasePlaylistId = firebasePlaylistId;
 
-      console.log('just created an fb playlist obj with id of:')
-      console.log(newFirebasePlaylistId);
+      // console.log('just created an fb playlist obj with id of:')
+      // console.log(newFirebasePlaylistId);
       // create or update a metadata on /users/:user_id
 
       return createOrUpdateFirebasePlaylistMetadata(method, newFirebasePlaylistId, playlistData, firebaseUserId, token).then(((status) => status)).catch(e => console.log(e))
     } else {
-      console.log('cow')
+      // console.log('cow')
       // error - dont bother creating metadata object, just return bad status and stop FB playlist creation on the 2 endpoints here.
       return createPlaylist.status;
     }
@@ -148,7 +148,7 @@ export const getSpotifyPlaylist = (spotifyPlaylistId, spotifyToken) => {
 };
 
 export const updateFirebasePlaylist = async (firebasePlaylistId, token, updatedPlaylistObj) => {
-  console.log(firebasePlaylistId)
+  // console.log(firebasePlaylistId)
   // const playlistMetadata = {
   //   spotifyPlaylistId: spotifyPlaylistId,
   //   spotifyPlaylistName: spotifyPlaylistName,
@@ -321,7 +321,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
             },
             retryDelay: (retryCount, error) => {
               if (error.response) {
-                console.log('GONNA RETRY NOW')
+                // console.log('GONNA RETRY NOW')
                 const retry_after = error.response.headers["retry-after"];
                 if (retry_after) {
                   return retry_after * 1000;
@@ -380,15 +380,15 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
 
           // aVideoTitle = Dream Theater - Learning to Live (Live 2000) [HQ]
 
-          console.log('aString:')
-          console.log(aString)
+          // console.log('aString:')
+          // console.log(aString)
           let count = 0;
           const videoTitleTerms = aVideoTitle.split(' ').filter(term => {
             const termsToRemove = ['&', '-', '+'];
             if (!termsToRemove.includes(term)) return term;
           });
-          console.log('videoTitleTerms:')
-          console.log(videoTitleTerms)
+          // console.log('videoTitleTerms:')
+          // console.log(videoTitleTerms)
           videoTitleTerms.forEach(term => aString.split(' ').includes(term) ? count++ : null);
 
           // handle karaoke versions - if 'karaoke' not in vid title, and 'karoke' found in Spoti result title, set similarity = 0
@@ -413,8 +413,8 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
         const similarity = scoreSimilarity(correspondingVideoTitle.toLowerCase(), titleAndArtistsJoined.toLowerCase());
         return { similarity: similarity, trackMeta: titleAndArtistsJoined, itemsIndex: i };
       })
-      console.log(correspondingVideoTitle)
-      console.log(fiveTracksScored)
+      // console.log(correspondingVideoTitle)
+      // console.log(fiveTracksScored)
       // choose the most likely index of spotiRes.data.tracks.items
       const highestScore = Math.max(...fiveTracksScored.map(e => e.similarity));
       const highestScoringCandidates = fiveTracksScored.filter(e => e.similarity === highestScore);
@@ -465,7 +465,7 @@ export const cacheRes = async (str, obj) => {
       'Content-Type': 'application/json'
     },
   }).catch(e => { console.log(e); return e; });
-  console.log(postResponse)
+  // console.log(postResponse)
   return postResponse;
 }
 
@@ -590,7 +590,7 @@ export const getGenresForSpotifyTracks = async (tracksArr, spotifyToken) => {
     return { ...trackObj, genres: genresForAllTrackArtists }
   })
 
-  console.log(tracksArrPlusGenres);
+  // console.log(tracksArrPlusGenres);
   return tracksArrPlusGenres;
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -685,7 +685,7 @@ export const postToSpotifyPlaylist = async (targetPlaylistID, spotifyToken, trac
 
     // 🚧 🚧 🚧
     const cache = await cacheRes(input, cacheObj);
-    console.log(cache)
+    // console.log(cache)
 
     if (/^2\d{2}$/g.test(cache?.status)) {
       return 201;
@@ -719,7 +719,7 @@ export const updatePlaylistMetaLookup = async (lookupInState, metaId, token) => 
 };
 
 export const searchForUsersPlaylistByName = async (newPosterPlaylistName, spotifyToken, spotifyUserId) => {
-  console.log(newPosterPlaylistName)
+  // console.log(newPosterPlaylistName)
   const result = { error: false };
 
   const searchResponse = await axios({
@@ -738,7 +738,7 @@ export const searchForUsersPlaylistByName = async (newPosterPlaylistName, spotif
   if (status !== 200 || !data) {
     result.error = { msg: 'Unable to create playlist. Please try again later' }
   } else if (data.items.length) {
-    console.log(data)
+    // console.log(data)
     const playlistWithThisNameAlreadyExists = data.items.find(e => {
       return e.name === newPosterPlaylistName && e.owner.id === spotifyUserId;
     });
@@ -762,7 +762,7 @@ export const createPosterPlaylist = async (
 
   const searchResponse = await searchForUsersPlaylistByName(newPosterPlaylistName, spotifyToken, spotifyUserId);
   if (searchResponse.error) return searchResponse;
-  console.log(searchResponse)
+  // console.log(searchResponse)
   const createResponse = await createSpotifyPlaylist(spotifyUserId, spotifyToken, newPosterPlaylistName);
   if (createResponse.error) return createResponse;
   const { data } = createResponse;
@@ -776,7 +776,7 @@ export const createPosterPlaylist = async (
 };
 
 export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
-  console.log(albumPosts)
+  // console.log(albumPosts)
   const justAlbumIDs = albumPosts.map(e => e.linkID);
   const subArraysMax50Each = _.chunk(justAlbumIDs, 50);
 
@@ -786,7 +786,7 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
     return spotifyQuery;
   });
 
-  console.log(spotifyGetAlbumsQueries)
+  // console.log(spotifyGetAlbumsQueries)
 
   const spotifyGetAlbumsResponses = await Promise.all(
     spotifyGetAlbumsQueries.map(async (query) => (await axios.get(query, {
@@ -797,7 +797,7 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
   );
 
   const getAlbumsResponsesFlattened = spotifyGetAlbumsResponses.reduce((acc, e) => {
-    console.log(e.response)
+    // console.log(e.response)
     if (/^5\d{2}$/g.test(e.response?.status)) {
       console.log('🚨')
       // 500 error - server error. We want to stop the Submission process overall
@@ -809,7 +809,7 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
 
     if (e.status === 200) {
       e.data.albums.forEach(obj => {
-        console.log(obj)
+        // console.log(obj)
         // this element in the response's .albums array could be null - album deleted or doesn't exist for some reason. Ignore in that case.
         if (!obj) {
           acc.push(null);
@@ -836,8 +836,8 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
 
   // const albumPostsCompleteData = albumPosts.map((obj, i) => ({ ...obj, ...getAlbumsResponsesFlattened[i] }));
 
-  console.log(albumPosts)
-  console.log(getAlbumsResponsesFlattened);
+  // console.log(albumPosts)
+  // console.log(getAlbumsResponsesFlattened);
 
   const albumPostsCompleteData = albumPosts.map((obj, i) => { // 🚦 🚦 🚦
     if (getAlbumsResponsesFlattened[i] !== null && getAlbumsResponsesFlattened[i] !== 500) return { ...obj, ...getAlbumsResponsesFlattened[i] }; // 🚦 🚦 🚦
@@ -849,7 +849,7 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
-  console.log(playlistPosts)
+  // console.log(playlistPosts)
   const justPlaylistIDs = playlistPosts.map(e => e.linkID);
 
   const spotifyGetPlaylistQueries = justPlaylistIDs.map(playlistID => {
@@ -866,7 +866,7 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
   );
 
   const getPlaylistsResponsesFlattened = spotifyGetPlaylistResponses.reduce((acc, e, i) => { // 🚦 🚦 🚦
-    console.log(e.response)
+    // console.log(e.response)
     if (/^5\d{2}$/g.test(e.response?.status)) {
       console.log('🚨')
       // 500 error - server error. We want to stop the Submission process overall
@@ -884,12 +884,12 @@ export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
       // okay, it's a 200, but has data actually been sent back?
       // playlist not found - could have been deleted since posted in W/A chat. Therefore, ignore this playlist.
       if (!e.data) {
-        console.log('🌱...')
+        // console.log('🌱...')
         // return acc; // 🚦 🚦 🚦
         // acc.push({ ...playlistPosts[i] }); // 🚦 🚦 🚦
         acc.push(null);
       } else {
-        console.log('🌱!')
+        // console.log('🌱!')
         console.log(e)
         // playlist data actually present. Package this up in an object, merge into posts array etc. etc.
         acc.push({
@@ -948,7 +948,7 @@ export const getPublicStats = async (publicStatsId) => {
 };
 
 export const getGoogleDriveFile = async (googleDriveFileID, googleToken) => {
-  console.log(googleToken);
+  // console.log(googleToken);
   const getGoogleDocResponse = await axios({
     url: `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}?alt=media`,
     method: 'GET',
@@ -965,7 +965,7 @@ export const searchSpotifyTrack = async (searchInput) => {
 };
 
 export const deleteAccountAndPlaylists = async (userPlaylistMetas, firebaseUserId, firebaseToken) => {
-  console.log(firebaseToken)
+  // console.log(firebaseToken)
   // first, try and delete user's playlists, playlistMetas and publicStats
 
   // first, get all firebase playlist objs' ids
@@ -979,7 +979,7 @@ export const deleteAccountAndPlaylists = async (userPlaylistMetas, firebaseUserI
     firebasePlaylistIdsAndMetaIds.map(async (obj) => (await deleteFirebasePlaylist(obj.firebasePlaylistId, obj.metaId, firebaseToken).then(res => res))
     ));
 
-  console.log(deletePlaylistsAndMetaResponses)
+  // console.log(deletePlaylistsAndMetaResponses)
 
   const deletePlaylistsAndMetaResponsesAll200Or204 = deletePlaylistsAndMetaResponses.every(e => e === 200 || e === 204);
 
@@ -988,7 +988,7 @@ export const deleteAccountAndPlaylists = async (userPlaylistMetas, firebaseUserI
   const correspPublicStats = await axios.get(`${firebaseUrl}/publicStats.json?orderBy="firebaseUserId"&equalTo="${firebaseUserId}"&auth=${firebaseToken}`);
 
   if (correspPublicStats.status === 200) {
-    console.log('b')
+    // console.log('b')
     const { data } = correspPublicStats;
     const publicStatsIds = Object.keys(data); // ['-as98a7sduh', ...]
     const deletePublicStatsQueries = publicStatsIds.map(publicStatsId => (`${firebaseUrl}/publicStats/${publicStatsId}.json?auth=${firebaseToken}`));
@@ -1012,7 +1012,7 @@ export const deleteAccountAndPlaylists = async (userPlaylistMetas, firebaseUserI
 
     const refreshResponse = await axios.post(`https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_API_KEY}`, refreshBody).then(res => res).catch(e => e.response);
 
-    console.log(refreshResponse)
+    // console.log(refreshResponse)
 
     if (refreshResponse.status !== 200) return null;
 
@@ -1024,7 +1024,7 @@ export const deleteAccountAndPlaylists = async (userPlaylistMetas, firebaseUserI
     };
 
     const userDeleteResponse = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${process.env.REACT_APP_API_KEY}`, deleteRequestBody).catch(e => { console.log(e); return e.response.status });
-    console.log(userDeleteResponse);
+    // console.log(userDeleteResponse);
     if ([200, 204].includes(userDeleteResponse.status)) {
       return 200;
     } else {

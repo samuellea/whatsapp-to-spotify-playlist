@@ -9,6 +9,7 @@ import Oval from 'react-loading-icons/dist/esm/components/oval';
 import * as h from './helpers';
 import logo from './chatchoons-icon-512.png'
 import SpotifyLogo from './SpotifyLogo';
+import getUserLocale from 'get-user-locale';
 
 function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our Login page if an existing user
 
@@ -71,6 +72,9 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
     return <Redirect to='/spotifylogin' />
   };
 
+  const userLocale = getUserLocale();
+  console.log(userLocale)
+
   return (
     <div className="Auth Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
       <div className="InvisiBox" style={{ flex: 0.5 }} />
@@ -113,12 +117,15 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
           Could not login - please try again</span> : null}
       </div>
 
+      <h2>{userLocale}</h2>
+
       <a href="https://developer.spotify.com/" target="_blank" id="SpotifyCreditFooterLink">
         <div className="SpotifyCreditFooter Flex Row">
           <SpotifyLogo />
           Built using the Spotify Web API
         </div>
       </a>
+
 
       <div className="CopyrightFooter" style={{ paddingTop: 0, paddingBottom: '10%' }}>
         <span> © Sam Lea 2023</span>
