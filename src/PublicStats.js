@@ -162,12 +162,6 @@ function PublicStats({ authLink, handleLogout }) {
                   // backgroundColor: 'transparent !important',
                   borderRadius: '15px 15px 0px 0px',
                 }}>
-                  {!spotifyToken ?
-                    <>
-                      <FontAwesomeIcon icon={faStar} pointerEvents="none" id="PRLC-Star-2" />
-                      <FontAwesomeIcon icon={faStar} pointerEvents="none" id="PRLC-Star-1" />
-                    </>
-                    : null}
                   <span>Turn your WhatsApp chats into Spotify playlists - sign up and try it out </span>
                   <button className="PublicRegisterLoginButton" type="button" onClick={handlePublicRegisterLogin}>Register / Login</button>
                 </div>
