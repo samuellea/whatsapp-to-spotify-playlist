@@ -41,10 +41,10 @@ function PublicStats({ authLink, handleLogout }) {
   }, []);
 
   const [publicStatsObj, setPublicStatsObj] = useState(null);
-  const [publicStatsError, setPublicStatsError] = useState(true);
+  const [publicStatsError, setPublicStatsError] = useState(false);
   const [spotifyLoggedInBanner, setSpotifyLoggedInBanner] = useState(false);
 
-  const [pageLoading, setPageLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [playlistArtworkLoaded, setPlaylistArtworkLoaded] = useState(false);
   const [tallied, setTallied] = useState([]);
   const [overview, setOverview] = useState([]);
@@ -71,6 +71,7 @@ function PublicStats({ authLink, handleLogout }) {
           setPageLoading(false);
           return;
         };
+        console.log('B')
         // console.log(data);
         setPublicStatsObj(data);
         setPageLoading(false);
@@ -121,19 +122,24 @@ function PublicStats({ authLink, handleLogout }) {
     history.push('/login');
   };
 
+  const handleHome = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return handlePublicRegisterLogin();
+    return history.push('/');
+  };
+
   return (
     <div className="StatsContainer Flex Column">
 
       {publicStatsError ?
         <div className="PublicStatsError Flex Column">
           <MusicSlash />
-          <h3>*record scratch*</h3>
+          <h3>404</h3>
           <span>We couldn't find that...</span>
-          <button type="button" onClick={handlePublicRegisterLogin}>Home</button>
+          <button type="button" onClick={handleHome}>Home</button>
         </div>
         :
-        pageLoading ?
-          null :
+        !pageLoading ?
           <div className="Stats">
             {spotifyLoggedInBanner ?
               <div className="SpotifyLoggedInBanner">
@@ -239,6 +245,7 @@ function PublicStats({ authLink, handleLogout }) {
               <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
             </div>
           </ div>
+          : null
       }
 
       {pageLoading || !fontsLoaded ?
