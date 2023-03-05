@@ -311,8 +311,28 @@
 
 .PublicStatsError {
   font-family: "Raleway-Regular";
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 5%;
+  box-sizing: border-box;
 }
 
 .PublicStatsError span {
   font-size: 14px;
+}
+
+.PublicStatsError button {
+  height: 50px;
+  width: 75%;
+  border-radius: 10px;
+  border: none;
+  background-color: #7316C6;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  /* margin-top: 24px; */
+  margin-top: 15%;
+  margin-bottom: 20px;
+  color: white;
 }

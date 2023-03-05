@@ -129,6 +129,7 @@ function PublicStats({ authLink, handleLogout }) {
           <MusicSlash />
           <h3>*record scratch*</h3>
           <span>We couldn't find that...</span>
+          <button type="button" onClick={handlePublicRegisterLogin}>Home</button>
         </div>
         :
         pageLoading ?
