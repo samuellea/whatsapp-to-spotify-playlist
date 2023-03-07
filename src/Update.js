@@ -419,7 +419,7 @@ function Update({ userPlaylistMetas, showHelpTooltip, setShowHelpTooltip }) {
           <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
           <span>Back</span>
         </button>
-        {!['review'].includes(screen) ?
+        {!['review', 'nonew'].includes(screen) ?
           <button className="HelpButton" type="button" onClick={() => setShowHelp(true)} style={{
             backgroundColor: showHelpTooltip ? '#40435d' : '#292B3E',
             animation: showHelpTooltip ? 'helpBounce 0.75s infinite' : null,
