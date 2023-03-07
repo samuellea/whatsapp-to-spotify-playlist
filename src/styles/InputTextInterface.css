@@ -49,6 +49,14 @@
   font-size: 15px;
 }
 
+.InputTextWarning li>span:first-child {
+  font-weight: 900;
+}
+
+.InputTextWarning li>span:nth-child(2) {
+  text-decoration: underline;
+}
+
 .ValidTextFeedback {
   color: #66B06E;
   height: 100%;

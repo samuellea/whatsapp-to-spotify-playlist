@@ -31,6 +31,7 @@
   overflow: hidden;
   font-family: sans-serif, Helvetica, Arial, sans-serif;
   position: relative;
+  transition: background-color 0.7s ease;
 }
 
 
@@ -157,6 +158,8 @@
   align-items: center !important;
   padding-top: 2px;
   padding-left: 6.5px;
+  transition: background-color 0.5s;
+  animation: margin-bottom 0.25s;
 }
 
 .CopyrightFooter {

@@ -32,68 +32,179 @@ export const youtubeVideoIDRegex = () => {
   return youtubeVideoIDPattern;
 };
 
-export const splitTextIntoIndividualMessages = (inputText) => {
-  console.log(inputText)
-  // const individualMessages = inputText.trim().split(/(\d{1,2}[\W\D]{1}\d{1,2}[\W\D]{1}\d{4}[^:]*\:{1}[^:]*\:{1}\s{1})/m)
-  // const individualMessages = inputText.trim().split(/(?=\d{2}\/\d{2}\/\d{4})/m).filter(Boolean).map(e => e.trim())
-  const splitByNewline = inputText.split('\n');
+// 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 
 
+export const splitTextIntoIndividualMessages = (inputText) => {
+  const splitByMsgStart = inputText.split(/(\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}\s{1}\-{1})/g);
+  //
   let newStr = '';
 
-  const individualMessages = splitByNewline.reduce((acc, e, i) => {
-    if ((/^\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}[^:]*\:{1}[^-]*\-{1}[^:]*\:{1}/gm).test(e)) {
-      acc.push(newStr);
+  const individualMessages = splitByMsgStart.reduce((acc, e, i) => {
+    if ((/^\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}/gm).test(e)) {
+      acc.push(newStr.trim());
       newStr = e;
     } else {
-      newStr += (' ' + e)
+      newStr += (' ' + e);
     }
-    if (i === splitByNewline.length - 1) acc.push(newStr);
+    if (i === splitByMsgStart.length - 1) acc.push(newStr.trim());
     return acc;
   }, []);
-
-  return individualMessages;
+  const individualMessagesBlanksRemoved = individualMessages.filter(e => e.length);
+  const newlinesReplacedWithSpaces = individualMessagesBlanksRemoved.map(e => e.replaceAll('\n', ' '));
+  console.log(newlinesReplacedWithSpaces);
+  return newlinesReplacedWithSpaces;
 };
 
-export const msgTimeComponents = async (singleMessage) => {
+// 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 
+
+
+
+
+export const coerce2DigitYearTo4DigitYear = (twoDigitYearStr, currentYear) => {
+  /* assume most recent message in the text was posted in current century (2099, uploading 2100) = 2199
+
+what is current year?  "2100"
+2 init century = current year first 2 digits
+is (2 digit YEAR in most recent message (99) + 2 init century (2199)) GREATER than current YEAR?!
+if yes, 2 init century = current year 1st 2 digits, coerce num MINUS ONE (21 --> 20)
+if no, 2 init century = current year 1st 2 digits
+result = 2 init century + 2 digit year
+*/
+  // const currentYear = new Date().getFullYear(); // 2023
+  const currentYearFirstTwoDigits = `${currentYear.toString()[0]}${currentYear.toString()[1]}`;
+  const proposedFourDigitYear = +`${currentYearFirstTwoDigits}${twoDigitYearStr}`;
+  let twoInitCenturyMsgActual = currentYearFirstTwoDigits;
+  if (proposedFourDigitYear > currentYear) twoInitCenturyMsgActual = +currentYearFirstTwoDigits - 1;
+  const fourDigitYearMsgActual = `${twoInitCenturyMsgActual}${twoDigitYearStr}`;
+  return fourDigitYearMsgActual;
+};
+
+
+export const coerceLanguageDateFormat = (splitBySeperator, locale) => {
+  // console.log(splitBySeperator)
+  // coerce any msg date in exported WhatsApp .txt to dd/mm/yyyy, return object with .day .month .year
+  /*
+  Supported locales and their date formats as exported in WhatsApp on a device with that system language locale:
+  GB	      	= 28/02/2023	en-GB	dd/mm/yyyy	    DMY
+  US	      	= 2/28/23	    en-US	(m)m/(d)d/yy  	MDY
+  AUS	      	= 28/2/23	    en-AU	(d)d/(m)m/yy  	DMY
+  CAN	      	= 2023-02-28	en-CA	yyyy-mm-dd	    YMD
+  IRE	      	= 28/02/2023	en-IE	dd/mm/yyyy	    DMY
+  NZ	      	= 28/02/23	  en-NZ	dd/mm/yy	      DMY
+  SA	      	= 2023/02/28	en-ZA	yyyy/mm/dd	    YMD
+  IND	      	= 28/02/23	  en-IN	dd/mm/yy	      DMY
+  PH	      	= 2/28/23	    en-PH	(m)m/(d)d/yy	  MDY
+  NED	      	= 28-02-2023	nl-NL	dd-mm-yyyy	    DMY
+  TUR	      	= 28.02.2023 4.03.2023 tr-TR (d)d.mm.yyyy DMY
+  FR    	  	= 28/02/2023	fr-FR	dd/mm/yyyy	    DMY
+  FR CAN	  	= 2023-02-28	fr-CA	yyyy-mm-dd    	YMD
+  GER	      	= 28.02.23	  de-DE	dd.mm.yy	      DMY
+  SPAI   	  	= 28/2/23   	es-ES	(d)d/(m)m/yy	  DMY
+  ITA	      	= 28/02/23	  it-IT	dd/mm/yy	      DMY
+  SPAI USA	  = 28/2/2023   es-US	(d)d/(m)m/yyyy  DMY
+  KOR	    	  = 23/2/28 !!	ko-KR	yy/(m)m/(d)d	  YMD
+  JAP   	  	= 2023/02/28	ja-JP	yyyy/mm/dd	    YMD
+  CHI SIMP  	= 2023/2/28	  zh-CN	yyyy/(m)m/(d)d	YMD
+  CHI TRAD HK	= 28/2/2023 	zh-HK	(d)d/(m)m/yyyy	DMY
+  CHI TRAD TW	= 2023/2/28	  zh-TW	yyyy/(m)m/(d)d	YMD
+  */
+
+  // splitBySeperator = arr eg. ['28','02','2023'] or ['2','28','23']
+
+  const formatIndexes = {
+    DMY: { dayIndex: 0, monthIndex: 1, yearIndex: 2 },
+    MDY: { dayIndex: 1, monthIndex: 0, yearIndex: 2 },
+    YMD: { dayIndex: 2, monthIndex: 1, yearIndex: 0 },
+  };
+
+  const locales = {
+    'en-GB': formatIndexes.DMY,
+    'en-US': formatIndexes.MDY,
+    'en-AU': formatIndexes.DMY,
+    'en-CA': formatIndexes.YMD,
+    'en-IE': formatIndexes.DMY,
+    'en-NZ': formatIndexes.DMY,
+    'en-ZA': formatIndexes.YMD,
+    'en-IN': formatIndexes.DMY,
+    'en-PH': formatIndexes.MDY,
+    'nl-NL': formatIndexes.DMY,
+    'tr-TR': formatIndexes.DMY,
+    'fr-FR': formatIndexes.DMY,
+    'fr-CA': formatIndexes.YMD,
+    'de-DE': formatIndexes.DMY,
+    'es-ES': formatIndexes.DMY,
+    'it-IT': formatIndexes.DMY,
+    'es-US': formatIndexes.DMY,
+    'ko-KR': formatIndexes.YMD,
+    'ja-JP': formatIndexes.YMD,
+    'zh-CN': formatIndexes.YMD,
+    'zh-HK': formatIndexes.DMY,
+    'zh-TW': formatIndexes.YMD,
+  };
+
+  // get array into correct order = DMY
+  const correctOrder = [
+    splitBySeperator[locales[locale].dayIndex],
+    splitBySeperator[locales[locale].monthIndex],
+    splitBySeperator[locales[locale].yearIndex],
+  ]; // ['28','02','2023'] (day, month, year | DMY)
+
+  // console.log(correctOrder, ' <-- correctOrder')
+  // year index is last index. if element length at year index is < 4, add Init 2 Century Digits at start ('20')
+  const yearIndex = correctOrder.length - 1;
+  const currentYear = new Date().getFullYear(); // 2023
+  correctOrder[yearIndex] = correctOrder[yearIndex].length === 4 ? correctOrder[yearIndex] : `${coerce2DigitYearTo4DigitYear(correctOrder[yearIndex], currentYear)}`
+
+  // make any elements that are length 1 have an '0' at start
+  const allMin2DigitsYear4Digits = correctOrder.map(e => e.length < 2 ? `0${e}` : e);
+  // ['dd', 'mm', 'yyyy']
+  return ({
+    day: allMin2DigitsYear4Digits[0],
+    month: allMin2DigitsYear4Digits[1],
+    year: allMin2DigitsYear4Digits[2],
+  });
+};
+
+export const msgTimeComponents = (singleMessage, locale) => {
+  // console.log(singleMessage, ' <-- singleMessage')
+  const msgTrimmed = singleMessage.trim();
+  // if a message found to NOT BE 24 HOUR TIME, return null. 
+  if (/^\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}(?:\s{1}\-{1})/gm.test(msgTrimmed) === false) return null;
   // const yes = singleMessage.includes('05re487C0a3bJNZnPfDqMp');
   // handles times in 12hr or 24hr format, as well as glitched ASCII as can be copied/pasted
   // from exports handled on mobile (eg. '12:30^£_pm);
-  // if (yes) console.log(singleMessage)
 
-  const userLocale = getUserLocale();
-  console.log(userLocale)
+  const dateTime = msgTrimmed.trim().slice(0, msgTrimmed.indexOf(' - ')).trim(); // boundary of the date and time and then the poster name! eg dd-mm-yyyy, 12:30 - Sam
 
-
-  const dateTime = singleMessage.slice(0, singleMessage.indexOf('-') - 1).trim();
-  // if (yes) console.log(dateTime)
 
   const noCommas = dateTime.replace(',', '');
-  const datePortion = noCommas.split(' ')[0];
-  const timePortion = noCommas.split(' ')[1];
-  // if (yes) console.log(timePortion)
+  const datePortion = noCommas.split(' ')[0].trim();
+  const timePortion = noCommas.split(' ')[1].trim();
+  // console.log(datePortion.trim(), '<-- datePortion ' + datePortion.length)
 
 
   let separator = '/';
-  const datePeriods = datePortion.includes('.');
-  const dateHyphens = datePortion.includes('-');
-  const dateSlashes = datePortion.includes('/');
-  if (datePeriods) separator = '.';
-  if (dateHyphens) separator = '-';
-  if (dateSlashes) separator = '/';
+  if (datePortion.includes('.')) separator = '.';
+  if (datePortion.includes('-')) separator = '-';
+  if (datePortion.includes('/')) separator = '/';
+  if (datePortion.includes(',')) separator = ',';
   const splitBySeperator = datePortion.split(separator);
-  console.log(splitBySeperator);
-  const datePortionDoubleDigits = splitBySeperator.map(e => {
-    if (e.length >= 4) return e;
-    if (e.length < 2) return `0${e}`;
-    return e;
-  }).join('/');
+  // console.log(splitBySeperator, ' <-- splitBySeperator');
+  // const datePortionDoubleDigits = splitBySeperator.map(e => {
+  //   if (e.length >= 4) return e;
+  //   if (e.length < 2) return `0${e}`;
+  //   return e;
+  // }).join('/');
+  // console.log(datePortionDoubleDigits, ' <-- datePortionDoubleDigits');
 
-  // console.log(datePortionDoubleDigits);
-  // console.log(timePortion);
+  const localeDateCoerced = coerceLanguageDateFormat(splitBySeperator, locale); // ['dd', 'mm', 'yyyy']
 
   const colonIndex = timePortion.indexOf(':');
   let hourPortion = timePortion.slice(0, colonIndex); // * NB 'let'
   const minutePortion = timePortion.slice(colonIndex + 1, colonIndex + 3);
+
+  // 🚨 🚨 🚨 - 12 HOUR CLOCK FORMAT ALSO APPEARS TO BE LOCALIZED ('8:09 abend' in Germany, 'gece 8:09' in Turkey etc.) - AM|PM can not always be handled!
+  // instead, we are going to make user check / set their system time to 24 hours BEFORE THEY EXPORT W/A CHAT.
   const is12Hr = (['am', 'pm'].includes(timePortion.slice(-2)));
   if (is12Hr) {
     const amOrPm = timePortion.slice(-2);
@@ -101,11 +212,12 @@ export const msgTimeComponents = async (singleMessage) => {
     if (amOrPm === 'pm' && hourPortion !== '12') hourPortion = +hourPortion + 12;
     if (amOrPm === 'am' && hourPortion === '12') hourPortion = '00';
   };
+  // 🚨 🚨 🚨
 
   return {
-    day: datePortionDoubleDigits.slice(0, 2),
-    month: datePortionDoubleDigits.slice(3, 5),
-    year: datePortionDoubleDigits.slice(6, 10),
+    day: localeDateCoerced.day,
+    month: localeDateCoerced.month,
+    year: localeDateCoerced.year,
     hour: `${hourPortion}`,
     minute: minutePortion,
   };
@@ -118,21 +230,34 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
   let postCounter = 0;
 
   // (1[0-2]|0?[1-9]):[0-5][0-9].*((am|pm)(?=\s{1}-\s{1}.*\:))
-  console.log(individualMessages)
+  // console.log(individualMessages)
 
-  for (let i = 0; i <= individualMessages.length; i++) {
-    const singleMessage = individualMessages[i];
+  let error12HrFound = false;
+
+  const locale = getUserLocale();
+
+  for (let i = 0; i < individualMessages.length; i++) {
+    const singleMessage = individualMessages[i].trim();
+    // console.log(singleMessage);
+
+    const timeComponentsObj = msgTimeComponents(singleMessage.trim(), locale);
+    // console.log(timeComponentsObj)
+    if (!timeComponentsObj) {
+      // console.log('12hr!!! ERROR')
+      error12HrFound = true;
+      return;
+    }
 
     if (spotiTrackAlbumPlaylistOrYTRegex().test(singleMessage)) { // if this msg contains one or more Spoti (track/album/pl) or YT links...
+      // console.log('!!!')
       // grab required data
-      const timeComponentsObj = msgTimeComponents(singleMessage.trim());
+
       // console.log(timeComponentsObj);
 
       const poster = singleMessage.match(/(?<=-).*?(?=:)/g)[0].trim();
 
       const spotiOrYTLinks = [...singleMessage.matchAll(spotiTrackAlbumPlaylistOrYTRegex())].map(arrEl => arrEl[0].trim());
       // const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())];
-
       // iterate over all Spoti or YT links in this message, and compose a postObj for each link found
       spotiOrYTLinks.forEach(link => {
 
@@ -165,6 +290,9 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
       });
     }
   };
+
+  if (error12HrFound) { console.log('error12HrFound!'); return null; }
+  // console.log(allPostsCrude, ' <-- allPostsCrude')
   return allPostsCrude;
 };
 
@@ -215,6 +343,7 @@ export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
 
 export const findInputTextNewPosts = (inputText, rawPostsLog) => {
   const inputTextAsMessages = splitTextIntoIndividualMessages(inputText);
+  console.log(inputTextAsMessages);
   const inputTextAsRawPosts = splitIndividualMessagesIntoPosts(inputTextAsMessages);
   console.log(inputTextAsRawPosts);
   const newPosts = newPostsNotInRawPosts(inputTextAsRawPosts, rawPostsLog);
@@ -223,16 +352,15 @@ export const findInputTextNewPosts = (inputText, rawPostsLog) => {
 
 export const inputTextIsValid = (inputText) => {
   let isValid = false;
-  // const whatsAppMessageRegex = /(\d{2}\/\d{2}\/\d{4}\,\s{1}\d{2}\:\d{2}\s{1}\-{1}\s{1}.*\:\s{1})+/g;
-  const whatsAppMessageRegex = /\d{1,4}(\/|\.|-)\d{1,4}(\/|\.|-)\d{1,4}(\,?)\s{1}([0-2]{0,2}|[0-9]{1,2}):[0-5][0-9].*((\s{1}\-{1}\s{1}.*\:\s{1})+)/g;
-  const containsWhatsAppMsgs = whatsAppMessageRegex.test(inputText.trim());
-  if (containsWhatsAppMsgs) {
+  // should not include am|pm, abend, gece etc.
+  const contains24HrFormatMsgStart = /(\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}\s{1}\-{1})/gm.test(inputText);
+  if (contains24HrFormatMsgStart) {
+    // then check actually msgs containing Spoti/YT links
     const individualMessages = splitTextIntoIndividualMessages(inputText);
     const individualPosts = splitIndividualMessagesIntoPosts(individualMessages);
-    individualPosts.length ? isValid = true : isValid = false
+    if (individualPosts) individualPosts.length ? isValid = true : isValid = false;
   }
-  // return isValid;
-  return true // 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+  return isValid;
 };
 
 export const mockSleep = async (milliseconds) => {
@@ -243,6 +371,7 @@ export const mockSleep = async (milliseconds) => {
 };
 
 export const equalSpacedPosters = (arr, string) => {
+  console.log(string)
   const longestNameLength = Math.max(...(arr.map(e => e.poster.length)));
   const diff = longestNameLength - string.length;
   const nameSpaced = string + new Array(diff + 1).join('\u00a0');

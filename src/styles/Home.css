@@ -37,6 +37,7 @@
   padding: 15px;
   font-size: 45px;
   margin-bottom: 5%;
+  transition: opacity 0.7s;
 }
 
 .UsernameAndSignOut {
@@ -224,6 +225,7 @@
   box-sizing: border-box;
   position: relative;
   margin-bottom: 4%;
+  transition: background-color 0.7s;
 }
 
 /* .HowToButtonContainer button {
@@ -242,10 +244,34 @@
     opacity: 0
   }
 
-  100% {
+  90% {
     opacity: 1
   }
 }
+
+@keyframes tooltipFadeInAndOut {
+  0% {
+    opacity: 0
+  }
+
+  25% {
+    opacity: 1
+  }
+
+  50% {
+    opacity: 1
+  }
+
+  85% {
+    opacity: 1
+  }
+
+  100% {
+    opacity: 0
+  }
+}
+
+
 
 .HelpTooltipContainer {
   position: absolute;
@@ -259,8 +285,10 @@
   /* padding: 5%; */
   box-sizing: border-box;
   padding: 0% 5%;
-  animation: tooltipFadeIn 1s;
+  /* animation: tooltipFadeIn 1s; */
   transition-timing-function: ease-in-out;
+  z-index: 9;
+
 }
 
 .HelpTooltip {
@@ -270,6 +298,7 @@
   /* background-color: #292B3E; */
   /* border-radius: 10px; */
   padding-right: 3.5%;
+  opacity: 1;
 }
 
 .HelpTooltipArrowContainer {
@@ -305,7 +334,7 @@
   border-radius: 10px 0px 10px 10px;
   flex: 1;
   padding: 8%;
-  font-family: "Raleway-Regular, Helvetica, Arial";
+  font-family: "Raleway-Regular";
   /* text-align: left; */
   font-size: 16px;
   justify-content: center;
@@ -357,6 +386,7 @@
   font-size: 28px;
   border: none;
   margin-right: 15px;
+  transition: opacity 0.7s;
 }
 
 #UserSettingsButton svg {

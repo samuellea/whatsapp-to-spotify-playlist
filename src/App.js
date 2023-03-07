@@ -180,7 +180,7 @@ function App() {
   return (
     <div className="App" style={{ backgroundColor: isMobile ? '#292B3E' : '#0A0A11' }}>
       <div className="AppView" style={{
-        backgroundColor: showHelpTooltip ? '#0A0A11' : '#292B3E',
+        backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
       }}>
         {isMobile ? null : <span id="MobileWarning">⚠ This webapp is best viewed on mobile</span>}
         <Router>
@@ -215,7 +215,7 @@ function App() {
             <SpotifyLoginScreen />
           </Route>
           <PrivateRoute path="/update">
-            <Update userPlaylistMetas={userPlaylistMetas} fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas} />
+            <Update userPlaylistMetas={userPlaylistMetas} fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas} showHelpTooltip={showHelpTooltip} setShowHelpTooltip={setShowHelpTooltip} />
           </PrivateRoute>
           <PrivateRoute path="/stats">
             {userPlaylistMetas.length ?

@@ -21,8 +21,8 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
         <div className="InputTextWarning Flex Column">
           <span><FontAwesomeIcon icon={faWarning} pointerEvents="none" />The text you've pasted does not appear to either: </span>
           <ul>
-            <li>be a correctly formatted WhatsApp chat text export</li>
             <li>contain any valid Spotify or Youtube links</li>
+            <li>be a correctly formatted WhatsApp chat text export - ensure you set your device's clock to <span>24 hour</span> time <span>before</span> exporting your WhatsApp chat</li>
           </ul>
         </div>
       );
@@ -41,13 +41,21 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
       <div className="InputTextInterface Flex Column">
 
         {!infoLoading ?
-          <textarea autofocus id="w3review" name="w3review" onChange={handleChangeTextArea} disabled={inputText.length} value={inputText}></textarea>
+          <textarea
+            autoFocus
+            id="w3review"
+            name="w3review"
+            onChange={handleChangeTextArea}
+            disabled={inputText.length}
+            value={inputText}
+          >
+          </textarea>
           :
           <Oval className="InputTextAreaSpinner" stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
         }
         <div className="InputTextButtonArea Flex Column">
           <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Clear</button>
-          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={validError || infoLoading}>Submit</button>
+          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={validError || infoLoading || !inputText.length}>Submit</button>
         </div>
 
 

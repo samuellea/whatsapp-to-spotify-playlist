@@ -17,7 +17,7 @@ import GoogleDocInterface from './GoogleDocInterface';
 // import { gapi } from 'gapi-script';
 import ChooseInputMenu from './ChooseInputMenu';
 
-function Update({ userPlaylistMetas }) {
+function Update({ userPlaylistMetas, showHelpTooltip, setShowHelpTooltip }) {
   let history = useHistory();
   const params = new URLSearchParams(window.location.search);
 
@@ -48,7 +48,17 @@ function Update({ userPlaylistMetas }) {
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
 
+  const helpHintAnimation = async () => {
+    console.log(userPlaylistMetas, ' < ---- ')
+    if (userPlaylistMetas.length === 1 && userPlaylistMetas[0].totalTracks === 0) {
+      setShowHelpTooltip(true);
+      await h.mockSleep(2150);
+      setShowHelpTooltip(false);
+    }
+  };
+
   useEffect(() => {
+    helpHintAnimation();
     /*
     const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
     const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -402,17 +412,22 @@ function Update({ userPlaylistMetas }) {
 
   return (
     <div className="Update Flex Column">
-      <div className="UpdateGoBackContainer Flex Row">
-        <button className="Flex Row" type="button" onClick={handleGoBack}>
+      <div className="UpdateGoBackContainer Flex Row" style={{
+        backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
+      }}>
+        <button className="Flex Row" type="button" onClick={handleGoBack} style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
           <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
           <span>Back</span>
         </button>
         {!['review'].includes(screen) ?
-          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)}>?</button>
+          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)} style={{
+            backgroundColor: showHelpTooltip ? '#40435d' : '#292B3E',
+            animation: showHelpTooltip ? 'helpBounce 0.75s infinite' : null,
+          }}>?</button>
           : null}
       </div>
 
-      <div className="InfoArea Flex Column">
+      <div className="InfoArea Flex Column" style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
         {screenToRender()}
       </div>
       {showHelp ? <Help location={screen} setShowHelp={setShowHelp} /> : null}

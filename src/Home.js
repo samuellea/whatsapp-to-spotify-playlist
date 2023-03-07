@@ -150,19 +150,19 @@ function Home({
       <div className="HomeContainer Flex Column">
 
         <div className="HowToButtonContainer Flex Row" style={{
-          backgroundColor: showHelpTooltip ? '#0A0A11' : '#292B3E',
+          backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
         }}>
-          <button type="button" id="UserSettingsButton" onClick={() => setShowUserSettings(true)}>
+          <button type="button" id="UserSettingsButton" onClick={() => setShowUserSettings(true)} style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
             <FontAwesomeIcon icon={faCog} pointerEvents="none" />
           </button>
           <button className="HelpButton" type="button" onClick={() => setShowHelp(true)}
             style={{
-              backgroundColor: showHelpTooltip ? '#292B3E' : 'none',
+              backgroundColor: showHelpTooltip ? '#40435d' : '#2a2b3e',
             }}>?</button>
         </div>
 
         {showHelpTooltip ?
-          <div className="HelpTooltipContainer Flex">
+          <div className="HelpTooltipContainer Flex" style={{ animation: 'tooltipFadeIn 1s' }}>
             <div className="HelpTooltip Flex Column">
               <div className="HelpTooltipArrowContainer Flex Row">
                 <div className="HelpTooltipArrowBox">
@@ -200,7 +200,7 @@ function Home({
           </div>
           : null}
 
-        <div className="UserContainer Flex Row" style={{ opacity: fontsLoaded ? 1 : 0 }}>
+        <div className="UserContainer Flex Row" style={{ opacity: showHelpTooltip ? 0 : 1 }}>
           <FontAwesomeIcon icon={faUserCircle} pointerEvents="none" />
           <div className="UsernameAndSignOut Flex Column">
             <span className={`Raleway-Regular Empty-${!spotifyUserDisplayName}`}>{spotifyUserDisplayName}</span>

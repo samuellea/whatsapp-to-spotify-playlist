@@ -127,7 +127,7 @@ function GoogleDocInterface({
 
                 <div className="GoogleInputTextInterface Flex Column" style={{ height: '180px' }}>
                   <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here"></input>
-                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmitGoogleFileURL} disabled={validationError}>Submitto</button>
+                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmitGoogleFileURL} disabled={validationError}>Submit</button>
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
               </>
