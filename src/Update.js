@@ -377,7 +377,6 @@ function Update({
       return (
         <InputTextInterface
           inputText={inputText}
-          validInputText={validInputText}
           handleChangeTextArea={handleChangeTextArea}
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
