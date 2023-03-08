@@ -9,6 +9,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
   const [validError, setValidError] = useState(false);
 
   useEffect(() => {
+    console.log('BONGO')
     if (!inputText.length) setValidError(false);
     if (inputText.length && validInputText) setValidError(false);
     if (inputText.length && !validInputText) setValidError(true);
@@ -27,7 +28,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
         </div>
       );
     }
-    if (inputText.length && !validError) return (
+    if (validInputText) return (
       <div className="ValidTextFeedback Flex Row">
         <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
       </div>
