@@ -7,7 +7,7 @@ import * as h from './helpers';
 
 function InputTextInterface({ inputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear, infoLoading }) {
 
-  const [validInputText, setValidInputText] = useState(false);
+  const [validInputText, setValidInputText] = useState(null);
 
   const [inputLength, setInputLength] = useState(0);
 
@@ -20,43 +20,37 @@ function InputTextInterface({ inputText, handleChangeTextArea, handleSubmitInput
     setInputLength(inputText.length);
   }, [inputText]);
 
-  // const inputTextInfo = () => {
-  //   if (!inputText.length) {
-  //     return <span>Paste a WhatsApp chat export .txt file here</span>
-  //   } else {
-  //     if (validInputText) return (
-  //       <div className="ValidTextFeedback Flex Row">
-  //         <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
-  //       </div>
-  //     )
-  //     if (!validInputText) {
-  //       return (
-  //         <div className="InputTextWarning Flex Column">
-  //           <span><FontAwesomeIcon icon={faWarning} pointerEvents="none" />The text you've pasted does not appear to either: </span>
-  //           <ul>
-  //             <li>contain any valid Spotify or Youtube links</li>
-  //             <li>be a correctly formatted WhatsApp chat text export - ensure you set your device's clock to <span>24 hour</span> time <span>before</span> exporting your WhatsApp chat</li>
-  //           </ul>
-  //         </div>
-  //       );
-  //     }
-  //   }
-  // }
+  const inputTextInfo = () => {
+    if (!inputText.length) {
+      return <span>Paste a WhatsApp chat export .txt file here</span>
+    } else {
+      if (validInputText === null) {
+        <span>Paste a WhatsApp chat export .txt file here</span>
+      } else {
+        if (validInputText === true) return (
+          <div className="ValidTextFeedback Flex Row">
+            <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
+          </div>
+        )
+        if (validInputText === false) {
+          return (
+            <div className="InputTextWarning Flex Column">
+              <span><FontAwesomeIcon icon={faWarning} pointerEvents="none" />The text you've pasted does not appear to either: </span>
+              <ul>
+                <li>contain any valid Spotify or Youtube links</li>
+                <li>be a correctly formatted WhatsApp chat text export - ensure you set your device's clock to <span>24 hour</span> time <span>before</span> exporting your WhatsApp chat</li>
+              </ul>
+            </div>
+          );
+        }
+      }
+    }
+  }
 
   return (
     <div className="InputTextInterfaceContainer Flex Column">
       <div className="InputTextInterfaceMessage">
-        {!inputText.length ? <span>BING Paste a WhatsApp chat export .txt file here</span> : null}
-        {inputText.length && validInputText ? <div className="ValidTextFeedback Flex Row">
-          <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
-        </div> : null}
-        {inputText.length && !validInputText ? <div className="InputTextWarning Flex Column">
-          <span><FontAwesomeIcon icon={faWarning} pointerEvents="none" />The text you've pasted does not appear to either: </span>
-          <ul>
-            <li>contain any valid Spotify or Youtube links</li>
-            <li>be a correctly formatted WhatsApp chat text export - ensure you set your device's clock to <span>24 hour</span> time <span>before</span> exporting your WhatsApp chat</li>
-          </ul>
-        </div> : null}
+        {inputTextInfo()}
       </div>
 
       <div className="InputTextInterface Flex Column">
