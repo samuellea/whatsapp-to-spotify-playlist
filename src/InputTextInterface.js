@@ -16,23 +16,26 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
   }, [validInputText, inputText]);
 
   const inputTextInfo = () => {
-    if (!inputText.length) return <span>Paste a WhatsApp chat export .txt file here</span>
-    if (!validInputText) {
-      return (
-        <div className="InputTextWarning Flex Column">
-          <span><FontAwesomeIcon icon={faWarning} pointerEvents="none" />The text you've pasted does not appear to either: </span>
-          <ul>
-            <li>contain any valid Spotify or Youtube links</li>
-            <li>be a correctly formatted WhatsApp chat text export - ensure you set your device's clock to <span>24 hour</span> time <span>before</span> exporting your WhatsApp chat</li>
-          </ul>
+    if (!inputText.length) {
+      return <span>Paste a WhatsApp chat export .txt file here</span>
+    } else {
+      if (validInputText) return (
+        <div className="ValidTextFeedback Flex Row">
+          <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
         </div>
-      );
+      )
+      if (!validInputText) {
+        return (
+          <div className="InputTextWarning Flex Column">
+            <span><FontAwesomeIcon icon={faWarning} pointerEvents="none" />The text you've pasted does not appear to either: </span>
+            <ul>
+              <li>contain any valid Spotify or Youtube links</li>
+              <li>be a correctly formatted WhatsApp chat text export - ensure you set your device's clock to <span>24 hour</span> time <span>before</span> exporting your WhatsApp chat</li>
+            </ul>
+          </div>
+        );
+      }
     }
-    if (validInputText) return (
-      <div className="ValidTextFeedback Flex Row">
-        <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
-      </div>
-    )
   }
 
   return (
