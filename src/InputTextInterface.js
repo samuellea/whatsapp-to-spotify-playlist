@@ -16,8 +16,8 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
   }, [validInputText, inputText]);
 
   const inputTextInfo = () => {
-    if (!inputText.length && !validError) return <span>Paste a WhatsApp chat export .txt file here</span>
-    if (validError) {
+    if (!inputText.length) return <span>Paste a WhatsApp chat export .txt file here</span>
+    if (!validInputText) {
       return (
         <div className="InputTextWarning Flex Column">
           <span><FontAwesomeIcon icon={faWarning} pointerEvents="none" />The text you've pasted does not appear to either: </span>
@@ -56,7 +56,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
         }
         <div className="InputTextButtonArea Flex Column">
           <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Clear</button>
-          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={validError || infoLoading || !inputText.length}>Submit</button>
+          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText || infoLoading}>Submit</button>
         </div>
 
 
