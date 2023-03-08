@@ -24,6 +24,7 @@ import SpotifyIconBlackPNG from './Spotify_Icon_RGB_Black.png';
 
 function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading, appToast }) {
 
+  console.log('Stats');
 
   const [fontsLoaded, setFontsLoaded] = useState(false)
   useEffect(() => {
@@ -193,8 +194,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       appToast('Sharing failed. Please try again later', { duration: 1500 });
     }
     const { name } = exportSuccessResponse.data;
-    const sharingUrl = `https://chatchoons.netlify.app/publicStats/${name}`;
-    // const sharingUrl = `http://localhost:3000/publicStats/${name}`;
+    // const sharingUrl = `https://chatchoons.netlify.app/publicStats/${name}`;
+    const sharingUrl = `http://localhost:3000/publicStats/${name}`;
     // console.log(sharingUrl);
     setSharingLink(sharingUrl);
   }
@@ -279,7 +280,15 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
               </div>
 
             </div>
-            <SharedNotAddedSection rawPostsLog={firebasePlaylist.obj.rawPostsLog} lookupInState={lookupInState} colourMap={colourMap} handleExportStats={handleExportStats} sharingLink={sharingLink} appToast={appToast} token={token} />
+            <SharedNotAddedSection
+              rawPostsLog={firebasePlaylist.obj.rawPostsLog}
+              lookupInState={lookupInState}
+              colourMap={colourMap}
+              handleExportStats={handleExportStats}
+              sharingLink={sharingLink}
+              appToast={appToast}
+              token={token}
+            />
             <div className="CopyrightFooter" style={{ borderRadius: '0px 0px 15px 15px', margin: '5% 0%' }}>
               <span> © Sam Lea 2023</span>
               <span>|</span>

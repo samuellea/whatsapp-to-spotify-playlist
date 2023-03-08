@@ -9,8 +9,32 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
+import usePrevious from './customHooks/usePrevious';
+import _ from 'lodash';
 
 function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleExportStats, sharingLink, appToast, isPublicStatsPage = false, token }) {
+
+  const spotifyToken = localStorage.getItem('spotifyToken');
+
+  const prevRawPostsLog = usePrevious(rawPostsLog);
+
+  const [livePlaylistData, setLivePlaylistData] = useState(null);
+
+  const getLiveSpotifyPlaylistData = async (playlistObjs) => {
+    const spotifyPlaylists = playlistObjs.filter(e => isSpotifyPlaylist(e));
+    const liveSpotifyPlaylistsData = await u.getSpotifyPlaylistsData(spotifyPlaylists, spotifyToken);
+    // console.log(liveSpotifyPlaylistsData)
+    if (liveSpotifyPlaylistsData) setLivePlaylistData(liveSpotifyPlaylistsData);
+  };
+
+  useEffect(() => {
+    // console.log('----------')
+    if (rawPostsLog) {
+      if (_.isEqual(prevRawPostsLog, rawPostsLog)) {
+        getLiveSpotifyPlaylistData(rawPostsLog);
+      }
+    }
+  }, [rawPostsLog])
 
   const [isExporting, setIsExporting] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -161,6 +185,7 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
                       link={`https://open.spotify.com/playlist/${e.linkID}`}
                       lookupInState={lookupInState}
                       colourMap={colourMap}
+                      liveData={livePlaylistData ? livePlaylistData[i] : null}
                     />
                   ))}
                 </div>

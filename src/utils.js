@@ -849,7 +849,7 @@ export const getSpotifyAlbumsData = async (albumPosts, spotifyToken) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getSpotifyPlaylistsData = async (playlistPosts, spotifyToken) => {
-  // console.log(playlistPosts)
+  console.log(playlistPosts, ' < < < < < < <')
   const justPlaylistIDs = playlistPosts.map(e => e.linkID);
 
   const spotifyGetPlaylistQueries = justPlaylistIDs.map(playlistID => {
