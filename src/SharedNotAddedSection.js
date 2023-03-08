@@ -11,6 +11,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
 import usePrevious from './customHooks/usePrevious';
 import _ from 'lodash';
+import SpotifyIcon from './SpotifyIcon';
 
 function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleExportStats, sharingLink, appToast, isPublicStatsPage = false, token }) {
 
@@ -164,7 +165,7 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
                 </div>
                 <div className="SharedNotAddedSegmentFooter" />
                 <div className="ChangeModalSpotifyArtworkLink Flex Row">
-                  <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+                  <SpotifyIcon fill="white" height={22} width={22} />
                   <span>Tap album / EP to open in Spotify</span>
                 </div>
               </div>
@@ -191,7 +192,7 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
                 </div>
                 <div className="SharedNotAddedSegmentFooter" />
                 <div className="ChangeModalSpotifyArtworkLink Flex Row">
-                  <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+                  <SpotifyIcon fill="white" height={22} width={22} />
                   <span>Tap playlist to open in Spotify</span>
                 </div>
               </div>

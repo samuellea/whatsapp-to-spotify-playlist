@@ -6,6 +6,7 @@ import { faArrowsRotate, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import ConversionCard from './ConversionCard';
 import SpotifyLogo from './SpotifyLogo';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
+import SpotifyIcon from './SpotifyIcon';
 
 function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts, setModalBackdrop }) {
 
@@ -99,7 +100,7 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts,
       </div>
 
       <div className="YTCI-ProvidedBySpotify Flex Row">
-        <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} style={{ height: '30px', width: '30px', padding: '15px' }} />
+        <SpotifyIcon fill="white" height={30} width={30} />
         <span>Tap <div className="YTCI-Legend" /> to open track in Spotify</span>
         {/* <SpotifyLogo /> */}
 

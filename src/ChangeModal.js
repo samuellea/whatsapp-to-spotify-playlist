@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCircleStop } from '@fortawesome/free-solid-svg-icons';
 import SpotifyLogo from './SpotifyLogo';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
+import SpotifyIcon from './SpotifyIcon';
 
 function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyResult }) {
   // console.log(matchToChange)
@@ -259,7 +260,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
         {searchResults !== null ?
           <div className="SearchResultsInfo Flex Column">
             <div className="ChangeModalSpotifyArtworkLink Flex Row">
-              <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+              <SpotifyIcon fill="white" height={22} width={22} />
               <span>Tap artwork to open in Spotify</span>
             </div>
             {searchResults !== null && searchResults.length
@@ -316,7 +317,8 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
           <div className="TrackArtContainer Flex Column">
             {thumbnailMed ?
               <>
-                <div className="TrackInfoOpenInSpotify Flex Row"><img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+                <div className="TrackInfoOpenInSpotify Flex Row">
+                  <SpotifyIcon fill="white" height={24} width={24} />
                   <a href={`https://open.spotify.com/track/${spotifyTrackID}`} target="_blank">
                     <span>OPEN IN SPOTIFY</span>
                   </a>

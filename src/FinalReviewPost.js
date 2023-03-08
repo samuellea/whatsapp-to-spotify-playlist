@@ -1,6 +1,7 @@
 import './styles/FinalReviewPost.css';
 import React, { useState, useEffect } from 'react';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
+import SpotifyIcon from './SpotifyIcon';
 
 function FinalReviewPost({ post, index }) {
   const { title, artists, thumbnailMed } = post;
@@ -24,7 +25,8 @@ function FinalReviewPost({ post, index }) {
         </div>
       </div>
 
-      <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+      <SpotifyIcon fill="white" height={22} width={22} />
+
     </div >
   )
 }

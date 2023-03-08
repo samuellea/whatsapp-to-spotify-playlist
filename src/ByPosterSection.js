@@ -12,6 +12,7 @@ import { Redirect, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import GreenCircleRedCross from './GreenCircleRedCross';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
+import SpotifyIcon from './SpotifyIcon';
 
 function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPublicStatsPage = false, authLink }) {
   const history = useHistory();
@@ -252,7 +253,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
     <div className="ByPosterSection Flex Column">
       {toRender()}
       <div className="ChangeModalSpotifyArtworkLink Flex Row">
-        <img id="SpotifyIconWhite" src={SpotifyIconWhitePNG} />
+        <SpotifyIcon fill="white" height={22} width={22} />
         <span>Tap track to open in Spotify</span>
       </div>
     </div>

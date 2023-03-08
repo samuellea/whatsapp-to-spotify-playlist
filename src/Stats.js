@@ -21,6 +21,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import FontFaceObserver from 'fontfaceobserver';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
 import SpotifyIconBlackPNG from './Spotify_Icon_RGB_Black.png';
+import SpotifyIcon from './SpotifyIcon';
 
 function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading, appToast }) {
 
@@ -229,7 +230,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
                 <h2><span>{processedPostsLog.length}</span> tracks</h2>
                 <span>last updated: {h.getLastUpdatedFromMeta(playlistMetaInAppState)}</span>
                 <a className="StatsInfoPodOpenButton Flex" href={`https://open.spotify.com/playlist/${spotifyPlaylistId}`} target="_blank">
-                  <img id="SpotifyIconWhite" src={SpotifyIconBlackPNG} />
+                  <SpotifyIcon fill="white" height={30} width={30} />
                   OPEN IN SPOTIFY</a>
               </div>
 
@@ -287,8 +288,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
               handleExportStats={handleExportStats}
               sharingLink={sharingLink}
               appToast={appToast}
-              token={token}
-            />
+              token={token} />
             <div className="CopyrightFooter" style={{ borderRadius: '0px 0px 15px 15px', margin: '5% 0%' }}>
               <span> © Sam Lea 2023</span>
               <span>|</span>
