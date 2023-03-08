@@ -244,8 +244,8 @@ function Home({
                   {!creatingNewPlaylist ?
                     <div className="HomeCreatePlaylistModalContents Flex Column">
                       <input type="text" onChange={handlePlaylistNameChange} placeholder="Enter new playlist name"></input>
-                      <button type="button" onClick={handleCancelCreate}>Cancel</button>
                       <button type="button" onClick={handleSubmitNewPlaylist} disabled={!newPlaylistName.length}>Create New Playlist</button>
+                      <button type="button" onClick={handleCancelCreate}>Cancel</button>
                     </div> :
                     <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
                   }

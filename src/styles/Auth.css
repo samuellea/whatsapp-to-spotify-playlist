@@ -122,6 +122,14 @@
   /* border: 1px solid red; */
   font-family: "Raleway-Regular";
   font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.ByProceedingNotice {
+  width: 265px;
+  font-family: "Raleway-Regular";
+  font-size: 12px;
+  margin: 0 auto;
 }
 
 .LoginErrorContainer {

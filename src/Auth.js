@@ -103,7 +103,8 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
           <div className="submitButtonContainer">
             <button className="authSubmitButton" onClick={handleClick}>Login</button>
           </div>
-          <Link to="/signup">No account? Sign up</Link>
+          <Link to="/signup" style={{ color: '#c98cff' }}>No account? Sign up</Link>
+          <span className="ByProceedingNotice">By proceeding, you confirm that you have read and agree to the terms of our <span onClick={() => showPrivacyPolicy(true)} id="PrivacyPolicyLink">Privacy Policy</span></span>
 
         </form>
         :
@@ -117,7 +118,7 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
           Could not login - please try again</span> : null}
       </div>
 
-      <h2>{userLocale}</h2>
+      {/* <h2>{userLocale}</h2> */}
 
       <a href="https://developer.spotify.com/" target="_blank" id="SpotifyCreditFooterLink">
         <div className="SpotifyCreditFooter Flex Row">
@@ -131,8 +132,8 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
         <span> © Sam Lea 2023</span>
         <span>|</span>
         <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
-        <span>|</span>
-        <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span>
+        {/* <span>|</span> */}
+        {/* <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span> */}
       </div>
 
 

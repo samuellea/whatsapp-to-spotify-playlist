@@ -172,7 +172,7 @@ function App() {
               {/* <img src={SpotifyIconGreen} /> */}
               Login
             </a>
-            <span onClick={() => showPrivacyPolicy(true)}>By proceeding, you agree that you have read the terms of our <span id="SpotifyLoginPrivacyPolicy">Privacy Policy</span></span>
+            {/* <span onClick={() => showPrivacyPolicy(true)}>By proceeding, you agree that you have read the terms of our <span id="SpotifyLoginPrivacyPolicy">Privacy Policy</span></span> */}
           </>
           :
           publicStatsHashNonAuth !== null ? <Redirect to={`/publicStats/${publicStatsHashNonAuth}`} />

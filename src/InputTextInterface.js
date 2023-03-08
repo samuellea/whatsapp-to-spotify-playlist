@@ -9,8 +9,6 @@ function InputTextInterface({ inputText, handleChangeTextArea, handleSubmitInput
 
   const [validInputText, setValidInputText] = useState(null);
 
-  const [inputLength, setInputLength] = useState(0);
-
   useEffect(() => {
     if (inputText && inputText.length !== null) {
       const inputTextIsValid = h.inputTextIsValid(inputText);
@@ -19,9 +17,6 @@ function InputTextInterface({ inputText, handleChangeTextArea, handleSubmitInput
     if (!inputText.length) setValidInputText(null);
   }, [inputText]);
 
-  // useEffect(() => {
-  //   setInputLength(inputText.length);
-  // }, [inputText]);
 
   const inputTextInfo = () => {
     if (!inputText.length) {

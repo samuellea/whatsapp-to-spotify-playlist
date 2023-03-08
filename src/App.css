@@ -187,6 +187,7 @@
 
 #PrivacyPolicyLink {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 #SpotifyIconWhite {

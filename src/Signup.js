@@ -138,7 +138,8 @@ function Signup({ updateLoggedIn, loggedIn, appToast, showPrivacyPolicy }) { // 
             <button className="authSubmitButton" onClick={handleClick} disabled={Object.values(formError).some(e => e)}>Create Account</button>
           </div>
 
-          <Link to="/login">Already have an account? Login</Link>
+          <Link to="/login" style={{ color: '#94ec9d' }}>Already have an account? Login</Link>
+          <span className="ByProceedingNotice">By proceeding, you confirm that you have read and agree to the terms of our <span onClick={() => showPrivacyPolicy(true)} id="PrivacyPolicyLink">Privacy Policy</span></span>
         </form>
         :
         <div className="AuthSpinnerContainer Flex Column">
@@ -163,8 +164,8 @@ function Signup({ updateLoggedIn, loggedIn, appToast, showPrivacyPolicy }) { // 
         <span> © Sam Lea 2023</span>
         <span>|</span>
         <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
-        <span>|</span>
-        <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span>
+        {/* <span>|</span> */}
+        {/* <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span> */}
       </div>
       <div className="InvisiBox" style={{ flex: 1 }} />
 
