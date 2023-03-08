@@ -16,11 +16,12 @@ function InputTextInterface({ inputText, handleChangeTextArea, handleSubmitInput
       const inputTextIsValid = h.inputTextIsValid(inputText);
       setValidInputText(inputTextIsValid);
     }
+    if (!inputText.length) setValidInputText(null);
   }, [inputText]);
 
-  useEffect(() => {
-    setInputLength(inputText.length);
-  }, [inputText]);
+  // useEffect(() => {
+  //   setInputLength(inputText.length);
+  // }, [inputText]);
 
   const inputTextInfo = () => {
     if (!inputText.length) {
