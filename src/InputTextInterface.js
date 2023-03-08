@@ -8,12 +8,11 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
 
   const [validError, setValidError] = useState(false);
 
+  const [inputLength, setInputLength] = useState(0);
+
   useEffect(() => {
-    console.log('BONGO')
-    if (!inputText.length) setValidError(false);
-    if (inputText.length && validInputText) setValidError(false);
-    if (inputText.length && !validInputText) setValidError(true);
-  }, [validInputText, inputText]);
+    setInputLength(inputText.length);
+  }, [inputText]);
 
   const inputTextInfo = () => {
     if (!inputText.length) {
