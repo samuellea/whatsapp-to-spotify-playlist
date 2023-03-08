@@ -3,12 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faWarning } from '@fortawesome/free-solid-svg-icons';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
+import * as h from './helpers';
 
-function InputTextInterface({ inputText, validInputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear, infoLoading }) {
+function InputTextInterface({ inputText, handleChangeTextArea, handleSubmitInputText, handleTextAreaClear, infoLoading }) {
 
-  const [validError, setValidError] = useState(false);
+  const [validInputText, setValidInputText] = useState(false);
 
   const [inputLength, setInputLength] = useState(0);
+
+  useEffect(() => {
+    const inputTextIsValid = h.inputTextIsValid(inputText);
+    setValidInputText(inputTextIsValid);
+  }, [inputText]);
 
   useEffect(() => {
     setInputLength(inputText.length);
@@ -40,7 +46,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
   return (
     <div className="InputTextInterfaceContainer Flex Column">
       <div className="InputTextInterfaceMessage">
-        {!inputText.length ? <span>Paste a WhatsApp chat export .txt file here</span> : null}
+        {!inputText.length ? <span>BING Paste a WhatsApp chat export .txt file here</span> : null}
         {inputText.length && validInputText ? <div className="ValidTextFeedback Flex Row">
           <FontAwesomeIcon icon={faCircleCheck} pointerEvents="none" />
         </div> : null}
