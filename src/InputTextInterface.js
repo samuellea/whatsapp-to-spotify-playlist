@@ -42,7 +42,7 @@ function InputTextInterface({ inputText, validInputText, handleChangeTextArea, h
 
         {!infoLoading ?
           <textarea
-            autoFocus
+            autofocus
             id="w3review"
             name="w3review"
             onChange={handleChangeTextArea}

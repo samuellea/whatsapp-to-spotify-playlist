@@ -146,6 +146,7 @@ function GoogleDocInterface({
                   </div>
                   <h1>Not a valid WhatsApp chat export file</h1>
                   <h3>Make sure your file is a .txt file</h3>
+                  <h3>Make sure your device clock is set to <span style={{ fontFamily: "Raleway-Bold" }}>24 hour</span> format (eg. 13:00) <span style={{ textDecoration: 'underline' }}>not</span> 12 hour (eg. 1pm) before exporting WhatsApp chat</h3>
                   <button className="GoogleFileSubmitButton" style={{ backgroundColor: '#66B06E' }} type="button" onClick={handleTryAgain}>Try Another File</button>
                 </div>
 

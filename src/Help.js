@@ -27,7 +27,7 @@ function Help({ location, setShowHelp }) {
     'input': (
       <div className="HelpInputContent Flex Column">
         <FontAwesomeIcon icon={faClock} pointerEvents="none" />
-        <span id="TimeWarning">⚠️ Ensure your device clock is set to <span id="HelpLiBold">24 hour</span> format (eg. 13:00) <span id="TimeWarningUnderline">not</span> 12 hour (eg. 1:00pm)</span>
+        <span id="TimeWarning">⚠️ Ensure your device clock is set to <span id="HelpLiBold">24 hour</span> format (eg. 13:00) <span id="TimeWarningUnderline">not</span> 12 hour (eg. 1:00pm). Check that messages in the chat appear with the correct time format - if not, close and restart WhatsApp</span>
         <ol>
           <li>Go to your WhatsApp chat and tap the <span id="HelpLiBold">3 dots ⋮</span> {'>'} <span id="HelpLiBold">More</span> {'>'} <span id="HelpLiBold">Export chat</span>  {'>'} <span id="HelpLiBold">Without media</span> </li>
           <li>When the app menu appears at the bottom of your screen, select your preferred Email app (Gmail, Outlook etc.) and send <span style={{ fontWeight: 900, textDecoration: 'underline' }}>to your own</span> email address</li>
@@ -39,7 +39,7 @@ function Help({ location, setShowHelp }) {
     'google': (
       <div className="HelpGoogleContent Flex Column">
         <FontAwesomeIcon icon={faClock} pointerEvents="none" />
-        <span id="TimeWarning">⚠️ Ensure your device clock is set to <span id="HelpLiBold">24 hour</span> format (eg. 13:00) <span id="TimeWarningUnderline">not</span> 12 hour (eg. 1:00pm)</span>
+        <span id="TimeWarning">⚠️ Ensure your device clock is set to <span id="HelpLiBold">24 hour</span> format (eg. 13:00) <span id="TimeWarningUnderline">not</span> 12 hour (eg. 1:00pm). Check that messages in the chat appear with the correct time format - if not, close and restart WhatsApp</span>
         <ol>
           <li>Go to your WhatsApp chat and tap the  <span id="HelpLiBold">3 dots ⋮ </span>
             {'>'}  <span id="HelpLiBold">More</span> {'>'}  <span id="HelpLiBold">Export chat</span> {'>'}  <span id="HelpLiBold">Without media</span></li>

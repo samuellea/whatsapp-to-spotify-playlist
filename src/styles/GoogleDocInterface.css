@@ -177,8 +177,15 @@ textarea::-webkit-scrollbar-thumb {
   color: white;
   font-size: 32px;
   margin: 0;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
+
+.GoogleErrorDisplayContainer h3 {
+  width: 100%;
+  margin: 10px;
+  /* text-align: left; */
+}
+
 
 .GoogleLogin {
   /* border: 1px solid red; */
