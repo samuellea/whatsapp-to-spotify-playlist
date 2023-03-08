@@ -14,7 +14,7 @@ import SpotifyLogo from './SpotifyLogo';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
 
 function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyResult }) {
-  console.log(matchToChange)
+  // console.log(matchToChange)
   const spotifyToken = localStorage.getItem('spotifyToken');
 
   const [validTrackID, setValidTrackID] = useState('');
@@ -23,7 +23,6 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   const [inputBarErrorMsg, setInputBarErrorMsg] = useState('* Must be a valid Spotify track URL');
   const [spotifyObj, setSpotifyObj] = useState({
     ...matchToChange,
-    artists: [], title: '', thumbnailSmall: '', thumbnailMed: '', spotifyTrackID: '', artistIDs: [],
   })
   const [searchLoading, setSearchLoading] = useState(false);
   const [replaceSuccess, setReplaceSuccess] = useState(false);
@@ -31,11 +30,17 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   const [searchResults, setSearchResults] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
   const [indexPlaying, setIndexPlaying] = useState(null);
+  const [trackIsUnchanged, setTrackIsUnchanged] = useState(true);
+
+  // useEffect(() => {
+  //   setSpotifyObj(matchToChange)
+  //   // trigger a call to FB /playlists endpoint for this playlist obj - but where to store? Here, in update? Or up in home? Or even App?
+  // }, [matchToChange]);
 
   useEffect(() => {
-    setSpotifyObj(matchToChange)
-    // trigger a call to FB /playlists endpoint for this playlist obj - but where to store? Here, in update? Or up in home? Or even App?
-  }, [matchToChange]);
+    if (!_.isEqual(spotifyObj, matchToChange)) return setTrackIsUnchanged(false);
+    return setTrackIsUnchanged(true);
+  }, [spotifyObj]);
 
   useEffect(() => {
     setValidTrackID('');
@@ -191,10 +196,10 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
     }
   };
 
-  const trackIsUnchanged = () => {
-    if (!_.isEqual(spotifyObj, matchToChange)) return false;
-    return true;
-  }
+  // const trackIsUnchanged = () => {
+  // if (!_.isEqual(spotifyObj, matchToChange)) return false;
+  // return true;
+  // }
 
   const disableSearchButton = () => {
     if (changeMode === 'paste') {
@@ -350,7 +355,7 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
             </div>
 
             <button type="button" onClick={handleCancel}>Cancel</button>
-            <button type="button" onClick={handleSubmit} disabled={trackIsUnchanged()} style={{ backgroundColor: trackIsUnchanged() ? '#7316C6' : '#66B06E' }}>{matchToChange.artists && matchToChange.title ? 'Replace' : 'Add'}</button>
+            <button type="button" onClick={handleSubmit} disabled={trackIsUnchanged} style={{ backgroundColor: trackIsUnchanged ? '#7316C6' : '#66B06E' }}>{matchToChange.artists && matchToChange.title ? 'Replace' : 'Add'}</button>
 
           </div>
 

@@ -34,12 +34,14 @@ function App() {
   const [privacyPolicy, showPrivacyPolicy] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
+  const [modalBackdrop, setModalBackdrop] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
-  const REDIRECT_URI = 'https://chatchoons.netlify.app';
-  // const REDIRECT_URI = 'http://localhost:3000/';
+  // const REDIRECT_URI = 'https://chatchoons.netlify.app';
+  const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
   const SCOPES = 'playlist-modify-private playlist-modify-public';
@@ -141,6 +143,12 @@ function App() {
     return () => clearInterval(interval);
   }, [loggedIn]);
 
+  useEffect(() => {
+    if (showHelp === true) setModalBackdrop(true);
+    if (showHelp === false) setModalBackdrop(false);
+  }, [showHelp]);
+
+
   const handleLogout = () => {
     // console.log('handleLogout!')
     localStorage.clear();
@@ -178,7 +186,12 @@ function App() {
   let spotifyToken = window.localStorage.getItem('spotifyToken');
 
   return (
-    <div className="App" style={{ backgroundColor: isMobile ? '#292B3E' : '#0A0A11' }}>
+    <div className="App" style={{
+      backgroundColor: !isMobile ? '#0A0A11' : showHelpTooltip ? '#010102' : '#292B3E',
+      transition: 'background-color 0.7s',
+    }}>
+      {modalBackdrop ? <div className="ModalBackdrop" /> : null}
+
       <div className="AppView" style={{
         backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
       }}>
@@ -209,13 +222,24 @@ function App() {
               setShowHelpTooltip={setShowHelpTooltip}
               showPrivacyPolicy={showPrivacyPolicy}
               privacyPolicy={privacyPolicy}
+              setModalBackdrop={setModalBackdrop}
+              showHelp={showHelp}
+              setShowHelp={setShowHelp}
             />
           </PrivateRoute>
           <Route path="/spotifylogin" >
             <SpotifyLoginScreen />
           </Route>
           <PrivateRoute path="/update">
-            <Update userPlaylistMetas={userPlaylistMetas} fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas} showHelpTooltip={showHelpTooltip} setShowHelpTooltip={setShowHelpTooltip} />
+            <Update
+              userPlaylistMetas={userPlaylistMetas}
+              fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+              showHelpTooltip={showHelpTooltip}
+              setShowHelpTooltip={setShowHelpTooltip}
+              setModalBackdrop={setModalBackdrop}
+              showHelp={showHelp}
+              setShowHelp={setShowHelp}
+            />
           </PrivateRoute>
           <PrivateRoute path="/stats">
             {userPlaylistMetas.length ?

@@ -25,6 +25,9 @@ function Home({
   setShowHelpTooltip,
   showPrivacyPolicy,
   privacyPolicy,
+  setModalBackdrop,
+  showHelp,
+  setShowHelp,
 }) {
   // console.log(userPlaylistMetas)
   const history = useHistory();
@@ -37,7 +40,6 @@ function Home({
   // console.log(spotifyToken);
 
   const [fontsLoaded, setFontsLoaded] = useState(false)
-  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     const fontsArr = ['Raleway-Regular', 'Raleway-Bold', 'Raleway-Thin', 'Raleway-SemiBold']
@@ -55,6 +57,10 @@ function Home({
     if (!privacyPolicy) setShowUserSettings(false);
   }, [privacyPolicy]);
 
+  useEffect(() => {
+    if (viewCreateModal === true) setModalBackdrop(true);
+    if (viewCreateModal === false) setModalBackdrop(false);
+  }, [viewCreateModal]);
 
   const newPlaylistSuccess = async (status) => {
     console.log(status, ' <--- status')

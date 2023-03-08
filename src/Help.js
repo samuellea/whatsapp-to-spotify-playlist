@@ -71,7 +71,7 @@ function Help({ location, setShowHelp }) {
         {content[location]}
         <button type="button" onClick={() => setShowHelp(false)}>Close</button>
       </div>
-      <div className="HelpBackdrop" />
+      {/* <div className="HelpBackdrop" /> */}
     </div>
   )
 };

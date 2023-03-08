@@ -17,7 +17,14 @@ import GoogleDocInterface from './GoogleDocInterface';
 // import { gapi } from 'gapi-script';
 import ChooseInputMenu from './ChooseInputMenu';
 
-function Update({ userPlaylistMetas, showHelpTooltip, setShowHelpTooltip }) {
+function Update({
+  userPlaylistMetas,
+  showHelpTooltip,
+  setShowHelpTooltip,
+  setModalBackdrop,
+  showHelp,
+  setShowHelp,
+}) {
   let history = useHistory();
   const params = new URLSearchParams(window.location.search);
 
@@ -41,8 +48,6 @@ function Update({ userPlaylistMetas, showHelpTooltip, setShowHelpTooltip }) {
   const [screen, setScreen] = useState('choose');
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
   // const [newPostsRawStored, setNewPostsRawStored] = useState([]);
-  const [showHelp, setShowHelp] = useState(false);
-
 
   const firebaseUserId = localStorage.getItem('firebaseUserId');
   const token = localStorage.getItem('token');
@@ -390,6 +395,7 @@ function Update({ userPlaylistMetas, showHelpTooltip, setShowHelpTooltip }) {
         <YoutubeConversionInterface
           convertYoutubePosts={convertYoutubePosts}
           handleConvertedPosts={handleConvertedPosts}
+          setModalBackdrop={setModalBackdrop}
         />
       )
     }

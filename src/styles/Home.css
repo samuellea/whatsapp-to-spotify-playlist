@@ -11,13 +11,13 @@
 
 .CreatePlaylistModalBackdrop {
   /* border: 1px solid red; */
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: black;
-  opacity: 0.67;
+  /* height: 100%; */
+  /* width: 100%; */
+  /* position: absolute; */
+  /* top: 0; */
+  /* left: 0; */
+  /* background-color: black; */
+  /* opacity: 0.67; */
 }
 
 .HomeContainer {

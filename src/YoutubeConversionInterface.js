@@ -7,7 +7,7 @@ import ConversionCard from './ConversionCard';
 import SpotifyLogo from './SpotifyLogo';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
 
-function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts }) {
+function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts, setModalBackdrop }) {
 
   const { youtubePosts, spotifyMatches } = convertYoutubePosts;
 
@@ -19,6 +19,13 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts 
       setSpotifyMatchesAfterReview(spotifyMatches);
     }
   }, [spotifyMatches]);
+
+  useEffect(() => {
+    if (changeModal.show === true) setModalBackdrop(true);
+    if (changeModal.show === false) setModalBackdrop(false);
+
+  }, [changeModal]);
+
 
   const handleChangeMatch = (spotifyMatch, index) => {
     setChangeModal({ show: true, matchToChange: spotifyMatch, index: index });
