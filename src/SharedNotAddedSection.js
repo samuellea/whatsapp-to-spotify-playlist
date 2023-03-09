@@ -29,14 +29,8 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
   };
 
   useEffect(() => {
-    console.log('COW')
     if (rawPostsLog) {
-      console.log('CHICKEN')
-      console.log(prevRawPostsLog)
-      console.log(rawPostsLog)
-
       // if (_.isEqual(prevRawPostsLog, rawPostsLog)) {
-      console.log('MOOSE')
       getLiveSpotifyPlaylistData(rawPostsLog);
       // }
     }
