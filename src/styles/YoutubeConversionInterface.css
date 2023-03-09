@@ -1,5 +1,5 @@
 .YoutubeConversionInterface {
-  border: 3px cyan dotted;
+  /* border: 3px cyan dotted; */
   height: 100%;
   max-height: 100%;
   width: 100%;
@@ -24,7 +24,7 @@
 }
 
 .YoutubeConversionsDisplayContainer {
-  border: 2px solid red;
+  /* border: 2px solid red; */
   background-color: #09090D;
   border-radius: 15px;
   padding: 5% 5%;
@@ -36,7 +36,7 @@
 }
 
 .YoutubeConversionsList {
-  border: 2px solid limegreen;
+  /* border: 2px solid limegreen; */
   overflow-x: hidden;
   min-height: 0;
   /* min-height: 100%; */
@@ -70,7 +70,7 @@
 
 .YoutubeConversionsList::-webkit-scrollbar-thumb {
   background-color: darkgrey;
-  outline: 1px solid slategrey;
+  /* outline: 1px solid slategrey; */
   height: 60px;
   border-radius: 20px;
 }

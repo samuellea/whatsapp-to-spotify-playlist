@@ -59,7 +59,7 @@ function InputTextInterface({ inputText, handleChangeTextArea, handleSubmitInput
             id="w3review"
             name="w3review"
             onChange={handleChangeTextArea}
-            disabled={inputText.length}
+            // disabled={inputText.length}
             value={inputText}
           >
           </textarea>
