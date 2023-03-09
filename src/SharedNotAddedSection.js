@@ -24,7 +24,7 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
   const getLiveSpotifyPlaylistData = async (playlistObjs) => {
     const spotifyPlaylists = playlistObjs.filter(e => isSpotifyPlaylist(e));
     const liveSpotifyPlaylistsData = await u.getSpotifyPlaylistsData(spotifyPlaylists, spotifyToken);
-    // console.log(liveSpotifyPlaylistsData)
+    console.log(liveSpotifyPlaylistsData, ' ⭐⭐⭐⭐⭐⭐⭐⭐')
     if (liveSpotifyPlaylistsData) setLivePlaylistData(liveSpotifyPlaylistsData);
   };
 
