@@ -28,7 +28,7 @@ export const spotifyPlaylistIDRegex = () => {
 }
 
 export const youtubeVideoIDRegex = () => {
-  const youtubeVideoIDPattern = /(?:v=|v\/|vi=|vi\/|youtu.be\/)[a-zA-Z0-9_-]{11}/i;
+  const youtubeVideoIDPattern = /(?:v=|v\/|vi=|vi\/|youtu.be\/)([a-zA-Z0-9_-]{11})/i;
   return youtubeVideoIDPattern;
 };
 
@@ -51,7 +51,7 @@ export const splitTextIntoIndividualMessages = (inputText) => {
   }, []);
   const individualMessagesBlanksRemoved = individualMessages.filter(e => e.length);
   const newlinesReplacedWithSpaces = individualMessagesBlanksRemoved.map(e => e.replaceAll('\n', ' '));
-  console.log(newlinesReplacedWithSpaces);
+  // console.log(newlinesReplacedWithSpaces);
   return newlinesReplacedWithSpaces;
 };
 
@@ -249,16 +249,11 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
     }
 
     if (spotiTrackAlbumPlaylistOrYTRegex().test(singleMessage)) { // if this msg contains one or more Spoti (track/album/pl) or YT links...
-      // console.log('!!!')
+
       // grab required data
-
-      // console.log(timeComponentsObj);
-
-      const poster = singleMessage.match(/(?:-).*?(?=:)/i)[0].trim();
-
+      const poster = singleMessage.match(/(?:-)(.*?)(?=:)/i)[1].trim();
       const spotiOrYTLinks = [...singleMessage.matchAll(spotiTrackAlbumPlaylistOrYTRegex())].map(arrEl => arrEl[0].trim());
-      console.log(spotiOrYTLinks);
-      // const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())];
+
       // iterate over all Spoti or YT links in this message, and compose a postObj for each link found
       spotiOrYTLinks.forEach(link => {
 
@@ -278,6 +273,7 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
         if (linkType === 'spotifyAlbum') linkID = link.match(spotifyAlbumIDRegex())[1].split('?')[0];
         if (linkType === 'spotifyPlaylist') linkID = link.match(spotifyPlaylistIDRegex())[1].split('?')[0];
         if (linkType === 'youtube') linkID = link.match(youtubeVideoIDRegex())[1];
+
         postCounter++;
         const postObj = {
           postId: postCounter,
@@ -293,7 +289,6 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
   };
 
   if (error12HrFound) { console.log('error12HrFound!'); return null; }
-  // console.log(allPostsCrude, ' <-- allPostsCrude')
   return allPostsCrude;
 };
 
@@ -783,7 +778,7 @@ export const setLoadedFonts = async (fontsArr, fontsLoadedSetter) => {
 export const getIdFromGoogleDriveURL = (url) => {
   const googleDriveRegex = /(?:drive.google.com\/file\/d\/)(.*)/i;
   const match = url.match(googleDriveRegex);
-  if (match) return match[0].split('/')[0];
+  if (match) return match[1].split('/')[0];
   return match;
 };
 
