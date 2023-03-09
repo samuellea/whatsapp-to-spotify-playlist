@@ -22,6 +22,8 @@
   /* max-width: 100%; */
   padding: 5% 2%;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   display: grid;
   grid-template: 85% 15% / 1fr;
 }

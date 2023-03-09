@@ -63,6 +63,8 @@
   font-family: "Raleway-Regular";
   height: 23px;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 
 .UsernameAndSignOut button {
@@ -161,6 +163,8 @@
   /* border: 3px solid red; */
   padding: 5%;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 
 .HomeCreatePlaylistModal {
@@ -171,6 +175,8 @@
   height: 250px;
   padding: 5%;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   background-color: #292B3E;
   border-radius: 15px;
   z-index: 888;
@@ -223,6 +229,8 @@
   justify-content: flex-end;
   align-items: center;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   position: relative;
   margin-bottom: 4%;
   transition: background-color 0.7s;
@@ -284,6 +292,8 @@
   justify-content: flex-end;
   /* padding: 5%; */
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   padding: 0% 5%;
   /* animation: tooltipFadeIn 1s; */
   transition-timing-function: ease-in-out;
@@ -378,6 +388,8 @@
   /* border: 1px solid red; */
   width: 100%;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   justify-content: space-between;
   align-items: center;
 }
@@ -411,6 +423,8 @@
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   padding: 5% 5%;
 }
 
@@ -422,6 +436,8 @@
   /* align-items: center; */
   padding: 4% 5% 8% 5%;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   text-align: left;
   line-height: 20px;
 }

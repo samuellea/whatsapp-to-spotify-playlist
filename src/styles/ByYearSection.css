@@ -26,6 +26,8 @@
   align-items: center;
   padding: 4%;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   width: 100%;
   border-radius: 15px 15px 0px 0px;
 }
@@ -106,6 +108,8 @@
   height: 225px;
   width: 100%;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   /* border: 2px solid green; */
   display: grid;
   grid-template: 80% 20% / 1fr;
@@ -222,8 +226,6 @@
   /* height: 100px; */
   background-color: #09090D;
   border-radius: 0px 0px 15px 15px;
-  /* padding: 0% 2%;
-  box-sizing: border-box; */
   justify-content: center;
   padding: 4% 0%;
 }

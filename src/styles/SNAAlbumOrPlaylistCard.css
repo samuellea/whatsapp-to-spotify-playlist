@@ -3,6 +3,8 @@
   /* border: 1px solid green; */
   padding: 10px 0px;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
@@ -61,6 +63,8 @@
   font-family: Arial;
   padding: 2px;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   background-color: #7316C6;
   height: 100%;
   width: 70px;
@@ -77,6 +81,8 @@
   flex: 1;
   padding: 0px 10px;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 
 .SNA-AOP-ThumbContainer {

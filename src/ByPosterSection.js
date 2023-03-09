@@ -192,6 +192,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
       const spotifyToken = window.localStorage.getItem('spotifyToken');
       return (
         <div className="ByPosterSectionContentWrapper Flex Column">
+
           <h4 className="SectionHeader">Contributors' tracks</h4>
           <div className="PosterOptionContainer Flex Row">
             <span>{posters[posterIndex]}</span>
@@ -250,17 +251,15 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
 
 
   return (
-    <div className="ByPosterSection Flex Column">
+    <div className="ByPosterSection">
       {toRender()}
-      <div className="ChangeModalSpotifyArtworkLink Flex Row">
+      {/* <div className="InvisiBox" style={{ height: '15px', border: '3px solid red' }} /> */}
+      <div className="ByPostersTapOpenSpotifyFooter Flex Row">
         <SpotifyIcon fill="white" height={22} width={22} />
         <span>Tap track to open in Spotify</span>
       </div>
     </div>
-
   )
 };
 
 export default ByPosterSection;
-
-

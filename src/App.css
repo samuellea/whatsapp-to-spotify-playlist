@@ -16,6 +16,8 @@
   justify-content: center;
   /* border: 2px solid orange; */
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   font-family: sans-serif, Helvetica, Arial, sans-serif;
 }
 

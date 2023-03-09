@@ -105,8 +105,6 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts,
       <div className="YTCI-ProvidedBySpotify Flex Row">
         <SpotifyIcon fill="white" height={30} width={30} />
         <span>Tap <div className="YTCI-Legend" /> to open track in Spotify</span>
-        {/* <SpotifyLogo /> */}
-
       </div>
 
       <div className="YoutubeConversionsDisplayContainer Flex Column">

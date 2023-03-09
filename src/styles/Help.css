@@ -5,10 +5,11 @@
   /* border: 3px solid yellow; */
   height: 100%;
   width: 100%;
-  box-sizing: border-box;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 
 /* .HelpBackdrop {
@@ -33,6 +34,8 @@
   z-index: 3;
   padding: 8% 5%;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   justify-content: space-between;
   font-family: "Raleway-ExtraLight";
   text-align: left;

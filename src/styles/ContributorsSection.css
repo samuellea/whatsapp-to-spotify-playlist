@@ -11,10 +11,6 @@
   position: relative;
   justify-content: space-between;
   align-items: flex-end;
-  /* padding-bottom: 4%;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box; */
 }
 
 .HeaderAndEditButton h4 {
@@ -75,6 +71,8 @@
   max-width: 170px;
   /* border: 1px solid red; */
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -388,6 +386,8 @@
   max-width: 85%;
   /* border: 1px solid red; */
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

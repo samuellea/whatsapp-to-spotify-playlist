@@ -417,6 +417,7 @@ function Update({
 
   return (
     <div className="Update Flex Column">
+
       <div className="UpdateGoBackContainer Flex Row" style={{
         backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
       }}>
