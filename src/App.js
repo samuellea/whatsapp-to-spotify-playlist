@@ -114,12 +114,12 @@ function App() {
   };
 
   const handleResize = () => {
-    return window.innerWidth < 720 ? setIsMobile(true) : setIsMobile(false);
+    return window.innerWidth < 820 ? setIsMobile(true) : setIsMobile(false);
   }
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-    window.innerWidth < 720 ? setIsMobile(true) : setIsMobile(false);
+    window.innerWidth < 820 ? setIsMobile(true) : setIsMobile(false);
     const token = localStorage.getItem('token');
     if (token) {
       setLoggedIn(true);
