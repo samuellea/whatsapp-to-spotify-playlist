@@ -32,20 +32,20 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   const [selectedResult, setSelectedResult] = useState(null);
   const [indexPlaying, setIndexPlaying] = useState(null);
   const [trackIsUnchanged, setTrackIsUnchanged] = useState(true);
-  const [fadedIn, setFadedIn] = useState(false);
+  // const [fadedIn, setFadedIn] = useState(false);
 
   // useEffect(() => {
   //   setSpotifyObj(matchToChange)
   //   // trigger a call to FB /playlists endpoint for this playlist obj - but where to store? Here, in update? Or up in home? Or even App?
   // }, [matchToChange]);
 
-  const fadeModalIn = async () => {
-    setFadedIn(true);
-  }
+  // const fadeModalIn = async () => {
+  //   setFadedIn(true);
+  // }
 
-  useEffect(() => {
-    fadeModalIn()
-  }, []);
+  // useEffect(() => {
+  //   fadeModalIn()
+  // }, []);
 
 
   useEffect(() => {
@@ -354,7 +354,9 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   }
 
   return (
-    <div className={`ChangeModal ChangeSearchLoading-${searchLoading} ChangeReplaceSuccess-${replaceSuccess}`} style={{ opacity: fadedIn ? 1 : 0 }}>
+    <div className={`ChangeModal ChangeSearchLoading-${searchLoading} ChangeReplaceSuccess-${replaceSuccess}`}
+    // style={{ opacity: fadedIn ? 1 : 0 }}
+    >
       {
         !replaceSuccess ?
           !searchLoading ?

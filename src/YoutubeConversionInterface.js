@@ -21,14 +21,15 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts,
     }
   }, [spotifyMatches]);
 
-  useEffect(() => {
-    if (changeModal.show === true) setModalBackdrop(true);
-    if (changeModal.show === false) setModalBackdrop(false);
+  // useEffect(() => {
+  //   if (changeModal.show === true) setModalBackdrop(true);
+  //   if (changeModal.show === false) setModalBackdrop(false);
 
-  }, [changeModal]);
+  // }, [changeModal]);
 
 
   const handleChangeMatch = (spotifyMatch, index) => {
+    setModalBackdrop(true);
     setChangeModal({ show: true, matchToChange: spotifyMatch, index: index });
   };
 
@@ -62,12 +63,14 @@ function YoutubeConversionInterface({ convertYoutubePosts, handleConvertedPosts,
 
   const handleCancelChange = () => {
     setChangeModal({ show: false, matchToChange: {}, index: null });
+    setModalBackdrop(false);
   }
 
   const handleCorrectASpotifyResult = (newSpotifyObj) => {
     const updatedSpotifyMatches = [...spotifyMatchesAfterReview];
     updatedSpotifyMatches[changeModal.index] = newSpotifyObj;
     setChangeModal({ show: false, matchToChange: {}, index: null });
+    setModalBackdrop(false);
     setSpotifyMatchesAfterReview(updatedSpotifyMatches);
   };
 
