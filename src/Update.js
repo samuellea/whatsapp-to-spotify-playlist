@@ -132,8 +132,11 @@ function Update({
   /* 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️  */
   const handleSubmitInputText = async () => {
     setInfoLoading(true);
-    const { data: spotifyPlaylistData, status } = await u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken);
-    if (status === 200) setSpotifyPlaylistInState(spotifyPlaylistData);
+    const spotifyPlaylistResponse = await u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken);
+    if (spotifyPlaylistResponse.status === 200) {
+      const { data: spotifyPlaylistData } = spotifyPlaylistResponse;
+      setSpotifyPlaylistInState(spotifyPlaylistData);
+    }
     // pull down the Firebase object for this playlist
     u.getFirebasePlaylist(spotifyPlaylistId, token).then(async ({ status, data }) => {
       if ([200, 201].includes(status)) {
@@ -421,7 +424,7 @@ function Update({
       <div className="UpdateGoBackContainer Flex Row" style={{
         backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
       }}>
-        <button className="Flex Row" type="button" onClick={handleGoBack} style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
+        <button className="UpdateGoBackButton Flex Row" type="button" onClick={handleGoBack} style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
           <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
           <span>Back</span>
         </button>

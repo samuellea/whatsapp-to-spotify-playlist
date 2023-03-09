@@ -148,16 +148,16 @@
 
 
 .HelpButton {
-  border: 1px solid white !important;
-  color: white !important;
-  width: 30px !important;
-  height: 30px !important;
-  border-radius: 150px !important;
-  font-size: 20px !important;
+  border: 1px solid white;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 150px;
+  font-size: 20px;
   background: none;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding-top: 2px;
   padding-left: 6.5px;
   transition: background-color 0.5s;

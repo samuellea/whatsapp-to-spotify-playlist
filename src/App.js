@@ -40,8 +40,8 @@ function App() {
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
-  const REDIRECT_URI = 'https://chatchoons.netlify.app';
-  // const REDIRECT_URI = 'http://localhost:3000/';
+  // const REDIRECT_URI = 'https://chatchoons.netlify.app';
+  const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
   const SCOPES = 'playlist-modify-private playlist-modify-public';
@@ -114,12 +114,12 @@ function App() {
   };
 
   const handleResize = () => {
-    return window.innerWidth < 820 ? setIsMobile(true) : setIsMobile(false);
+    return window.innerWidth < 720 ? setIsMobile(true) : setIsMobile(false);
   }
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-    window.innerWidth < 820 ? setIsMobile(true) : setIsMobile(false);
+    window.innerWidth < 720 ? setIsMobile(true) : setIsMobile(false);
     const token = localStorage.getItem('token');
     if (token) {
       setLoggedIn(true);
