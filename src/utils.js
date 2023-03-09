@@ -256,7 +256,7 @@ export const getYoutubeVideosAndClosestSpotifyMatches = async (youtubePosts, you
     // extract the YT video IDs from those, and create GET promises with them.
     const videoDataQueries = youtubePosts.map(youtubePost => {
 
-      const youtubeIDRegex = /(?<=v=|v\/|vi=|vi\/|youtu.be\/)[a-zA-Z0-9_-]{11}/g;
+      // const youtubeIDRegex = /(?<=v=|v\/|vi=|vi\/|youtu.be\/)[a-zA-Z0-9_-]{11}/g;
       // const videoID = youtubePost.linkURL.match(youtubeIDRegex).slice(0, 11);
       const videoID = youtubePost.linkID;
       const youtubeQuery = `${youtubeApiBaseURL1}${videoID}${youtubeApiBaseURL2}`;

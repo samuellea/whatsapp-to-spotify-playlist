@@ -62,8 +62,6 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
 
       if (inputString.length) {
         setInputBarError(false);
-        // const spotifyTrackIDRegex = /(?<=https:\/\/open.spotify.com\/track\/)(.*)/g;
-        // const spotifyLink = inputString.match(spotifyTrackIDRegex);
 
         const spotifyLink = inputString.match(h.spotifyTrackIDRegex());
 
@@ -84,29 +82,6 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
       setSearchInput(inputString);
     },
   }
-
-  // const handleInputBarChange = (e) => {
-  //   const inputString = e.target.value;
-  //   setInputBarErrorMsg('* Must be a valid Spotify track URL');
-
-  //   if (inputString.length) {
-  //     setInputBarError(false);
-  //     // const spotifyTrackIDRegex = /(?<=https:\/\/open.spotify.com\/track\/)(.*)/g;
-  //     // const spotifyLink = inputString.match(spotifyTrackIDRegex);
-
-  //     const spotifyLink = inputString.match(h.spotifyTrackIDRegex());
-
-  //     if (spotifyLink) {
-  //       const spotifyLinkNoFlags = spotifyLink[0].split('?')[0];
-  //       setValidTrackID(spotifyLinkNoFlags);
-  //     } else {
-  //       setInputBarError(true);
-  //     }
-  //   } else {
-  //     setValidTrackID('');
-  //     setInputBarError(false);
-  //   };
-  // };
 
   const inputBarSearchFuncs = {
     paste: async () => {

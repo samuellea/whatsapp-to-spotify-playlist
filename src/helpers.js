@@ -13,22 +13,22 @@ export const spotiOrYTRegex = () => {
 };
 
 export const spotifyTrackIDRegex = () => {
-  const spotifyTrackIDPattern = /(?<=open.spotify.com\/track\/)(.*)/g
+  const spotifyTrackIDPattern = /(?:open.spotify.com\/track\/)(.*)/i
   return spotifyTrackIDPattern;
 };
 
 export const spotifyAlbumIDRegex = () => {
-  const spotifyTrackIDPattern = /(?<=open.spotify.com\/album\/)(.*)/g
+  const spotifyTrackIDPattern = /(?:open.spotify.com\/album\/)(.*)/i
   return spotifyTrackIDPattern;
 }
 
 export const spotifyPlaylistIDRegex = () => {
-  const spotifyTrackIDPattern = /(?<=open.spotify.com\/playlist\/)(.*)/g
+  const spotifyTrackIDPattern = /(?:open.spotify.com\/playlist\/)(.*)/i
   return spotifyTrackIDPattern;
 }
 
 export const youtubeVideoIDRegex = () => {
-  const youtubeVideoIDPattern = /(?<=v=|v\/|vi=|vi\/|youtu.be\/)[a-zA-Z0-9_-]{11}/g;
+  const youtubeVideoIDPattern = /(?:v=|v\/|vi=|vi\/|youtu.be\/)[a-zA-Z0-9_-]{11}/i;
   return youtubeVideoIDPattern;
 };
 
@@ -254,9 +254,10 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
 
       // console.log(timeComponentsObj);
 
-      const poster = singleMessage.match(/(?<=-).*?(?=:)/g)[0].trim();
+      const poster = singleMessage.match(/(?:-).*?(?=:)/i)[0].trim();
 
       const spotiOrYTLinks = [...singleMessage.matchAll(spotiTrackAlbumPlaylistOrYTRegex())].map(arrEl => arrEl[0].trim());
+      console.log(spotiOrYTLinks);
       // const spotiOrYTLinks = [...singleMessage.matchAll(spotiOrYTRegex())];
       // iterate over all Spoti or YT links in this message, and compose a postObj for each link found
       spotiOrYTLinks.forEach(link => {
@@ -273,10 +274,10 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
         const linkType = decideLinkType(link);
         let linkID;
 
-        if (linkType === 'spotify') linkID = link.match(spotifyTrackIDRegex())[0].split('?')[0];
-        if (linkType === 'spotifyAlbum') linkID = link.match(spotifyAlbumIDRegex())[0].split('?')[0];
-        if (linkType === 'spotifyPlaylist') linkID = link.match(spotifyPlaylistIDRegex())[0].split('?')[0];
-        if (linkType === 'youtube') linkID = link.match(youtubeVideoIDRegex())[0];
+        if (linkType === 'spotify') linkID = link.match(spotifyTrackIDRegex())[1].split('?')[0];
+        if (linkType === 'spotifyAlbum') linkID = link.match(spotifyAlbumIDRegex())[1].split('?')[0];
+        if (linkType === 'spotifyPlaylist') linkID = link.match(spotifyPlaylistIDRegex())[1].split('?')[0];
+        if (linkType === 'youtube') linkID = link.match(youtubeVideoIDRegex())[1];
         postCounter++;
         const postObj = {
           postId: postCounter,
@@ -780,7 +781,7 @@ export const setLoadedFonts = async (fontsArr, fontsLoadedSetter) => {
 };
 
 export const getIdFromGoogleDriveURL = (url) => {
-  const googleDriveRegex = /(?<=drive.google.com\/file\/d\/)(.*)/g;
+  const googleDriveRegex = /(?:drive.google.com\/file\/d\/)(.*)/i;
   const match = url.match(googleDriveRegex);
   if (match) return match[0].split('/')[0];
   return match;
