@@ -35,10 +35,10 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
       console.log(prevRawPostsLog)
       console.log(rawPostsLog)
 
-      if (_.isEqual(prevRawPostsLog, rawPostsLog)) {
-        console.log('MOOSE')
-        getLiveSpotifyPlaylistData(rawPostsLog);
-      }
+      // if (_.isEqual(prevRawPostsLog, rawPostsLog)) {
+      console.log('MOOSE')
+      getLiveSpotifyPlaylistData(rawPostsLog);
+      // }
     }
   }, [rawPostsLog])
 
