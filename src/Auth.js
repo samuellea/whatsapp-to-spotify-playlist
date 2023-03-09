@@ -28,8 +28,8 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
     }
   }, []);
 
-  const [email, setEmail] = useState({});
-  const [password, setPassword] = useState({});
+  const [email, setEmail] = useState('samuel.lea@live.co.uk');
+  const [password, setPassword] = useState('klklkl0');
   const [loginPending, setLoginPending] = useState(false);
   const [error, setError] = useState(null);
 
