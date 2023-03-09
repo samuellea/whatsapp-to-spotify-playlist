@@ -423,7 +423,7 @@
   background-color: #7316C6;
 
   font-family: Arial;
-  font-size: 16px;
+  font-size: 16px !important;
   font-weight: 600;
   /* margin-top: 24px; */
   /* margin-top: 5%; */

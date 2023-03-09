@@ -51,12 +51,11 @@ const Preview = ({ index, url, setIndexPlaying, indexPlaying, playingThis, playi
       />
       {indexPlaying === index ? (
         <button onClick={handleClickPause}>
-          <FontAwesomeIcon icon={faPause} pointerEvents="none" />
-
+          <FontAwesomeIcon icon={faPause} pointerEvents="none" id="ContrPreviewPauseSVG" />
         </button>
       ) : (
-        <button onClick={handleClickPlay} style={{ paddingLeft: '10px' }}>
-          <FontAwesomeIcon icon={faPlay} pointerEvents="none" />
+        <button onClick={handleClickPlay}>
+          <FontAwesomeIcon icon={faPlay} pointerEvents="none" id="ContrPreviewPlaySVG" />
         </button>
       )}
     </div>
