@@ -13,7 +13,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   z-index: 999;
-  transition: opacity 0.25s;
+  transition: opacity 0.2s;
 }
 
 .ChangeSearchLoading-false {

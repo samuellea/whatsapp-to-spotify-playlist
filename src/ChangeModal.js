@@ -74,9 +74,11 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
         setInputBarError(false);
 
         const spotifyLink = inputString.match(h.spotifyTrackIDRegex());
+        console.log(spotifyLink);
 
         if (spotifyLink) {
-          const spotifyLinkNoFlags = spotifyLink[0].split('?')[0];
+          const spotifyLinkNoFlags = spotifyLink[1].split('?')[0]; /////// !!!!!!!!! [1] was [0]
+          console.log(spotifyLinkNoFlags)
           setValidTrackID(spotifyLinkNoFlags);
         } else {
           setInputBarError(true);
@@ -173,13 +175,13 @@ function ChangeModal({ matchToChange, handleCancelChange, handleCorrectASpotifyR
   };
 
   const handleSubmit = async () => {
-    const confirmMessage = matchToChange.artists && matchToChange.title ? `Replace ${matchToChange.artists.join(',') || 'null'} - ${matchToChange.title} with ${spotifyObj.artists.join(',')} - ${spotifyObj.title}?` : `Add ${spotifyObj.artists.join(',')} - ${spotifyObj.title}?`;
-    let r = window.confirm(confirmMessage);
-    if (r == true) {
-      setReplaceSuccess(true);
-      await mockSleep(1000);
-      handleCorrectASpotifyResult(spotifyObj);
-    }
+    // const confirmMessage = matchToChange.artists && matchToChange.title ? `Replace ${matchToChange.artists.join(',') || 'null'} - ${matchToChange.title} with ${spotifyObj.artists.join(',')} - ${spotifyObj.title}?` : `Add ${spotifyObj.artists.join(',')} - ${spotifyObj.title}?`;
+    // let r = window.confirm(confirmMessage);
+    // if (r == true) {
+    setReplaceSuccess(true);
+    await mockSleep(1000);
+    handleCorrectASpotifyResult(spotifyObj);
+    // }
   };
 
   // const trackIsUnchanged = () => {
