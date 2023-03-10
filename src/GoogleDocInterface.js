@@ -46,9 +46,16 @@ function GoogleDocInterface({
         setGetFileError(true);
       };
     };
-
+    console.log('google before -global google-:')
+    if (google) console.log(google);
+    if (!google) console.log('!google')
     //tokenClient
-    setTokenClient(google.accounts.oauth2.initTokenClient({
+    /* global google */
+    console.log('google after -global google-:')
+    if (google) console.log(google);
+    if (!google) console.log('!google')
+    console.log(google, ' <--- google after -global google-')
+    setTokenClient(google.accounts.oauth2.initTokenClient({ // iOS ERROR IS HERE
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       scope: SCOPES,
       callback: async (tokenResponse) => {
