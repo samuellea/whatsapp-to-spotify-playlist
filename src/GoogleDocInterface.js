@@ -52,7 +52,7 @@ function GoogleDocInterface({
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       scope: SCOPES,
       callback: async (tokenResponse) => {
-        console.log(tokenResponse.access_token);
+        console.log(tokenResponse.access_token, ' <--- tokenResponse.access_token');
         // console.log(googleFileURL)
         // We now have access to a live token to use for ANY google API (based on our SCOPES)
         if (tokenResponse && tokenResponse.access_token) {
@@ -73,9 +73,9 @@ function GoogleDocInterface({
   }
 
   const handleSubmitGoogleFileURL = async () => {
-    console.log(googleFileURL)
+    console.log(googleFileURL, ' <--- googleFileURL')
     const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
-    console.log(googleDriveFileID)
+    console.log(googleDriveFileID, ' <--- googleDriveFileID')
     if (!googleDriveFileID) return setValidationError(true);
     // setLoading(true);
     setInfoLoading(true);
