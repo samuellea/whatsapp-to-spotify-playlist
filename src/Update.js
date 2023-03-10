@@ -365,15 +365,7 @@ function Update({
 
     if (screen === 'google') {
       return (
-        <GoogleDocInterface
-          inputText={inputText}
-          validInputText={validInputText}
-          handleChangeGoogleDriveFileTextArea={handleChangeGoogleDriveFileTextArea}
-          handleSubmitInputText={handleSubmitInputText}
-          handleTextAreaClear={handleTextAreaClear}
-          infoLoading={infoLoading}
-          setInfoLoading={setInfoLoading}
-        />
+        <h1>Howya Google</h1>
       )
     }
 
