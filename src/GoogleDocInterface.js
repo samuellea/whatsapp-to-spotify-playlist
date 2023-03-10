@@ -46,15 +46,13 @@ function GoogleDocInterface({
         setGetFileError(true);
       };
     };
-    console.log('google before -global google-:')
-    if (google) console.log(google);
-    if (!google) console.log('!google')
+
     //tokenClient
-    /* global google */
-    console.log('google after -global google-:')
-    if (google) console.log(google);
-    if (!google) console.log('!google')
-    console.log(google, ' <--- google after -global google-')
+
+    // global google <-- used to be forwardslash asterisk global google asterisk forwardslash
+    const google = window.google;
+    console.log(google, ' <--- const google = window.google')
+
     setTokenClient(google.accounts.oauth2.initTokenClient({ // iOS ERROR IS HERE
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       scope: SCOPES,
