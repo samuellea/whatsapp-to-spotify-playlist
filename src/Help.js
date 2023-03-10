@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faArrowsRotate, faSearch, faClose, faRotateLeft, faTrashAlt, faChartColumn, faClock, faClockFour, faClockRotateLeft, faHourglass } from "@fortawesome/free-solid-svg-icons";
 
-function Help({ location, setShowHelp }) {
+function Help({ location, handleHelp }) {
   const content = {
     'home': (
       <div className="HelpHomeContent Flex Column">
@@ -69,7 +69,7 @@ function Help({ location, setShowHelp }) {
     <div className="Help Flex Column">
       <div className="HelpTextDisplay Flex Column">
         {content[location]}
-        <button type="button" onClick={() => setShowHelp(false)}>Close</button>
+        <button type="button" onClick={() => handleHelp(false)}>Close</button>
       </div>
       {/* <div className="HelpBackdrop" /> */}
     </div>

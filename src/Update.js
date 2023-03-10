@@ -24,6 +24,7 @@ function Update({
   setModalBackdrop,
   showHelp,
   setShowHelp,
+  handleHelp,
 }) {
   let history = useHistory();
   const params = new URLSearchParams(window.location.search);
@@ -439,7 +440,7 @@ function Update({
       <div className="InfoArea Flex Column" style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
         {screenToRender()}
       </div>
-      {showHelp ? <Help location={screen} setShowHelp={setShowHelp} /> : null}
+      {showHelp ? <Help location={screen} handleHelp={handleHelp} /> : null}
       <Toaster />
     </div>
   )

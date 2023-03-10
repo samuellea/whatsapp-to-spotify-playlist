@@ -28,6 +28,7 @@ function Home({
   setModalBackdrop,
   showHelp,
   setShowHelp,
+  handleHelp,
 }) {
   // console.log(userPlaylistMetas)
   const history = useHistory();
@@ -156,6 +157,9 @@ function Home({
     }
   };
 
+
+
+
   return (
 
     <div className="HomeScreenLoggedInSpotify Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
@@ -170,7 +174,7 @@ function Home({
           }} style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
             <FontAwesomeIcon icon={faCog} pointerEvents="none" />
           </button>
-          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)}
+          <button className="HelpButton" type="button" onClick={() => handleHelp(true)}
             style={{
               backgroundColor: showHelpTooltip ? '#40435d' : '#2a2b3e',
             }}>?</button>
@@ -274,7 +278,7 @@ function Home({
             </div>
           </>
         }
-        {showHelp ? <Help location="home" setShowHelp={setShowHelp} /> : null}
+        {showHelp ? <Help location="home" handleHelp={handleHelp} /> : null}
 
       </div>
 

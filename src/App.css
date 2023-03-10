@@ -152,14 +152,14 @@
   color: white;
   width: 30px;
   height: 30px;
+  padding: 0;
+  margin: 0;
   border-radius: 150px;
   font-size: 20px;
   background: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 2px;
-  padding-left: 6.5px;
   transition: background-color 0.5s;
   animation: margin-bottom 0.25s;
 }

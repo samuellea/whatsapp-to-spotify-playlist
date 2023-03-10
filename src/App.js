@@ -143,11 +143,21 @@ function App() {
     return () => clearInterval(interval);
   }, [loggedIn]);
 
-  useEffect(() => {
-    if (showHelp === true) setModalBackdrop(true);
-    if (showHelp === false) setModalBackdrop(false);
-  }, [showHelp]);
+  // useEffect(() => {
+  //   if (showHelp === true) setModalBackdrop(true);
+  //   if (showHelp === false) setModalBackdrop(false);
+  // }, [showHelp]);
 
+  const handleHelp = (bool) => {
+    if (bool === true) {
+      setModalBackdrop(true);
+      setShowHelp(true);
+    };
+    if (bool === false) {
+      setModalBackdrop(false);
+      setShowHelp(false);
+    };
+  };
 
   const handleLogout = () => {
     // console.log('handleLogout!')
@@ -225,6 +235,7 @@ function App() {
               setModalBackdrop={setModalBackdrop}
               showHelp={showHelp}
               setShowHelp={setShowHelp}
+              handleHelp={handleHelp}
             />
           </PrivateRoute>
           <Route path="/spotifylogin" >
@@ -239,6 +250,7 @@ function App() {
               setModalBackdrop={setModalBackdrop}
               showHelp={showHelp}
               setShowHelp={setShowHelp}
+              handleHelp={handleHelp}
             />
           </PrivateRoute>
           <PrivateRoute path="/stats">
