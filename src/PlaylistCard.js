@@ -18,7 +18,7 @@ function PlaylistCard({ metaObj, firebaseUserId, token, deletePlaylistSuccess })
   };
 
   const handleDelete = async () => {
-    let r = window.confirm('Delete this playlist from the app? NB - the playlist will remain on Spotify. Delete it manually there too if desired.');
+    let r = window.confirm('Delete this playlist from the app? The playlist will remain on Spotify. Delete it manually there also as desired');
     if (r == true) {
       const deleteFirebasePlaylistStatus = await u.deleteFirebasePlaylist(metaObj.firebasePlaylistId, metaObj.metaId, token);
       return deletePlaylistSuccess(deleteFirebasePlaylistStatus);

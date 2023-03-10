@@ -148,7 +148,6 @@
   border: none;
   background-color: #7316C6;
   font-family: "Raleway-Bold";
-  font-size: 16px;
   font-weight: 800;
   margin-top: 5%;
   color: white;
@@ -176,11 +175,13 @@
 }
 
 .ResultsSelectCancelButtons button {
-  width: 47.5% !important
+  width: 47.5% !important;
+  font-size: 16px;
 }
 
 #ChangeModalSelect {
   background-color: #66b06e !important;
+  font-size: 16px;
 }
 
 #ChangeModalSelect:disabled {

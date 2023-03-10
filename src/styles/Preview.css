@@ -22,7 +22,7 @@
   border-radius: 150px;
   border: 1px solid white;
   background: none;
-  font-size: 20px;
+  /* font-size: 20px; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,13 +37,16 @@
   /* border: 1px solid red; */
   /* height: 100%; */
   width: 100%;
+  font-size: 20px;
   /* padding-top: 1px; */
   /* padding-left: 5px; */
+  /* padding: 0 !important; */
 }
 
 #ContrPreviewPlaySVG {
   /* border: 1px solid green; */
   padding-left: 2px;
+  font-size: 20px;
 }
 
 #ContrPreviewPauseSVG {

@@ -77,6 +77,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
     setPageLoading(true);
     u.getFirebasePlaylist(spotifyPlaylistId, token).then((firebasePlaylistRes) => {
       u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(async (spotifyRes) => {
+        console.log(spotifyRes, ' <--- spotifyRes')
         setSpotifyPlaylistData({ ...spotifyPlaylistData, artwork: spotifyRes.data.images[0].url })
         const { data } = firebasePlaylistRes;
         // console.log(data, ' <<<<<<<<<<<')
@@ -195,8 +196,8 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       appToast('Sharing failed. Please try again later', { duration: 1500 });
     }
     const { name } = exportSuccessResponse.data;
-    // const sharingUrl = `https://chatchoons.netlify.app/publicStats/${name}`;
-    const sharingUrl = `http://localhost:3000/publicStats/${name}`;
+    const sharingUrl = `https://chatchoons.netlify.app/publicStats/${name}`;
+    // const sharingUrl = `http://localhost:3000/publicStats/${name}`;
     // console.log(sharingUrl);
     setSharingLink(sharingUrl);
   }

@@ -67,7 +67,7 @@ function ByPosterSection({ posters, posts, lookup, playlistMetaInAppState, isPub
     // if (prevIndex !== posterIndex) { }
   }, [posterIndex, posters]);
 
-  const handleOptionClick = (e) => {
+  const handleOptionClick = async (e) => {
     setThumbsReady(false)
     const atStart = posterIndex === 0;
     const atEnd = posterIndex === posters.length - 1;

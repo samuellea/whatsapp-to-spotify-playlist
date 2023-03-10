@@ -55,7 +55,7 @@ function Home({
   const [deleteUserLoading, setDeleteUserLoading] = useState(false);
 
   useEffect(() => {
-    if (!privacyPolicy) {
+    if (privacyPolicy) {
       setModalBackdrop(false);
       setShowUserSettings(false);
     };

@@ -98,8 +98,8 @@ function ConversionCard({
           <button className={`CC-Side-Top2-${include}`} onClick={() => handleChangeMatch(spotifyMatch, index)} disabled={!include}><FontAwesomeIcon icon={faSearch} pointerEvents="none" /></button>
           <button className={`CC-Side-Exclude-${include}`} onClick={() => include ? handleExcludeMatch(index) : handleIncludeMatch(index)}>
             {include ?
-              <FontAwesomeIcon icon={faClose} pointerEvents="none" /> :
-              <FontAwesomeIcon icon={faRotateLeft} pointerEvents="none" />
+              <FontAwesomeIcon icon={faClose} pointerEvents="none" style={{ height: '20px', width: '20px' }} /> :
+              <FontAwesomeIcon icon={faRotateLeft} pointerEvents="none" style={{ height: '16px', width: '16px' }} />
             }
           </button>
         </div>

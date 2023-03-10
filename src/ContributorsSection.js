@@ -181,7 +181,7 @@ function ContributorsSection({ tallied, lookupInState, setLookupInState }) {
         <div className="EditOptions Flex Column">
           <div className="RenameButtonsRow">
             <button type="button" onClick={handleRenameStart}>Rename</button>
-            <button type="button" onClick={handleRevertStart} disabled={revertDisabled}>Revert All Names / Groups</button>
+            <button type="button" onClick={handleRevertStart} disabled={revertDisabled}>Revert All</button>
           </div>
           <div className="GroupButtonsRow">
             <button type="button" onClick={handleGroupStart}>Group</button>

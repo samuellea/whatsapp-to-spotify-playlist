@@ -28,8 +28,8 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
     }
   }, []);
 
-  const [email, setEmail] = useState('samuel.lea@live.co.uk');
-  const [password, setPassword] = useState('klklkl0');
+  const [email, setEmail] = useState('samtest1@gmail.com');
+  const [password, setPassword] = useState('klklkl00');
   const [loginPending, setLoginPending] = useState(false);
   const [error, setError] = useState(null);
 
@@ -66,6 +66,16 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
     setError(null);
     performLogIn();
   };
+
+  /////////////////////////
+  const autoLogin = async () => {
+    await h.mockSleep(1000);
+    handleClick();
+  }
+  useEffect(() => {
+    autoLogin();
+  }, []);
+  //////////////////////////
 
   let spotifyToken = window.localStorage.getItem('spotifyToken');
   if (loggedIn && !spotifyToken) {
@@ -118,7 +128,7 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
           Could not login - please try again</span> : null}
       </div>
 
-      {/* <h2>{userLocale}</h2> */}
+      <h2>{userLocale}</h2>
 
       <a href="https://developer.spotify.com/" target="_blank" id="SpotifyCreditFooterLink">
         <div className="SpotifyCreditFooter Flex Row">

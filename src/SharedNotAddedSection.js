@@ -202,7 +202,7 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
         : null}
       {!isPublicStatsPage ?
         <div className="ShareLinkBannerAndButton Flex Column">
-          {sharingLink && !linkCopied ? <span className="SharingLinkGeneratedBanner">Sharing link generated!</span> : null}
+          {sharingLink ? <span className="SharingLinkGeneratedBanner">{!linkCopied ? 'Sharing link generated!' : 'Link copied!'}</span> : null}
           {sharingLink ?
             <CopyToClipboard text={sharingLink}
               onCopy={handleCopy}>
