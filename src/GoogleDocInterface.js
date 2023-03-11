@@ -25,7 +25,7 @@ function GoogleDocInterface({
     onSuccess: codeResponse => console.log(codeResponse),
     flow: 'auth-code',
     ux_mode: 'redirect',
-    redirect_uri: 'https://chatchoons.netlify.app/update',
+    redirect_uri: 'https://chatchoons.netlify.app',
     // redirect_uri: 'http://localhost:3000',
   });
 
