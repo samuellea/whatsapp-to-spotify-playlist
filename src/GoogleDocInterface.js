@@ -22,11 +22,6 @@ function GoogleDocInterface({
   setGTokenInState,
 }) {
 
-  useEffect(() => {
-    console.log('GoogleDocInterface init render!')
-  }, [])
-
-  const [tokenClient, setTokenClient] = useState({});
   const [googleFileURL, setGoogleFileURL] = useState('');
   const [validationError, setValidationError] = useState(false);
   const [getFileError, setGetFileError] = useState(false);
@@ -86,7 +81,8 @@ function GoogleDocInterface({
     onError: () => setGetFileError(true),
     onNonOAuthError: () => setGetFileError(true),
     ux_mode: 'redirect',
-    redirect_uri: 'http://localhost:3000',
+    // redirect_uri: 'http://localhost:3000',
+    redirect_uri: 'https://chatchoons.netlify.app',
     scope: 'https://www.googleapis.com/auth/drive.file',
   });
 
