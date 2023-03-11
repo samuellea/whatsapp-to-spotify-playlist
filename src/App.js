@@ -40,8 +40,8 @@ function App() {
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
-  const REDIRECT_URI = 'https://chatchoons.netlify.app';
-  // const REDIRECT_URI = 'http://localhost:3000/';
+  // const REDIRECT_URI = 'https://chatchoons.netlify.app';
+  const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
   const SCOPES = 'playlist-modify-private playlist-modify-public';
@@ -195,11 +195,10 @@ function App() {
 
   let spotifyToken = window.localStorage.getItem('spotifyToken');
 
-  const clientID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   return (
-    <GoogleOAuthProvider clientId={clientID}>
-
+    <GoogleOAuthProvider clientId={googleClientId}>
       <div className="App" style={{
         backgroundColor: !isMobile ? '#0A0A11' : showHelpTooltip ? '#010102' : '#292B3E',
         transition: 'background-color 0.7s',

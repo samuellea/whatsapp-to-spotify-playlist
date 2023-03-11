@@ -50,6 +50,8 @@ function Update({
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
   // const [newPostsRawStored, setNewPostsRawStored] = useState([]);
 
+  const [gTokenInState, setGTokenInState] = useState(null)
+
   const firebaseUserId = localStorage.getItem('firebaseUserId');
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
@@ -64,6 +66,7 @@ function Update({
   };
 
   useEffect(() => {
+    console.log('Update init render!')
     helpHintAnimation();
     /*
     const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -373,6 +376,8 @@ function Update({
           handleTextAreaClear={handleTextAreaClear}
           infoLoading={infoLoading}
           setInfoLoading={setInfoLoading}
+          gTokenInState={gTokenInState}
+          setGTokenInState={setGTokenInState}
         />
       )
     }
