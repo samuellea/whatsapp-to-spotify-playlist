@@ -82,7 +82,7 @@ function GoogleDocInterface({
     onNonOAuthError: () => setGetFileError(true),
     ux_mode: 'redirect',
     // redirect_uri: 'http://localhost:3000',
-    redirect_uri: 'https://chatchoons.netlify.app',
+    redirect_uri: 'https://chatchoons.netlify.app/update',
     scope: 'https://www.googleapis.com/auth/drive.file',
   });
 
