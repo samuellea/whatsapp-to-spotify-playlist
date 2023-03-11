@@ -20,11 +20,13 @@ function GoogleDocInterface({
   setInfoLoading,
 }) {
 
-  const clientID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   const login = useGoogleLogin({
     onSuccess: codeResponse => console.log(codeResponse),
     flow: 'auth-code',
+    ux_mode: 'redirect',
+    redirect_uri: 'https://chatchoons.netlify.app',
+    // redirect_uri: 'http://localhost:3000',
   });
 
   return (
