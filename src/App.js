@@ -17,7 +17,7 @@ import PublicStats from './PublicStats';
 import SpotifyIconGreen from './Spotify_Icon_RGB_Green.png';
 import SpotifyLogoWhitePNG from './Spotify_Logo_RGB_White.png';
 import PrivacyPolicy from './PrivacyPolicy';
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
 
@@ -195,82 +195,87 @@ function App() {
 
   let spotifyToken = window.localStorage.getItem('spotifyToken');
 
-  return (
-    <div className="App" style={{
-      backgroundColor: !isMobile ? '#0A0A11' : showHelpTooltip ? '#010102' : '#292B3E',
-      transition: 'background-color 0.7s',
-    }}>
-      {modalBackdrop ? <div className="ModalBackdrop" /> : null}
+  const clientID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
-      <div className="AppView" style={{
-        backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
+  return (
+    <GoogleOAuthProvider clientId={clientID}>
+
+      <div className="App" style={{
+        backgroundColor: !isMobile ? '#0A0A11' : showHelpTooltip ? '#010102' : '#292B3E',
+        transition: 'background-color 0.7s',
       }}>
-        {isMobile ? null : <span id="MobileWarning">⚠ This webapp is best viewed on mobile</span>}
-        <Router>
-          <Route path="/publicStats/:publicStatsId">
-            <PublicStats authLink={authLink} handleLogout={handleLogout} />
-          </Route>
-          <Route path="/login">
-            {!loggedIn ?
-              <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} showPrivacyPolicy={showPrivacyPolicy} />
-              : !spotifyToken ? <Redirect to='/spotifylogin' /> : <Redirect to='/' />
-            }
-          </Route>
-          <Route path="/signup">
-            <Signup updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} appToast={toast} showPrivacyPolicy={showPrivacyPolicy} />
-          </Route>
-          <PrivateRoute exact path="/" publicStatsHashNonAuth={publicStatsHashNonAuth}>
-            <Home
-              loggedIn={loggedIn}
-              handleLogout={handleLogout}
-              userPlaylistMetas={userPlaylistMetas}
-              fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
-              userPlaylistsLoading={userPlaylistsLoading}
-              appToast={toast}
-              spotifyUserDisplayName={spotifyUserDisplayName}
-              showHelpTooltip={showHelpTooltip}
-              setShowHelpTooltip={setShowHelpTooltip}
-              showPrivacyPolicy={showPrivacyPolicy}
-              privacyPolicy={privacyPolicy}
-              setModalBackdrop={setModalBackdrop}
-              showHelp={showHelp}
-              setShowHelp={setShowHelp}
-              handleHelp={handleHelp}
-            />
-          </PrivateRoute>
-          <Route path="/spotifylogin" >
-            <SpotifyLoginScreen />
-          </Route>
-          <PrivateRoute path="/update">
-            <Update
-              userPlaylistMetas={userPlaylistMetas}
-              fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
-              showHelpTooltip={showHelpTooltip}
-              setShowHelpTooltip={setShowHelpTooltip}
-              setModalBackdrop={setModalBackdrop}
-              showHelp={showHelp}
-              setShowHelp={setShowHelp}
-              handleHelp={handleHelp}
-            />
-          </PrivateRoute>
-          <PrivateRoute path="/stats">
-            {userPlaylistMetas.length ?
-              <Stats
+        {modalBackdrop ? <div className="ModalBackdrop" /> : null}
+
+        <div className="AppView" style={{
+          backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
+        }}>
+          {isMobile ? null : <span id="MobileWarning">⚠ This webapp is best viewed on mobile</span>}
+          <Router>
+            <Route path="/publicStats/:publicStatsId">
+              <PublicStats authLink={authLink} handleLogout={handleLogout} />
+            </Route>
+            <Route path="/login">
+              {!loggedIn ?
+                <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} showPrivacyPolicy={showPrivacyPolicy} />
+                : !spotifyToken ? <Redirect to='/spotifylogin' /> : <Redirect to='/' />
+              }
+            </Route>
+            <Route path="/signup">
+              <Signup updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} appToast={toast} showPrivacyPolicy={showPrivacyPolicy} />
+            </Route>
+            <PrivateRoute exact path="/" publicStatsHashNonAuth={publicStatsHashNonAuth}>
+              <Home
+                loggedIn={loggedIn}
+                handleLogout={handleLogout}
                 userPlaylistMetas={userPlaylistMetas}
                 fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
                 userPlaylistsLoading={userPlaylistsLoading}
                 appToast={toast}
+                spotifyUserDisplayName={spotifyUserDisplayName}
+                showHelpTooltip={showHelpTooltip}
+                setShowHelpTooltip={setShowHelpTooltip}
+                showPrivacyPolicy={showPrivacyPolicy}
+                privacyPolicy={privacyPolicy}
+                setModalBackdrop={setModalBackdrop}
+                showHelp={showHelp}
+                setShowHelp={setShowHelp}
+                handleHelp={handleHelp}
               />
-              : null}
-          </PrivateRoute>
-          <Toaster />
+            </PrivateRoute>
+            <Route path="/spotifylogin" >
+              <SpotifyLoginScreen />
+            </Route>
+            <PrivateRoute path="/update">
+              <Update
+                userPlaylistMetas={userPlaylistMetas}
+                fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+                showHelpTooltip={showHelpTooltip}
+                setShowHelpTooltip={setShowHelpTooltip}
+                setModalBackdrop={setModalBackdrop}
+                showHelp={showHelp}
+                setShowHelp={setShowHelp}
+                handleHelp={handleHelp}
+              />
+            </PrivateRoute>
+            <PrivateRoute path="/stats">
+              {userPlaylistMetas.length ?
+                <Stats
+                  userPlaylistMetas={userPlaylistMetas}
+                  fetchAndSetFirebasePlaylistMetas={fetchAndSetFirebasePlaylistMetas}
+                  userPlaylistsLoading={userPlaylistsLoading}
+                  appToast={toast}
+                />
+                : null}
+            </PrivateRoute>
+            <Toaster />
 
-        </Router>
-        {privacyPolicy ?
-          <PrivacyPolicy showPrivacyPolicy={showPrivacyPolicy} />
-          : null}
-      </div >
-    </div>
+          </Router>
+          {privacyPolicy ?
+            <PrivacyPolicy showPrivacyPolicy={showPrivacyPolicy} />
+            : null}
+        </div >
+      </div>
+    </GoogleOAuthProvider>
   );
 }
 
