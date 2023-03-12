@@ -18,6 +18,7 @@ import SpotifyIconGreen from './Spotify_Icon_RGB_Green.png';
 import SpotifyLogoWhitePNG from './Spotify_Logo_RGB_White.png';
 import PrivacyPolicy from './PrivacyPolicy';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 
 function App() {
 
@@ -197,9 +198,55 @@ function App() {
 
   const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
+  const GoogleLoginTest = () => {
+    const [googleLoginSuccess, setGoogleLoginSuccess] = useState(false);
+    const [googleLoginError, setGoogleLoginError] = useState(false);
+
+    const login = useGoogleLogin({
+      ux_mode: 'redirect',
+      redirect_uri: 'https://chatchoons.netlify.app/',
+      scope: 'https://www.googleapis.com/auth/drive.file',
+      onSuccess: () => setGoogleLoginSuccess(true),
+      onError: () => setGoogleLoginError(true),
+      onNonOAuthError: () => setGoogleLoginError(true),
+    });
+
+    // redirect_uri: 'http://localhost:3000',
+
+    const logout = () => {
+      setGoogleLoginError(false);
+      setGoogleLoginSuccess(false);
+    };
+
+    return (
+      <div className="GoogleLoginTest">
+        {!googleLoginSuccess ?
+          !googleLoginError ?
+            <button onClick={() => login()}>
+              {'Sign in with Google 🚀 '}
+            </button>
+            : <h1>Error logging in... 🚫</h1>
+          :
+          <>
+            <h1>Logged in ✅</h1>
+            <button onClick={() => logout()}>
+              {'Sign out'}
+            </button>
+          </>
+        }
+      </div>
+    )
+  }
+
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
-      <div className="App" style={{
+      <Router>
+        <GoogleLoginTest />
+        <Route exact path="/">
+        </Route>
+      </Router>
+
+      {/* <div className="App" style={{
         backgroundColor: !isMobile ? '#0A0A11' : showHelpTooltip ? '#010102' : '#292B3E',
         transition: 'background-color 0.7s',
       }}>
@@ -273,7 +320,7 @@ function App() {
             <PrivacyPolicy showPrivacyPolicy={showPrivacyPolicy} />
             : null}
         </div >
-      </div>
+      </div> */}
     </GoogleOAuthProvider>
   );
 }
