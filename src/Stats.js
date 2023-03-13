@@ -293,7 +293,7 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
             <div className="CopyrightFooter" style={{ borderRadius: '0px 0px 15px 15px', margin: '5% 0%' }}>
               <span> © Sam Lea 2023</span>
               <span>|</span>
-              <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
+              <span>Email the dev <a href="mailto:samuel.edward.lea@gmail.com">here</a></span>
             </div>
           </ div>
       }
