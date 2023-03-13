@@ -128,7 +128,7 @@ function GoogleDocInterface({
   const inputTextInfo = () => {
     if (!validationError) return (
       <>
-        <span>Paste a Google Drive .txt file URL here</span>
+        <span>Paste a Google Drive .txt file URL here 🎨</span>
         <span id="ExampleLink">eg. 'https://drive.google.com/file/d/1KRfX0fSl...' </span>
       </>
     )
