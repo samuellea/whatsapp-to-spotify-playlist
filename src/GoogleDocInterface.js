@@ -16,15 +16,43 @@ function GoogleDocInterface({
   handleChangeGoogleDriveFileTextArea,
   handleSubmitInputText,
   handleTextAreaClear,
-  infoLoading,
-  setInfoLoading,
   gTokenInState,
   setGTokenInState,
+  infoLoading,
 }) {
+
+  console.log(validInputText, ' <- validInputText')
 
   const [googleFileURL, setGoogleFileURL] = useState('');
   const [validationError, setValidationError] = useState(false);
   const [getFileError, setGetFileError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // const [localValidInputText, setLocalValidInputText] = useState(null);
+
+  // useEffect(() => {
+  //   if (validInputText !== null && !infoLoading) {
+  //     console.log('validInputText: ' + validInputText)
+  //     if (validInputText === true) {
+  //       console.log('TRUE!')
+  //       setLocalValidInputText(true)
+  //     };
+  //     if (validInputText === false) {
+  //       console.log('FALSE!')
+  //       setLocalValidInputText(false)
+  //     };
+  //   }
+  // }, [infoLoading, validInputText])
+
+  useEffect(() => {
+    console.log('GoogleDocInterface init render!')
+  }, [])
+
+  useEffect(() => {
+    if (googleFileURL) {
+      const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
+      if (!googleDriveFileID) return setValidationError(true);
+    }
+  }, [googleFileURL])
 
   const handleChange = (e) => {
     if (validationError) setValidationError(false);
@@ -33,6 +61,7 @@ function GoogleDocInterface({
   };
 
   const handleGetGoogleDriveFile = async (accessToken) => {
+    setGetFileError(false);
     console.log(googleFileURL, ' <-- googleFileURL');
     console.log(accessToken, ' <-- accessToken');
     const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
@@ -43,24 +72,19 @@ function GoogleDocInterface({
       console.log(data)
       // NOW, at this point, you could send data off to our backend endpoint for processing/parsing, keep the spinner spinning
       handleChangeGoogleDriveFileTextArea(data);
-      // setLoading(false);
+      setLoading(false);
     } else {
       console.log("UH OH")
       // setLoading(false);
-      setGetFileError(true);
+      setGetFileError(true); // 🚫
+      setLoading(false);
     };
   };
 
   const handleSubmitGoogleFileURL = async (gTokenInState) => {
-    // const gTokenInStorage = window.localStorage.getItem('gToken');
-    console.log(googleFileURL, ' <--- googleFileURL')
-    const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
-    console.log(googleDriveFileID, ' <--- googleDriveFileID')
-    if (!googleDriveFileID) return setValidationError(true);
-    // setLoading(true);
-    setInfoLoading(true);
-    // handleGetGoogleDriveFile(gTokenInStorage)
-    console.log(gTokenInState, ' < gTokenInState')
+    // const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
+    // if (!googleDriveFileID) return setValidationError(true);
+    setLoading(true);
     handleGetGoogleDriveFile(gTokenInState)
   };
 
@@ -74,17 +98,23 @@ function GoogleDocInterface({
       setGTokenInState(tokenResponse.access_token);
       handleSubmitGoogleFileURL(tokenResponse.access_token);
     } else {
-      setGetFileError(true);
+      setGetFileError(true); // 🚫
     }
   };
 
   const login = useGoogleLogin({
     ux_mode: 'redirect',
-    redirect_uri: 'https://chatchoons.netlify.app/',
+    redirect_uri: 'http://localhost:3000',
     scope: 'https://www.googleapis.com/auth/drive.file',
     onSuccess: tokenResponse => handleLoginSuccess(tokenResponse),
-    onError: () => setGetFileError(true),
-    onNonOAuthError: () => setGetFileError(true),
+    onError: () => {
+      console.log('🚫')
+      setGetFileError(true)
+    },
+    onNonOAuthError: () => {
+      console.log('🚫 🚫')
+      setGetFileError(true)
+    },
   });
   // redirect_uri: 'https://chatchoons.netlify.app/',
   // redirect_uri: 'http://localhost:3000',
@@ -99,7 +129,7 @@ function GoogleDocInterface({
   const inputTextInfo = () => {
     if (!validationError) return (
       <>
-        <span>Paste a Google Drive .txt file URL here BEANBAGGO</span>
+        <span>Paste a Google Drive .txt file URL here</span>
         <span id="ExampleLink">eg. 'https://drive.google.com/file/d/1KRfX0fSl...' </span>
       </>
     )
@@ -131,7 +161,7 @@ function GoogleDocInterface({
         //     {'Sign in with Google 🚀 '}
         //   </button>
         //   :
-        infoLoading ?
+        loading ?
           // <Oval stroke="#98FFAD" height={100} width={75} strokeWidth={6} />
           <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
           :
@@ -154,24 +184,28 @@ function GoogleDocInterface({
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
               </>
-              : validInputText ?
-                <div className="GoogleInputTextInterface Flex Column" style={{ flex: 1 }}>
-                  <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeGoogleDriveFileTextArea} disabled value={inputText}></textarea>
-                  <div className="GoogleInputTextButtonArea Flex Column">
-                    <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Cancel</button>
-                    <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText}>Submit</button>
+              :
+              validInputText === null ?
+                <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
+                : validInputText === true ?
+                  <div className="GoogleInputTextInterface Flex Column" style={{ flex: 1 }}>
+                    <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeGoogleDriveFileTextArea} disabled value={inputText}></textarea>
+                    <div className="GoogleInputTextButtonArea Flex Column">
+                      <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || loading}>Cancel</button>
+                      <button id="submit" type="button" onClick={handleSubmitInputText} disabled={validInputText === false}>Submit</button>
+                    </div>
                   </div>
-                </div>
-                :
-                <div className="GoogleErrorDisplayContainer">
-                  <div className="GoogleErrorGreenCircleContainer">
-                    <GreenCircleRedCross type="RedCross" height={125} />
-                  </div>
-                  <h1>Not a valid WhatsApp chat export file</h1>
-                  <h3>Make sure your file is a .txt file</h3>
-                  <h3>Make sure your device clock is set to <span style={{ fontFamily: "Raleway-Bold" }}>24 hour</span> format (eg. 13:00) <span style={{ textDecoration: 'underline' }}>not</span> 12 hour (eg. 1pm) before exporting WhatsApp chat</h3>
-                  <button className="GoogleFileSubmitButton" style={{ backgroundColor: '#66B06E' }} type="button" onClick={handleTryAgain}>Try Another File</button>
-                </div>
+                  : validInputText === false ?
+                    <div className="GoogleErrorDisplayContainer">
+                      <div className="GoogleErrorGreenCircleContainer">
+                        <GreenCircleRedCross type="RedCross" height={125} />
+                      </div>
+                      <h1>Not a valid WhatsApp chat export file</h1>
+                      <h3>Make sure your file is a .txt file</h3>
+                      <h3>Make sure your device clock is set to <span style={{ fontFamily: "Raleway-Bold" }}>24 hour</span> format (eg. 13:00) <span style={{ textDecoration: 'underline' }}>not</span> 12 hour (eg. 1pm) before exporting WhatsApp chat</h3>
+                      <button className="GoogleFileSubmitButton" style={{ backgroundColor: '#66B06E' }} type="button" onClick={handleTryAgain}>Try Another File</button>
+                    </div>
+                    : <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
       }
 
     </div>

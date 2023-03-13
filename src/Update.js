@@ -42,7 +42,7 @@ function Update({
   const [inputText, setInputText] = useState('');
   const [firebasePlaylistObj, setFirebasePlaylistObj] = useState(null);
   const [infoLoading, setInfoLoading] = useState(false);
-  const [validInputText, setValidInputText] = useState(false);
+  const [validInputText, setValidInputText] = useState(null);
 
   const [newPostsInState, setNewPostsInState] = useState([]); // <------------
   const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] }) // <------------
@@ -91,11 +91,13 @@ function Update({
 
   }, []);
 
-  useEffect(() => {
-    setInfoLoading(true);
-    const inputTextIsValid = h.inputTextIsValid(inputText);
-    setValidInputText(inputTextIsValid);
-    setInfoLoading(false);
+  useEffect(() => { ///////////////////////////////////////////////////
+    if (inputText.length) {
+      setInfoLoading(true);
+      const inputTextIsValid = h.inputTextIsValid(inputText);
+      setValidInputText(inputTextIsValid);
+      setInfoLoading(false);
+    }
   }, [inputText]);
 
   const handleGoBack = () => {
@@ -374,10 +376,9 @@ function Update({
           handleChangeGoogleDriveFileTextArea={handleChangeGoogleDriveFileTextArea}
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
-          infoLoading={infoLoading}
-          setInfoLoading={setInfoLoading}
           gTokenInState={gTokenInState}
           setGTokenInState={setGTokenInState}
+          infoLoading={infoLoading}
         />
       )
     }

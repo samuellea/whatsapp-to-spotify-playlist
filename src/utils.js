@@ -923,7 +923,7 @@ export const getGoogleDriveFile = async (googleDriveFileID, googleToken) => {
       'Authorization': 'Bearer ' + googleToken,
       'Content-Type': 'application/json'
     },
-  });
+  }).catch(e => { console.log(e); return e; });
   return getGoogleDocResponse;
 };
 
