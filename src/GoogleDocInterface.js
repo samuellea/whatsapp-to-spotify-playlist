@@ -16,9 +16,7 @@ function GoogleDocInterface({
   handleChangeGoogleDriveFileTextArea,
   handleSubmitInputText,
   handleTextAreaClear,
-  gTokenInState,
-  setGTokenInState,
-  infoLoading,
+  // gTokenInState,
 }) {
 
   console.log(validInputText, ' <- validInputText')
@@ -81,11 +79,11 @@ function GoogleDocInterface({
     };
   };
 
-  const handleSubmitGoogleFileURL = async (gTokenInState) => {
+  const handleSubmitGoogleFileURL = async (accessToken) => {
     // const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
     // if (!googleDriveFileID) return setValidationError(true);
     setLoading(true);
-    handleGetGoogleDriveFile(gTokenInState)
+    handleGetGoogleDriveFile(accessToken)
   };
 
   const handleLoginSuccess = (tokenResponse) => {
@@ -95,7 +93,6 @@ function GoogleDocInterface({
       console.log(tokenResponse.access_token);
       console.log('---------------')
       // window.localStorage.setItem('gToken', tokenResponse.access_token);
-      setGTokenInState(tokenResponse.access_token);
       handleSubmitGoogleFileURL(tokenResponse.access_token);
     } else {
       setGetFileError(true); // 🚫
@@ -145,11 +142,7 @@ function GoogleDocInterface({
   }
 
   const handleSubmit = () => {
-    if (!gTokenInState) {
-      login();
-    } else {
-      handleSubmitGoogleFileURL(gTokenInState);
-    };
+    login();
   };
 
   // const gTokenInStorage = window.localStorage.getItem('gToken');

@@ -25,8 +25,8 @@ function Update({
   showHelp,
   setShowHelp,
   handleHelp,
-  gTokenInState,
-  setGTokenInState,
+  // gTokenInState,
+  // setGTokenInState,
 }) {
   let history = useHistory();
   const params = new URLSearchParams(window.location.search);
@@ -376,8 +376,8 @@ function Update({
           handleChangeGoogleDriveFileTextArea={handleChangeGoogleDriveFileTextArea}
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
-          gTokenInState={gTokenInState}
-          setGTokenInState={setGTokenInState}
+          // gTokenInState={gTokenInState}
+          // setGTokenInState={setGTokenInState}
           infoLoading={infoLoading}
         />
       )

@@ -37,7 +37,7 @@ function App() {
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   const [modalBackdrop, setModalBackdrop] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  const [gTokenInState, setGTokenInState] = useState(null)
+  // const [gTokenInState, setGTokenInState] = useState(null)
 
 
   // SPOTIFY CREDENTIALS
@@ -258,8 +258,8 @@ function App() {
                 showHelp={showHelp}
                 setShowHelp={setShowHelp}
                 handleHelp={handleHelp}
-                gTokenInState={gTokenInState}
-                setGTokenInState={setGTokenInState}
+              // gTokenInState={gTokenInState}
+              // setGTokenInState={setGTokenInState}
               />
             </PrivateRoute>
             <PrivateRoute path="/stats">
