@@ -25,6 +25,7 @@ function Update({
   showHelp,
   setShowHelp,
   handleHelp,
+  showPrivacyPolicy,
   // gTokenInState,
   // setGTokenInState,
 }) {
@@ -379,6 +380,7 @@ function Update({
           // gTokenInState={gTokenInState}
           // setGTokenInState={setGTokenInState}
           infoLoading={infoLoading}
+          showPrivacyPolicy={showPrivacyPolicy}
         />
       )
     }

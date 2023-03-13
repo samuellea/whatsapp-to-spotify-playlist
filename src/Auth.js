@@ -68,13 +68,13 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
   };
 
   /////////////////////////
-  const autoLogin = async () => {
-    await h.mockSleep(1000);
-    handleClick();
-  }
-  useEffect(() => {
-    autoLogin();
-  }, []);
+  // const autoLogin = async () => {
+  //   await h.mockSleep(1000);
+  //   handleClick();
+  // }
+  // useEffect(() => {
+  //   autoLogin();
+  // }, []);
   //////////////////////////
 
   let spotifyToken = window.localStorage.getItem('spotifyToken');

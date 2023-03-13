@@ -3,7 +3,7 @@ import style from './styles/PrivacyPolicy.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 
-function PrivacyPolicy({ showPrivacyPolicy }) {
+function PrivacyPolicy({ showPrivacyPolicy, privacyBottomButtonText = 'Close' }) {
   return (
     <div className="PrivacyPolicyContainer">
       <div className="PrivacyPolicy Flex Column">
@@ -24,7 +24,7 @@ function PrivacyPolicy({ showPrivacyPolicy }) {
             fontSize: '13px',
           }}>Delete My Account</span> to permanently delete both your user account and all related data stored in our database.
         </p>
-        <button type="button" onClick={() => showPrivacyPolicy(false)}>Close</button>
+        <button type="button" onClick={() => showPrivacyPolicy(false)}>{privacyBottomButtonText}</button>
       </div>
     </div>
   )

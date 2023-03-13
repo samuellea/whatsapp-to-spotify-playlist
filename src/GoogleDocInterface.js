@@ -16,6 +16,7 @@ function GoogleDocInterface({
   handleChangeGoogleDriveFileTextArea,
   handleSubmitInputText,
   handleTextAreaClear,
+  showPrivacyPolicy,
   // gTokenInState,
 }) {
 
@@ -128,6 +129,12 @@ function GoogleDocInterface({
   const inputTextInfo = () => {
     if (!validationError) return (
       <>
+        <div className="MoreDetails">
+          <span>ⓘ To learn how we use Google data, please see our <span id="GooglePrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span></span>
+        </div>
+
+        <div className="InvisiBox" style={{ flex: 0.25 }} />
+
         <span>Paste a Google Drive .txt file URL here</span>
         <span id="ExampleLink">eg. 'https://drive.google.com/file/d/1KRfX0fSl...' </span>
       </>
@@ -166,7 +173,7 @@ function GoogleDocInterface({
                 <GreenCircleRedCross type="RedCross" height={125} />
               </div>
               <h1>Couldn't get Google Drive file</h1>
-              <button className="GoogleFileSubmitButton" style={{ backgroundColor: '#66B06E' }} type="button" onClick={handleTryAgain} >Try Another File</button>
+              <button className="GoogleFileSubmitButton" style={{ backgroundColor: '#66B06E' }} type="button" onClick={handleTryAgain} >Try Again</button>
             </div>
             :
             !inputText ?
@@ -175,7 +182,7 @@ function GoogleDocInterface({
 
                 <div className="GoogleInputTextInterface Flex Column" style={{ height: '180px' }}>
                   <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here"></input>
-                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmit} disabled={validationError}>Submit</button>
+                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmit} disabled={validationError || !googleFileURL.length}>Submit</button>
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
               </>

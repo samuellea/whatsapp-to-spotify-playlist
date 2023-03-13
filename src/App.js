@@ -19,6 +19,7 @@ import SpotifyLogoWhitePNG from './Spotify_Logo_RGB_White.png';
 import PrivacyPolicy from './PrivacyPolicy';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useGoogleLogin } from '@react-oauth/google';
+import Privacy from './Privacy';
 
 function App() {
 
@@ -43,8 +44,8 @@ function App() {
   // SPOTIFY CREDENTIALS
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
-  const REDIRECT_URI = 'https://chatchoons.netlify.app';
-  // const REDIRECT_URI = 'http://localhost:3000/';
+  // const REDIRECT_URI = 'https://chatchoons.netlify.app';
+  const REDIRECT_URI = 'http://localhost:3000/';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
   const SCOPES = 'playlist-modify-private playlist-modify-public';
@@ -226,6 +227,9 @@ function App() {
             <Route path="/signup">
               <Signup updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} appToast={toast} showPrivacyPolicy={showPrivacyPolicy} />
             </Route>
+            <Route path="/privacy">
+              <Privacy />
+            </Route>
             <PrivateRoute exact path="/" publicStatsHashNonAuth={publicStatsHashNonAuth}>
               <Home
                 loggedIn={loggedIn}
@@ -258,6 +262,7 @@ function App() {
                 showHelp={showHelp}
                 setShowHelp={setShowHelp}
                 handleHelp={handleHelp}
+                showPrivacyPolicy={showPrivacyPolicy}
               // gTokenInState={gTokenInState}
               // setGTokenInState={setGTokenInState}
               />
