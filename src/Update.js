@@ -436,7 +436,7 @@ function Update({
           <span>Back</span>
         </button>
         {!['review', 'nonew'].includes(screen) ?
-          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)} style={{
+          <button className="HelpButton" type="button" onClick={() => handleHelp(true)} style={{
             backgroundColor: showHelpTooltip ? '#40435d' : '#292B3E',
             animation: showHelpTooltip ? 'helpBounce 0.75s infinite' : null,
           }}>?</button>
