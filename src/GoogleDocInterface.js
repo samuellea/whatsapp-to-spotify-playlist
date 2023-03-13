@@ -107,7 +107,7 @@ function GoogleDocInterface({
   const login = useGoogleLogin({
     ux_mode: 'redirect',
     redirect_uri: 'https://chatchoons.netlify.app',
-    scope: 'https://www.googleapis.com/auth/drive.readonly',
+    scope: 'https://www.googleapis.com/auth/drive.file',
     onSuccess: tokenResponse => handleLoginSuccess(tokenResponse),
     onError: () => {
       setLoading(false);
