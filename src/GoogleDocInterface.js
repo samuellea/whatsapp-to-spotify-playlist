@@ -9,6 +9,7 @@ import { faCircleCheck, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Oval } from 'react-loading-icons';
 import GreenCircleRedCross from './GreenCircleRedCross';
 import { useGoogleLogin } from '@react-oauth/google';
+import GoogleButtonNormal from './btn_google_signin_dark_normal_web.png';
 
 function GoogleDocInterface({
   inputText,
@@ -26,6 +27,7 @@ function GoogleDocInterface({
   const [validationError, setValidationError] = useState(false);
   const [getFileError, setGetFileError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showGoogleSignIn, setShowGoogleSignIn] = useState(false);
   // const [localValidInputText, setLocalValidInputText] = useState(null);
 
   // useEffect(() => {
@@ -108,10 +110,12 @@ function GoogleDocInterface({
     scope: 'https://www.googleapis.com/auth/drive.readonly',
     onSuccess: tokenResponse => handleLoginSuccess(tokenResponse),
     onError: () => {
+      setLoading(false);
       console.log('🚫')
       setGetFileError(true)
     },
     onNonOAuthError: () => {
+      setLoading(false);
       console.log('🚫 🚫')
       setGetFileError(true)
     },
@@ -121,9 +125,15 @@ function GoogleDocInterface({
 
 
   const handleTryAgain = () => {
+    setShowGoogleSignIn(false);
     handleTextAreaClear();
     setValidationError(false);
     setGetFileError(false);
+  };
+
+  const handleClear = () => {
+    setValidationError(false);
+    setGoogleFileURL('');
   };
 
   const inputTextInfo = () => {
@@ -144,8 +154,13 @@ function GoogleDocInterface({
   }
 
   const handleSubmit = () => {
-    login();
+    setShowGoogleSignIn(true);
   };
+
+  const startLogin = () => {
+    setLoading(true);
+    login();
+  }
 
   // const gTokenInStorage = window.localStorage.getItem('gToken');
   // console.log(gTokenInStorage, ' <---- gTokenInStorage')
@@ -172,27 +187,36 @@ function GoogleDocInterface({
             </div>
             :
             !inputText ?
-              <>
-                <div className="GoogleInputTextInterfaceMessage Flex Column">{inputTextInfo()}</div>
+              showGoogleSignIn ?
+                <div className="GoogleSignInContainer">
+                  <button type="button" onClick={() => startLogin()}>
+                    <img src={GoogleButtonNormal} />
+                  </button>
+                </div>
+                :
+                <>
+                  <div className="GoogleInputTextInterfaceMessage Flex Column">{inputTextInfo()}</div>
 
-                <div className="GoogleInputTextInterface Flex Column" style={{ height: '180px' }}>
-                  <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here"></input>
-                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmit} disabled={validationError || !googleFileURL.length}>Submit</button>
-                </div>
-                {/* <div className="InvisiBox" style={{ flex: 0.1 }} /> */}
-                <div className="MoreDetails">
-                  <span>ⓘ To learn how we use Google data, please see our <span id="GooglePrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span></span>
-                </div>
-                <div className="InvisiBox" style={{ flex: 1 }} />
-              </>
+                  <div className="GoogleInputTextInterface Flex Column">
+                    <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here" value={googleFileURL}></input>
+                    <button className="GoogleFileSubmitButton" type="button" onClick={handleClear} disabled={!googleFileURL.length}>Clear</button>
+                    <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmit} disabled={validationError || !googleFileURL.length}>Submit</button>
+
+                  </div>
+                  {/* <div className="InvisiBox" style={{ flex: 0.1 }} /> */}
+                  <div className="MoreDetails">
+                    <span>ⓘ To learn how we use Google data, please see our <span id="GooglePrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span></span>
+                  </div>
+                  <div className="InvisiBox" style={{ flex: 1 }} />
+                </>
               :
               validInputText === null ?
                 <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
                 : validInputText === true ?
-                  <div className="GoogleInputTextInterface Flex Column" style={{ flex: 1 }}>
+                  <div className="GoogleInputTextInterface GITI-Dark Flex Column" style={{ flex: 1 }}>
                     <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeGoogleDriveFileTextArea} disabled value={inputText}></textarea>
                     <div className="GoogleInputTextButtonArea Flex Column">
-                      <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || loading}>Cancel</button>
+                      <button id="clear" type="button" onClick={handleTryAgain} disabled={!inputText.length || loading}>Cancel</button>
                       <button id="submit" type="button" onClick={handleSubmitInputText} disabled={validInputText === false}>Submit</button>
                     </div>
                   </div>
@@ -204,7 +228,7 @@ function GoogleDocInterface({
                       <h1>Not a valid WhatsApp chat export file</h1>
                       <h3>Make sure your file is a .txt file</h3>
                       <h3>Make sure your device clock is set to <span style={{ fontFamily: "Raleway-Bold" }}>24 hour</span> format (eg. 13:00) <span style={{ textDecoration: 'underline' }}>not</span> 12 hour (eg. 1pm) before exporting WhatsApp chat</h3>
-                      <button className="GoogleFileSubmitButton" style={{ backgroundColor: '#66B06E' }} type="button" onClick={handleTryAgain}>Try Another File</button>
+                      <button className="GoogleFileSubmitButton" style={{ backgroundColor: '#66B06E' }} type="button" onClick={handleTryAgain}>Try Again</button>
                     </div>
                     : <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
       }
