@@ -51,7 +51,7 @@ function GoogleDocInterface({
     };
   };
 
-  const handleSubmitGoogleFileURL = async () => {
+  const handleSubmitGoogleFileURL = async (gTokenInState) => {
     // const gTokenInStorage = window.localStorage.getItem('gToken');
     console.log(googleFileURL, ' <--- googleFileURL')
     const googleDriveFileID = h.getIdFromGoogleDriveURL(googleFileURL);
@@ -60,6 +60,7 @@ function GoogleDocInterface({
     // setLoading(true);
     setInfoLoading(true);
     // handleGetGoogleDriveFile(gTokenInStorage)
+    console.log(gTokenInState, ' < gTokenInState')
     handleGetGoogleDriveFile(gTokenInState)
   };
 
@@ -69,8 +70,9 @@ function GoogleDocInterface({
       console.log('YES!');
       console.log(tokenResponse.access_token);
       console.log('---------------')
-      window.localStorage.setItem('gToken', tokenResponse.access_token);
+      // window.localStorage.setItem('gToken', tokenResponse.access_token);
       setGTokenInState(tokenResponse.access_token);
+      handleSubmitGoogleFileURL(tokenResponse.access_token);
     } else {
       setGetFileError(true);
     }
@@ -110,16 +112,25 @@ function GoogleDocInterface({
     };
   }
 
+  const handleSubmit = () => {
+    if (!gTokenInState) {
+      login();
+    } else {
+      handleSubmitGoogleFileURL(gTokenInState);
+    };
+  };
+
   // const gTokenInStorage = window.localStorage.getItem('gToken');
   // console.log(gTokenInStorage, ' <---- gTokenInStorage')
 
   return (
     <div className="GoogleDocInterface Flex Column">
-      {!gTokenInState ?
-        <button onClick={() => login()}>
-          {'Sign in with Google 🚀 '}
-        </button>
-        :
+      {
+        // !gTokenInState ?
+        //   <button onClick={() => login()}>
+        //     {'Sign in with Google 🚀 '}
+        //   </button>
+        //   :
         infoLoading ?
           // <Oval stroke="#98FFAD" height={100} width={75} strokeWidth={6} />
           <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
@@ -139,7 +150,7 @@ function GoogleDocInterface({
 
                 <div className="GoogleInputTextInterface Flex Column" style={{ height: '180px' }}>
                   <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here"></input>
-                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmitGoogleFileURL} disabled={validationError}>Submit</button>
+                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmit} disabled={validationError}>Submit</button>
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
               </>

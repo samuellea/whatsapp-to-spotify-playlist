@@ -25,6 +25,8 @@ function Update({
   showHelp,
   setShowHelp,
   handleHelp,
+  gTokenInState,
+  setGTokenInState,
 }) {
   let history = useHistory();
   const params = new URLSearchParams(window.location.search);
@@ -49,8 +51,6 @@ function Update({
   const [screen, setScreen] = useState('choose');
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
   // const [newPostsRawStored, setNewPostsRawStored] = useState([]);
-
-  const [gTokenInState, setGTokenInState] = useState(null)
 
   const firebaseUserId = localStorage.getItem('firebaseUserId');
   const token = localStorage.getItem('token');
