@@ -9,6 +9,7 @@ import { faCircleCheck, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Oval } from 'react-loading-icons';
 import GreenCircleRedCross from './GreenCircleRedCross';
 import { useGoogleLogin } from '@react-oauth/google';
+import GooglePicker from './GooglePicker';
 
 function GoogleDocInterface({
   inputText,
@@ -178,13 +179,7 @@ function GoogleDocInterface({
             :
             !inputText ?
               <>
-                <div className="GoogleInputTextInterfaceMessage Flex Column">{inputTextInfo()}</div>
-
-                <div className="GoogleInputTextInterface Flex Column" style={{ height: '180px' }}>
-                  <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here"></input>
-                  <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmit} disabled={validationError}>Submit</button>
-                </div>
-                <div className="InvisiBox" style={{ flex: 1 }} />
+                <GooglePicker gTokenInState={gTokenInState} setGTokenInState={setGTokenInState} setGetFileError={setGetFileError} />
               </>
               :
               validInputText === null ?

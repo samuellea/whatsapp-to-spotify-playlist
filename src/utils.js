@@ -915,9 +915,9 @@ export const getPublicStats = async (publicStatsId) => {
 };
 
 export const getGoogleDriveFile = async (googleDriveFileID, googleToken) => {
-  // console.log(googleToken);
+  console.log(googleToken, ' <-- googleToken in getgoogleDriveFile util');
   const getGoogleDocResponse = await axios({
-    url: `https://www.googleapis.com/drive/v2/files/${googleDriveFileID}?alt=media`,
+    url: `https://www.googleapis.com/drive/v3/files/${googleDriveFileID}?alt=media`,
     method: 'GET',
     headers: {
       'Authorization': 'Bearer ' + googleToken,
