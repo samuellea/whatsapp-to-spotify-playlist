@@ -102,6 +102,8 @@ function GoogleDocInterface({
     }
   };
 
+  // scope: 'https://www.googleapis.com/auth/drive.file',
+
   const login = useGoogleLogin({
     ux_mode: 'redirect',
     redirect_uri: 'http://localhost:3000',
