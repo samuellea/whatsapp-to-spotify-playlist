@@ -129,14 +129,9 @@ function GoogleDocInterface({
   const inputTextInfo = () => {
     if (!validationError) return (
       <>
-        <div className="MoreDetails">
-          <span>ⓘ To learn how we use Google data, please see our <span id="GooglePrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span></span>
-        </div>
-
-        <div className="InvisiBox" style={{ flex: 0.25 }} />
-
         <span>Paste a Google Drive .txt file URL here</span>
         <span id="ExampleLink">eg. 'https://drive.google.com/file/d/1KRfX0fSl...' </span>
+
       </>
     )
     if (validationError) {
@@ -183,6 +178,10 @@ function GoogleDocInterface({
                 <div className="GoogleInputTextInterface Flex Column" style={{ height: '180px' }}>
                   <input className={`GoogleFileInput GoogleInputError-${validationError}`} type="text" onChange={handleChange} style={{ marginBottom: '10px' }} placeholder="Paste URL here"></input>
                   <button className="GoogleFileSubmitButton" type="button" onClick={handleSubmit} disabled={validationError || !googleFileURL.length}>Submit</button>
+                </div>
+                {/* <div className="InvisiBox" style={{ flex: 0.1 }} /> */}
+                <div className="MoreDetails">
+                  <span>ⓘ To learn how we use Google data, please see our <span id="GooglePrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span></span>
                 </div>
                 <div className="InvisiBox" style={{ flex: 1 }} />
               </>

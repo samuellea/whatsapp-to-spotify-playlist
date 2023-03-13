@@ -148,6 +148,7 @@ textarea::-webkit-scrollbar-thumb {
 }
 
 .MoreDetails {
+  font-family: 'Arial';
   margin-top: 4%;
   width: 100%;
   font-size: 13px;
@@ -155,15 +156,18 @@ textarea::-webkit-scrollbar-thumb {
   justify-content: center;
   align-items: center;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.244);
-  padding: 10px;
-  padding-bottom: 12px;
-  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.042);
+  padding: 20px 25px;
+  padding-bottom: 22px;
+  /* border-radius: 10px; */
+  color: rgba(255, 255, 255, 0.514);
+  box-sizing: border-box;
 }
 
 #GooglePrivacyPolicyLink {
   text-decoration: underline;
   width: 200px;
+  color: rgba(255, 255, 255, 0.699);
 }
 
 .GoogleInputTextInterfaceMessage ul {
