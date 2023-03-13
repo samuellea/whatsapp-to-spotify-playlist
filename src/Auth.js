@@ -128,7 +128,7 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
           Could not login - please try again</span> : null}
       </div>
 
-      <h2>{userLocale}</h2>
+      {/* <h2>{userLocale}</h2> */}
 
       <a href="https://developer.spotify.com/" target="_blank" id="SpotifyCreditFooterLink">
         <div className="SpotifyCreditFooter Flex Row">
