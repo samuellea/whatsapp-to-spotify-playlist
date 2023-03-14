@@ -205,7 +205,7 @@ function GoogleDocInterface({
                   </div>
                   {/* <div className="InvisiBox" style={{ flex: 0.1 }} /> */}
                   <div className="MoreDetails">
-                    <span>ⓘ To learn how we use Google data, please see our <span id="GooglePrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span></span>
+                    <span><span style={{ color: 'white', fontSize: '14px', marginRight: '3px' }}>ⓘ</span> To learn how we use Google data, please see our <span id="GooglePrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span></span>
                   </div>
                   <div className="InvisiBox" style={{ flex: 1 }} />
                 </>
