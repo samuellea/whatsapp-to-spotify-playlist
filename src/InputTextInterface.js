@@ -68,7 +68,7 @@ function InputTextInterface({ inputText, handleChangeTextArea, handleSubmitInput
         }
         <div className="InputTextButtonArea Flex Column">
           <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Clear</button>
-          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText || infoLoading}>Submit</button>
+          <button id="submit" type="button" onClick={handleSubmitInputText} disabled={validInputText === false || infoLoading}>Submit</button>
         </div>
 
 

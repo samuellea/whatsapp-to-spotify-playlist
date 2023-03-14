@@ -27,7 +27,7 @@ function GoogleDocInterface({
 
   useEffect(() => {
     /* global google */
-    const SCOPES = "https://www.googleapis.com/auth/drive.file";
+    const SCOPES = "https://www.googleapis.com/auth/drive.readonly";
 
     const handleGetGoogleDriveFile = async (accessToken) => {
       console.log(googleFileURL, ' <-- googleFileURL');
@@ -140,7 +140,7 @@ function GoogleDocInterface({
                   <textarea className="GoogleInputTextArea" name="w3review" onChange={handleChangeGoogleDriveFileTextArea} disabled value={inputText}></textarea>
                   <div className="GoogleInputTextButtonArea Flex Column">
                     <button id="clear" type="button" onClick={handleTextAreaClear} disabled={!inputText.length || infoLoading}>Cancel</button>
-                    <button id="submit" type="button" onClick={handleSubmitInputText} disabled={!validInputText}>Submit</button>
+                    <button id="submit" type="button" onClick={handleSubmitInputText} disabled={validInputText === false}>Submit</button>
                   </div>
                 </div>
                 :

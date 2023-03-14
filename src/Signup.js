@@ -163,7 +163,7 @@ function Signup({ updateLoggedIn, loggedIn, appToast, showPrivacyPolicy }) { // 
       <div className="CopyrightFooter" style={{ paddingTop: 0, paddingBottom: '10%' }}>
         <span> © Sam Lea 2023</span>
         <span>|</span>
-        <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
+        <span>Email the dev <a href="mailto:samuel.edward.lea@gmail.com">here</a></span>
         {/* <span>|</span> */}
         {/* <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span> */}
       </div>

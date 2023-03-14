@@ -28,8 +28,8 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
     }
   }, []);
 
-  const [email, setEmail] = useState('samtest1@gmail.com');
-  const [password, setPassword] = useState('klklkl00');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loginPending, setLoginPending] = useState(false);
   const [error, setError] = useState(null);
 
@@ -68,13 +68,13 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
   };
 
   /////////////////////////
-  const autoLogin = async () => {
-    await h.mockSleep(1000);
-    handleClick();
-  }
-  useEffect(() => {
-    autoLogin();
-  }, []);
+  // const autoLogin = async () => {
+  //   await h.mockSleep(1000);
+  //   handleClick();
+  // }
+  // useEffect(() => {
+  //   autoLogin();
+  // }, []);
   //////////////////////////
 
   let spotifyToken = window.localStorage.getItem('spotifyToken');
@@ -128,7 +128,7 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
           Could not login - please try again</span> : null}
       </div>
 
-      <h2>{userLocale}</h2>
+      {/* <h2>{userLocale}</h2> */}
 
       <a href="https://developer.spotify.com/" target="_blank" id="SpotifyCreditFooterLink">
         <div className="SpotifyCreditFooter Flex Row">
@@ -141,7 +141,7 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
       <div className="CopyrightFooter" style={{ paddingTop: 0, paddingBottom: '10%' }}>
         <span> © Sam Lea 2023</span>
         <span>|</span>
-        <span>Email the dev <a href="mailto:samuel.lea@live.co.uk">here</a></span>
+        <span>Email the dev <a href="mailto:samuel.edward.lea@gmail.com">here</a></span>
         {/* <span>|</span> */}
         {/* <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span> */}
       </div>

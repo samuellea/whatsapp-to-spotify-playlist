@@ -25,6 +25,9 @@ function Update({
   showHelp,
   setShowHelp,
   handleHelp,
+  showPrivacyPolicy,
+  // gTokenInState,
+  // setGTokenInState,
 }) {
   let history = useHistory();
   const params = new URLSearchParams(window.location.search);
@@ -40,7 +43,7 @@ function Update({
   const [inputText, setInputText] = useState('');
   const [firebasePlaylistObj, setFirebasePlaylistObj] = useState(null);
   const [infoLoading, setInfoLoading] = useState(false);
-  const [validInputText, setValidInputText] = useState(false);
+  const [validInputText, setValidInputText] = useState(null);
 
   const [newPostsInState, setNewPostsInState] = useState([]); // <------------
   const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] }) // <------------
@@ -64,6 +67,7 @@ function Update({
   };
 
   useEffect(() => {
+    console.log('Update init render!')
     helpHintAnimation();
     /*
     const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -88,11 +92,13 @@ function Update({
 
   }, []);
 
-  useEffect(() => {
-    setInfoLoading(true);
-    const inputTextIsValid = h.inputTextIsValid(inputText);
-    setValidInputText(inputTextIsValid);
-    setInfoLoading(false);
+  useEffect(() => { ///////////////////////////////////////////////////
+    if (inputText.length) {
+      setInfoLoading(true);
+      const inputTextIsValid = h.inputTextIsValid(inputText);
+      setValidInputText(inputTextIsValid);
+      setInfoLoading(false);
+    }
   }, [inputText]);
 
   const handleGoBack = () => {
@@ -371,8 +377,10 @@ function Update({
           handleChangeGoogleDriveFileTextArea={handleChangeGoogleDriveFileTextArea}
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
+          // gTokenInState={gTokenInState}
+          // setGTokenInState={setGTokenInState}
           infoLoading={infoLoading}
-          setInfoLoading={setInfoLoading}
+          showPrivacyPolicy={showPrivacyPolicy}
         />
       )
     }
@@ -430,7 +438,7 @@ function Update({
           <span>Back</span>
         </button>
         {!['review', 'nonew'].includes(screen) ?
-          <button className="HelpButton" type="button" onClick={() => setShowHelp(true)} style={{
+          <button className="HelpButton" type="button" onClick={() => handleHelp(true)} style={{
             backgroundColor: showHelpTooltip ? '#40435d' : '#292B3E',
             animation: showHelpTooltip ? 'helpBounce 0.75s infinite' : null,
           }}>?</button>
