@@ -36,7 +36,7 @@ function Update({
   const firebasePlaylistId = params.get('firebasePlaylistId');
 
   const playlistMetaInAppState = userPlaylistMetas.find(e => e.spotifyPlaylistId === spotifyPlaylistId);
-  if (!playlistMetaInAppState) history.push('/');
+  if (!playlistMetaInAppState) history.push('/home');
   const firebaseMetaId = playlistMetaInAppState.metaId;
 
   const [spotifyPlaylistInState, setSpotifyPlaylistInState] = useState(null);

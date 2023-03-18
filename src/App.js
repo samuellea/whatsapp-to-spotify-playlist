@@ -20,6 +20,7 @@ import PrivacyPolicy from './PrivacyPolicy';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useGoogleLogin } from '@react-oauth/google';
 import Privacy from './Privacy';
+import Landing from './Landing';
 
 function App() {
 
@@ -45,7 +46,7 @@ function App() {
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
   // const REDIRECT_URI = 'https://chatchoons.netlify.app';
-  const REDIRECT_URI = 'http://localhost:3000/';
+  const REDIRECT_URI = 'http://localhost:3000/home';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
   const SCOPES = 'playlist-modify-private playlist-modify-public';
@@ -190,7 +191,7 @@ function App() {
           </>
           :
           publicStatsHashNonAuth !== null ? <Redirect to={`/publicStats/${publicStatsHashNonAuth}`} />
-            : <Redirect to='/' />
+            : <Redirect to='/home' />
         }
         <div className="InvisiBox" style={{ height: '10%' }} />
       </div >
@@ -215,13 +216,16 @@ function App() {
         }}>
           {isMobile ? null : <span id="MobileWarning">⚠ This webapp is best viewed on mobile</span>}
           <Router>
+            <Route exact path="/">
+              <Landing />
+            </Route>
             <Route path="/publicStats/:publicStatsId">
               <PublicStats authLink={authLink} handleLogout={handleLogout} />
             </Route>
             <Route path="/login">
               {!loggedIn ?
                 <Auth updateLoggedIn={updateLoggedIn} loggedIn={loggedIn} showPrivacyPolicy={showPrivacyPolicy} />
-                : !spotifyToken ? <Redirect to='/spotifylogin' /> : <Redirect to='/' />
+                : !spotifyToken ? <Redirect to='/spotifylogin' /> : <Redirect to='/home' />
               }
             </Route>
             <Route path="/signup">
@@ -230,7 +234,7 @@ function App() {
             <Route path="/privacy">
               <Privacy />
             </Route>
-            <PrivateRoute exact path="/" publicStatsHashNonAuth={publicStatsHashNonAuth}>
+            <PrivateRoute exact path="/home" publicStatsHashNonAuth={publicStatsHashNonAuth}>
               <Home
                 loggedIn={loggedIn}
                 handleLogout={handleLogout}

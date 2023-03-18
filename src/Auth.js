@@ -88,10 +88,13 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
   return (
     <div className="Auth Flex Column" style={{ opacity: fontsLoaded ? 1 : 0 }}>
       <div className="InvisiBox" style={{ flex: 0.5 }} />
+
       <div className="AuthHeaders">
-        <img src={logo} />
-        <h1 className="Raleway-SemiBold">Chatchoons</h1>
-        <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
+        <a className="LandingPageLink" href="http://localhost:3000/">
+          <img src={logo} />
+          <h1 className="Raleway-SemiBold">Chatchoons</h1>
+          <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
+        </a>
       </div>
 
       <div className="InvisiBox" style={{ flex: 0.25 }} />

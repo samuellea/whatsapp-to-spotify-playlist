@@ -200,3 +200,7 @@
   display: flex;
   align-items: center;
 }
+
+.LandingPageLink {
+  text-decoration: none;
+}

@@ -27,12 +27,15 @@
   /* border: 2px dashed cyan; */
   /* margin-bottom: 10%; */
   position: relative;
+  /* border: 1px solid red; */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .AuthHeaders img {
   /* border: 1px dashed red; */
   position: absolute;
-  top: 0;
+  top: 5px;
   right: 4%;
   /* margin-left: auto; */
   height: 65px;
@@ -191,4 +194,8 @@
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+}
+
+.LandingPageLink {
+  text-decoration: none;
 }

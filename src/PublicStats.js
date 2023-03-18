@@ -114,7 +114,7 @@ function PublicStats({ authLink, handleLogout }) {
   // const { processedPostsLog, spotifyPlaylistName } = publicStatsObj.firebasePlaylist.obj;
 
   const handleGoBack = () => {
-    history.push('/');
+    history.push('/home');
   };
 
   const handlePublicRegisterLogin = () => {
@@ -125,7 +125,7 @@ function PublicStats({ authLink, handleLogout }) {
   const handleHome = () => {
     const token = localStorage.getItem('token');
     if (!token) return handlePublicRegisterLogin();
-    return history.push('/');
+    return history.push('/home');
   };
 
   return (

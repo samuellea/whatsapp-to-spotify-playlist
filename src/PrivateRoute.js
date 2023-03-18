@@ -43,7 +43,7 @@ function PrivateRoute({ publicStatsHashNonAuth, children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: "/login",
+              pathname: "/",
               state: { from: location }
             }}
           />
