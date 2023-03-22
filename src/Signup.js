@@ -111,7 +111,8 @@ function Signup({ updateLoggedIn, loggedIn, appToast, showPrivacyPolicy }) { // 
     <div className="Signup Flex Column">
       <div className="InvisiBox" style={{ flex: 0.5 }} />
       <div className="AuthHeaders">
-        <a className="LandingPageLink" href="http://localhost:3000/">
+        {/* <a className="LandingPageLink" href="http://localhost:3000/"> */}
+        <a className="LandingPageLink" href="https://chatchoons.netlify.app">
           <img src={logo} />
           <h1 className="Raleway-SemiBold">Chatchoons</h1>
           <h2 className="Raleway-ExtraLight">Make and maintain playlists of the songs shared in your WhatsApp chats</h2>
