@@ -45,7 +45,7 @@ function Landing({ showPrivacyPolicy }) {
         <span>Chatchoons is a tool that lets you <br /> turn exported WhatsApp chats into <br /> Spotify playlists,
           without the effort</span>
         <span>Simply paste an exported chat text file, <br /> or provide a URL for a text file <br /> in your Google Drive - </span>
-        <span>Chatchoons finds all the <br /> Spotify tracks and YouTube videos <br /> you and your friends have shared!</span>
+        <span>Chatchoons finds all the <br /> Spotify tracks and YouTube videos <br /> you and your friends have shared, <br /> and turns them into a Spotify playlist!</span>
 
 
         <LandingSVG4 fill="white" height="150" />
