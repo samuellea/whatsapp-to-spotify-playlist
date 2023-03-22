@@ -145,8 +145,8 @@ function Auth({ updateLoggedIn, loggedIn, showPrivacyPolicy }) { // this is our 
         <span> © Sam Lea 2023</span>
         <span>|</span>
         <span>Email the dev <a href="mailto:samuel.edward.lea@gmail.com">here</a></span>
-        {/* <span>|</span> */}
-        {/* <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span> */}
+        <span>|</span>
+        <span id="PrivacyPolicyLink" onClick={() => showPrivacyPolicy(true)}>Privacy Policy</span>
       </div>
 
 

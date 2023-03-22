@@ -46,7 +46,7 @@ function App() {
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
   const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
   // const REDIRECT_URI = 'https://chatchoons.netlify.app';
-  const REDIRECT_URI = 'http://localhost:3000/home';
+  const REDIRECT_URI = 'http://localhost:3000/home<';
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize'
   const RESPONSE_TYPE = 'token';
   const SCOPES = 'playlist-modify-private playlist-modify-public';
@@ -217,7 +217,7 @@ function App() {
           {isMobile ? null : <span id="MobileWarning">⚠ This webapp is best viewed on mobile</span>}
           <Router>
             <Route exact path="/">
-              <Landing />
+              <Landing showPrivacyPolicy={showPrivacyPolicy} />
             </Route>
             <Route path="/publicStats/:publicStatsId">
               <PublicStats authLink={authLink} handleLogout={handleLogout} />

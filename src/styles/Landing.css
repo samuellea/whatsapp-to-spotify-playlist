@@ -1,3 +1,139 @@
 .Landing {
+  /* border: 6px solid lime; */
+  /* border: 2px solid cyan; */
+  height: 100%;
+  max-height: 100%;
+  /* padding: 5%; */
+  /* justify-content: space-between; */
+  overflow-y: scroll;
+  padding-top: 5%;
+}
+
+.Landing::-webkit-scrollbar {
+  display: none;
+}
+
+.Landing a {
+  /* text-decoration: none; */
   color: white;
+}
+
+.Landing svg {
+  /* border: 1px solid red; */
+  margin: 10% 0%;
+}
+
+.SpotifyCreditFooter {
+  /* border: 1px solid red; */
+  font-size: 13px;
+  /* padding-bottom: 10%; */
+  justify-content: center;
+  align-items: center;
+  font-family: "Raleway-ExtraLight";
+  padding-right: 15px;
+}
+
+#SpotifyCreditFooterLink {
+  text-decoration: none !important;
+}
+
+
+.LandingHeaders {
+  /* border: 2px dashed cyan; */
+  /* margin-bottom: 10%; */
+  position: relative;
+  /* border: 1px solid red; */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5%;
+}
+
+.LandingHeaders img {
+  /* border: 1px dashed red; */
+  position: absolute;
+  top: 5px;
+  right: 12%;
+  /* margin-left: auto; */
+  height: 65px;
+  width: 65px;
+}
+
+.Landing h1 {
+  /* border: 1px solid red; */
+  width: 100%;
+  text-align: left;
+  font-size: 41px;
+  /* font-size: 11vw; */
+  /* font-size: 3rem; */
+  /* margin-bottom: 16px; */
+  margin-bottom: 5%;
+}
+
+.Landing h2 {
+  text-align: left;
+  /* border: 1px solid red; */
+  font-size: 20px;
+  font-weight: 100;
+}
+
+.Landing form {
+  /* border: 3px solid yellow; */
+  height: 55%;
+  min-height: 370px;
+  background-color: #09090D;
+  border-radius: 15px;
+  /* padding: 15px; */
+  padding: 4.2%;
+  justify-content: center;
+  padding-bottom: 8%;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.Landing button {
+  height: 50px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background-color: #7316C6;
+  font-family: Arial;
+  font-size: 16px;
+  font-weight: 600;
+  /* margin-top: 24px; */
+  margin-top: 5%;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.Landing a {
+  /* border: 1px solid red; */
+  font-family: "Raleway-Regular";
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.LandingPageLink {
+  text-decoration: none;
+}
+
+.LandingInfoArea {
+  background-color: #4A4964;
+  padding: 5%;
+  text-align: center;
+  font-family: "Raleway-Regular";
+  color: white;
+  display: flex;
+  flex-direction: column;
+  /* margin: 5% 0%; */
+}
+
+.LandingInfoArea span {
+  font-size: 18px;
+  margin: 4%;
+}
+
+.LandingGradientBlock {
+  height: 75px;
+  background-image: linear-gradient(#292B3E, #4A4964);
 }
