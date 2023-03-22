@@ -49,9 +49,9 @@ function Landing({ showPrivacyPolicy }) {
 
 
         <LandingSVG4 fill="white" height="150" />
-        <span>You can decide which tracks make the cut before the playlist is compiled.</span>
-        <span>Once your playlist is done, <br /> it's ready to share with your friends - <br /> listening back to all your shared songs <br /> just got a whole lot easier.</span>
-        <span>No more tedious hours spent <br /> sifting through old messages, <br /> compiling your playlist by hand.</span>
+        <span>You can decide which tracks make the cut before the playlist is compiled</span>
+        <span>Once your playlist is done, <br /> it's ready to share with your friends - <br /> listening back to all your shared songs <br /> just got a whole lot easier</span>
+        <span>No more tedious hours spent <br /> sifting through old messages, <br /> compiling your playlist by hand</span>
 
 
         <LandingSVG5 fill="white" height="150" />
@@ -59,7 +59,7 @@ function Landing({ showPrivacyPolicy }) {
 
         <LandingSVG3 fill="white" height="150" />
 
-        <span>To see how Chatchoons uses the data you provide and works with third-party services, please see our <span onClick={() => showPrivacyPolicy(true)} style={{ textDecoration: 'underline', margin: '0' }}>Privacy Policy</span> before using.</span>
+        <span>To see how Chatchoons uses the data you provide and works with third-party services, please see our <span onClick={() => showPrivacyPolicy(true)} style={{ textDecoration: 'underline', margin: '0' }}>Privacy Policy</span> before using</span>
 
         <button type="button" onClick={handleGoToLogin} style={{ marginTop: '75px' }}>Start</button>
 
