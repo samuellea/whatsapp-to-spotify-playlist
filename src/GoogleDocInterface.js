@@ -9,7 +9,7 @@ import { faCircleCheck, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { Oval } from 'react-loading-icons';
 import GreenCircleRedCross from './GreenCircleRedCross';
 import { useGoogleLogin } from '@react-oauth/google';
-import GoogleButtonNormal from './btn_google_signin_dark_normal_web.png';
+import GoogleButtonNormal from './btn_google_signin_light_normal_web.png';
 
 function GoogleDocInterface({
   inputText,
