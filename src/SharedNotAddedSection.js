@@ -85,6 +85,7 @@ function SharedNotAddedSection({ rawPostsLog, lookupInState, colourMap, handleEx
   const excludedYoutubePosts = rawPostsLog.filter(e => isExcludedYoutubePost(e));
   const spotifyAlbums = rawPostsLog.filter(e => isSpotifyAlbum(e));
   const spotifyPlaylists = rawPostsLog.filter(e => isSpotifyPlaylist(e));
+  const notExcludedYoutubePosts = rawPostsLog
 
   const handleStartExport = async () => {
     // pack up and send off all relevant data to FB

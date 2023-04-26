@@ -24,7 +24,7 @@ function OverviewSection({ overview }) {
       console.log(myRef.current.clientWidth)
       setSubWidth(myRef.current.clientWidth)
     }
-  }, [overview])
+  }, [overview]);
 
   // ref={myRef} style={{ fontSize: `${subWidth / 3.5}px` }}
 

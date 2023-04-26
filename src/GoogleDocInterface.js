@@ -1,6 +1,7 @@
 import './styles/GoogleDocInterface.css';
 import React, { useState, useEffect } from 'react';
 import { GoogleLogin } from 'react-google-login';
+import DriveLogo from './logo_drive_2020q4_color_2x_web_64dp.png';
 
 import * as h from './helpers';
 import * as u from './utils';
@@ -189,9 +190,17 @@ function GoogleDocInterface({
             !inputText ?
               showGoogleSignIn ?
                 <div className="GoogleSignInContainer">
-                  <button type="button" onClick={() => startLogin()}>
+                  {/* <button type="button" onClick={() => startLogin()}>
                     <img src={GoogleButtonNormal} />
+                  </button> */}
+                  <button className="DriveLogoButton" type="button" onClick={() => startLogin()}>
+                  <img src={DriveLogo}/>
+                  Login to Google Drive
                   </button>
+                  <div className="DriveTooltipArrow"/>
+                  <div className="DriveTooltip">
+                    Login and open file with Google Drive
+                  </div>
                 </div>
                 :
                 <>

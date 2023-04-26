@@ -112,7 +112,7 @@ function FinalReviewInterface({
           </div>
           <h1>Couldn't update playlist...</h1>
           <h2 className="Message Failure">Please try again later</h2>
-        </div >
+        </div>
       )
     };
   };

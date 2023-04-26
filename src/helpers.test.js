@@ -3005,9 +3005,6 @@ import _ from 'lodash';
 //       expect(resJoined).toEqual(expected);
 //     });
 //   });
-
-
-
 // });
 
 describe.only('msgTimeComponents()', () => {
