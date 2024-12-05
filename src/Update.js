@@ -1,6 +1,6 @@
 import './styles/Update.css';
 import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import YoutubeConversionInterface from './YoutubeConversionInterface';
 import InputTextInterface from './InputTextInterface';
@@ -35,7 +35,9 @@ function Update({
   const spotifyPlaylistId = params.get('spotifyPlaylistId');
   const firebasePlaylistId = params.get('firebasePlaylistId');
 
-  const playlistMetaInAppState = userPlaylistMetas.find(e => e.spotifyPlaylistId === spotifyPlaylistId);
+  const playlistMetaInAppState = userPlaylistMetas.find(
+    (e) => e.spotifyPlaylistId === spotifyPlaylistId
+  );
   if (!playlistMetaInAppState) history.push('/home');
   const firebaseMetaId = playlistMetaInAppState.metaId;
 
@@ -46,7 +48,10 @@ function Update({
   const [validInputText, setValidInputText] = useState(null);
 
   const [newPostsInState, setNewPostsInState] = useState([]); // <------------
-  const [convertYoutubePosts, setConvertYoutubePosts] = useState({ youtubePosts: [], spotifyMatches: [] }) // <------------
+  const [convertYoutubePosts, setConvertYoutubePosts] = useState({
+    youtubePosts: [],
+    spotifyMatches: [],
+  }); // <------------
 
   // const [screen, setScreen] = useState('input');
   const [screen, setScreen] = useState('choose');
@@ -58,8 +63,11 @@ function Update({
   const spotifyToken = localStorage.getItem('spotifyToken');
 
   const helpHintAnimation = async () => {
-    console.log(userPlaylistMetas, ' < ---- ')
-    if (userPlaylistMetas.length === 1 && userPlaylistMetas[0].totalTracks === 0) {
+    console.log(userPlaylistMetas, ' < ---- ');
+    if (
+      userPlaylistMetas.length === 1 &&
+      userPlaylistMetas[0].totalTracks === 0
+    ) {
       setShowHelpTooltip(true);
       await h.mockSleep(2150);
       setShowHelpTooltip(false);
@@ -67,7 +75,7 @@ function Update({
   };
 
   useEffect(() => {
-    console.log('Update init render!')
+    console.log('Update init render!');
     helpHintAnimation();
     /*
     const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -89,11 +97,12 @@ function Update({
     */
 
     if (!spotifyPlaylistId || !firebasePlaylistId) return history.push('/');
-
   }, []);
 
-  useEffect(() => { ///////////////////////////////////////////////////
+  useEffect(() => {
+    ///////////////////////////////////////////////////
     if (inputText.length) {
+      // console.log('BING');
       setInfoLoading(true);
       const inputTextIsValid = h.inputTextIsValid(inputText);
       setValidInputText(inputTextIsValid);
@@ -102,7 +111,13 @@ function Update({
   }, [inputText]);
 
   const handleGoBack = () => {
-    if (screen === 'choose' || screen === 'youtube' || screen === 'nonew' || screen === 'review') history.goBack();
+    if (
+      screen === 'choose' ||
+      screen === 'youtube' ||
+      screen === 'nonew' ||
+      screen === 'review'
+    )
+      history.goBack();
     if (screen === 'google' || screen === 'input') setScreen('choose');
   };
 
@@ -110,10 +125,9 @@ function Update({
     // const inputTextNoLineBreaks = e.target.value.replace(/(\r\n|\n|\r)/gm, " "); // <-- this regex was REALLY slow! c. 50 seconds this way vs. c. 5 seconds below!
     // setInputText(inputTextNoLineBreaks);
 
-
-    const inputTextReplaceOne = e.target.value.replace('\n', " ");
-    const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
-    const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
+    const inputTextReplaceOne = e.target.value.replace('\n', ' ');
+    const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', ' ');
+    const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', ' ');
     setInputText(inputTextReplaceThree);
 
     // setInfoLoading(false);
@@ -124,9 +138,9 @@ function Update({
     // const inputTextNoLineBreaks = googleDriveFileText.replace(/(\r\n|\n|\r)/gm, " "); // <-- this regex was REALLY slow! c. 50 seconds this way vs. c. 5 seconds below!
     // setInputText(inputTextNoLineBreaks);
 
-    const inputTextReplaceOne = googleDriveFileText.replace('\n', " ");
-    const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', " ");
-    const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', " ");
+    const inputTextReplaceOne = googleDriveFileText.replace('\n', ' ');
+    const inputTextReplaceTwo = inputTextReplaceOne.replace('\r', ' ');
+    const inputTextReplaceThree = inputTextReplaceTwo.replace('\r\n', ' ');
     setInputText(inputTextReplaceThree);
 
     // setInfoLoading(false);
@@ -134,96 +148,128 @@ function Update({
 
   const handleTextAreaClear = () => {
     setInputText('');
-  }
+  };
 
   /* 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️  */
   const handleSubmitInputText = async () => {
+    console.log('handleSubmitInputText');
     setInfoLoading(true);
-    const spotifyPlaylistResponse = await u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken);
+    const spotifyPlaylistResponse = await u.getSpotifyPlaylist(
+      spotifyPlaylistId,
+      spotifyToken
+    );
     if (spotifyPlaylistResponse.status === 200) {
       const { data: spotifyPlaylistData } = spotifyPlaylistResponse;
       setSpotifyPlaylistInState(spotifyPlaylistData);
     }
     // pull down the Firebase object for this playlist
-    u.getFirebasePlaylist(spotifyPlaylistId, token).then(async ({ status, data }) => {
-      if ([200, 201].includes(status)) {
-        // TO-DO: handle data being returned but empty?
-        const [firebasePlaylistId, playlistObj] = Object.entries(data)[0];
-        // set the firebase playlist object returned from firebase in state, for later access by other functions.
-        setFirebasePlaylistObj({ firebasePlaylistId, playlistObj });
+    u.getFirebasePlaylist(spotifyPlaylistId, token)
+      .then(async ({ status, data }) => {
+        if ([200, 201].includes(status)) {
+          // TO-DO: handle data being returned but empty?
+          const [firebasePlaylistId, playlistObj] = Object.entries(data)[0];
+          // set the firebase playlist object returned from firebase in state, for later access by other functions.
+          setFirebasePlaylistObj({ firebasePlaylistId, playlistObj });
 
-        const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
+          const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
 
-        console.log(inputText);
-        console.log(rawPostsLog);
+          console.log(inputText);
+          console.log(rawPostsLog);
 
-        // determine new posts by comparing input text's posts with .rawPosts
-        const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
-        console.log(newPostsRaw)
+          const inputTextCorrectFormat =
+            h.ensureInputTextCorrectFormat(inputText);
 
-        // if there ARE no new posts found from the input text, feedback to user.
-        if (!newPostsRaw.length) {
-          console.log('fish')
-          setInfoLoading(false);
-          return setScreen('nonew');
-        };
+          // determine new posts by comparing input text's posts with .rawPosts
+          const newPostsRaw = h.findInputTextNewPosts(
+            inputTextCorrectFormat,
+            rawPostsLog
+          );
+          console.log('🌱🌱🌱🌱🌱🌱');
+          console.log(newPostsRaw);
 
-        // first, get all the Spotify Data for all .linkType = 'spotify' posts
-        const justNewSpotifyPosts = newPostsRaw.filter(e => e.linkType === 'spotify'); // these are just Spotify TRACKs! (not playlists or albums)
-        const newSpotifyPostsCompleteData = await u.getSpotifyTrackData(justNewSpotifyPosts, spotifyToken);
-        if (!newSpotifyPostsCompleteData) {
-          console.log('Spotify API server error when trying to fetch data for Spotify tracks!');
-          toast(`Couldn't fetch data for Spotify tracks - Spotify API server error. Please try again later`, { duration: 2000 })
-          await mockSleep(2000)
-          return history.push(`/`);
-        } else {
-          // // ❓❓❓❓ check newSpotifyPostsCompleteData
-          // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
-          setNewPostsInState(newSpotifyPostsCompleteData)
-
-          // second, handle any .linkType = 'youtube' posts
-          const youtubePosts = [...newPostsRaw.filter(e => e.linkType === 'youtube')];
-          // console.log('🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 ')
-          // console.log('youtubePosts just prior to going and finding possible Spotify matches')
-          // console.log(youtubePosts)
-
-          // if any youtube posts in chat, find the closest matching results for these on spotify
-          if (youtubePosts.length) {
-            const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
-            const { videoDataObjs, spotifyDataObjs } = await u.getYoutubeVideosAndClosestSpotifyMatches(youtubePosts, youtubeApiKey, spotifyToken);
-            console.log(spotifyDataObjs)
-            // console.log('❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ')
-            // console.log('videoDataObjs + spotifyDataObjs ater finding possible Spoti matches for YT vids')
-            // console.log({ videoDataObjs, spotifyDataObjs })
-            // even when a GET for YT vid data returned a deleted/private vid, we still returned a corresponding SpotifyDataObj value
-            // of null. This is to preserve the array length so as not to mess with index-based referencing when re-making arrays.
-            // Now, we need to turn any 'null's in spotifiyDataObjs into an empty obj with a single .include key of 'false'
-
-            // const spotifyDataObjsHandlingNulls = spotifyDataObjs.map(e => !e.spotifyTrackID ? { include: false } : e);
-            // const spotifyDataObjsHandlingNulls = spotifyDataObjs.map(e => !e ? { include: false } : e);
-
-            // setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjsHandlingNulls });
-            setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjs });
-
-            // setInputText('');
-            setScreen('youtube');
+          // if there ARE no new posts found from the input text, feedback to user.
+          if (!newPostsRaw.length) {
+            console.log('fish');
             setInfoLoading(false);
-          } else {
-            // setInputText('');
-            setScreen('review');
-            setInfoLoading(false);
+            return setScreen('nonew');
           }
+
+          // first, get all the Spotify Data for all .linkType = 'spotify' posts
+          const justNewSpotifyPosts = newPostsRaw.filter(
+            (e) => e.linkType === 'spotify'
+          ); // these are just Spotify TRACKs! (not playlists or albums)
+          const newSpotifyPostsCompleteData = await u.getSpotifyTrackData(
+            justNewSpotifyPosts,
+            spotifyToken
+          );
+          if (!newSpotifyPostsCompleteData) {
+            console.log(
+              'Spotify API server error when trying to fetch data for Spotify tracks!'
+            );
+            toast(
+              `Couldn't fetch data for Spotify tracks - Spotify API server error. Please try again later`,
+              { duration: 2000 }
+            );
+            await mockSleep(2000);
+            return history.push(`/`);
+          } else {
+            // // ❓❓❓❓ check newSpotifyPostsCompleteData
+            // whether YT posts are found and processed or not, set new posts in state so they can be accessed later by our submission function.
+            setNewPostsInState(newSpotifyPostsCompleteData);
+
+            // second, handle any .linkType = 'youtube' posts
+            const youtubePosts = [
+              ...newPostsRaw.filter((e) => e.linkType === 'youtube'),
+            ];
+            // console.log('🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 🔍 ')
+            // console.log('youtubePosts just prior to going and finding possible Spotify matches')
+            // console.log(youtubePosts)
+
+            // if any youtube posts in chat, find the closest matching results for these on spotify
+            if (youtubePosts.length) {
+              const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
+              const { videoDataObjs, spotifyDataObjs } =
+                await u.getYoutubeVideosAndClosestSpotifyMatches(
+                  youtubePosts,
+                  youtubeApiKey,
+                  spotifyToken
+                );
+              console.log(spotifyDataObjs);
+              // console.log('❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ❗ ')
+              // console.log('videoDataObjs + spotifyDataObjs ater finding possible Spoti matches for YT vids')
+              // console.log({ videoDataObjs, spotifyDataObjs })
+              // even when a GET for YT vid data returned a deleted/private vid, we still returned a corresponding SpotifyDataObj value
+              // of null. This is to preserve the array length so as not to mess with index-based referencing when re-making arrays.
+              // Now, we need to turn any 'null's in spotifiyDataObjs into an empty obj with a single .include key of 'false'
+
+              // const spotifyDataObjsHandlingNulls = spotifyDataObjs.map(e => !e.spotifyTrackID ? { include: false } : e);
+              // const spotifyDataObjsHandlingNulls = spotifyDataObjs.map(e => !e ? { include: false } : e);
+
+              // setConvertYoutubePosts({ youtubePosts: videoDataObjs, spotifyMatches: spotifyDataObjsHandlingNulls });
+              setConvertYoutubePosts({
+                youtubePosts: videoDataObjs,
+                spotifyMatches: spotifyDataObjs,
+              });
+
+              // setInputText('');
+              setScreen('youtube');
+              setInfoLoading(false);
+            } else {
+              // setInputText('');
+              setScreen('review');
+              setInfoLoading(false);
+            }
+          }
+        } else {
+          // handle error getting this playlist from firebase - server error, bad request,
         }
-      } else {
-        // handle error getting this playlist from firebase - server error, bad request, 
-      }
-    }).catch(e => console.log(e))
-  }
+      })
+      .catch((e) => console.log(e));
+  };
   /* 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️ 🖊️  */
 
-
   const handleConvertedPosts = (convertedPosts) => {
-    console.log(convertedPosts)
+    console.log(convertedPosts);
     // console.log('---------------------------------------')
     // console.log('convertedPosts coming up out from YoutubeConversionInterface:')
     // console.log(convertedPosts)
@@ -233,12 +279,15 @@ function Update({
     // console.log(convertYoutubePosts)
     // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     // mix convertedPosts with the spotify-type posts already in newPostsInState
-    const convertedPostsMinusNullSpotifyResults = convertedPosts.filter(e => e.spotifyTrackID);
-    const combinedAndSortedSpotifyAndYoutubePosts = newPostsInState.concat(convertedPostsMinusNullSpotifyResults).sort((a, b) => (a.postId > b.postId) ? 1 : -1);
+    const convertedPostsMinusNullSpotifyResults = convertedPosts.filter(
+      (e) => e.spotifyTrackID
+    );
+    const combinedAndSortedSpotifyAndYoutubePosts = newPostsInState
+      .concat(convertedPostsMinusNullSpotifyResults)
+      .sort((a, b) => (a.postId > b.postId ? 1 : -1));
     setNewPostsInState(combinedAndSortedSpotifyAndYoutubePosts);
     setScreen('review');
-  }
-
+  };
 
   /* 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩  */
   const handleFinalSubmission = async (trackIDs) => {
@@ -246,22 +295,34 @@ function Update({
     const { firebasePlaylistId, playlistObj } = firebasePlaylistObj;
     const { rawPostsLog = [], processedPostsLog = [] } = playlistObj;
 
+    const inputTextCorrectFormat = h.ensureInputTextCorrectFormat(inputText);
 
-
-    const newPostsRaw = h.findInputTextNewPosts(inputText, rawPostsLog);
-    console.log(newPostsRaw, ' <-- newPostsRaw') // this will have our 'spotifyAlbum' and 'spotifyPlaylist' .linkType posts included
+    const newPostsRaw = h.findInputTextNewPosts(
+      inputTextCorrectFormat,
+      rawPostsLog
+    );
+    console.log(newPostsRaw, ' <-- newPostsRaw'); // this will have our 'spotifyAlbum' and 'spotifyPlaylist' .linkType posts included
 
     // get album info for any Spotify albums posted, and map onto those 'spotifyAlbum'-type posts in newPostsRaw
-    const albumTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyAlbum');
-    const spotifyAlbumsData = await u.getSpotifyAlbumsData(albumTypePosts, spotifyToken);
+    const albumTypePosts = newPostsRaw.filter(
+      (e) => e.linkType === 'spotifyAlbum'
+    );
+    const spotifyAlbumsData = await u.getSpotifyAlbumsData(
+      albumTypePosts,
+      spotifyToken
+    );
     if (!spotifyAlbumsData) {
       setInfoLoading(false);
       setSubmissionSuccess(false);
-      console.log('Spotify API server error when trying to fetch data for Albums in chat!');
+      console.log(
+        'Spotify API server error when trying to fetch data for Albums in chat!'
+      );
       return;
     }
-    spotifyAlbumsData.forEach(obj => {
-      const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyAlbum' && e.linkID === obj.linkID);
+    spotifyAlbumsData.forEach((obj) => {
+      const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(
+        (e) => e.linkType === 'spotifyAlbum' && e.linkID === obj.linkID
+      );
       newPostsRaw[indexOfCorrespondingRawPostObj] = {
         ...newPostsRaw[indexOfCorrespondingRawPostObj],
         artists: obj.artists,
@@ -269,21 +330,30 @@ function Update({
         thumbnailMed: obj.thumbnailMed,
         title: obj.title,
         totalTracks: obj.totalTracks,
-      }
+      };
     });
 
     // get playlist info for any Spotify playlists posted, and map onto those 'spotifyPlaylist'-type posts in newPostsRaw
-    const playlistTypePosts = newPostsRaw.filter(e => e.linkType === 'spotifyPlaylist');
-    const spotifyPlaylistsData = await u.getSpotifyPlaylistsData(playlistTypePosts, spotifyToken);
+    const playlistTypePosts = newPostsRaw.filter(
+      (e) => e.linkType === 'spotifyPlaylist'
+    );
+    const spotifyPlaylistsData = await u.getSpotifyPlaylistsData(
+      playlistTypePosts,
+      spotifyToken
+    );
     if (!spotifyPlaylistsData) {
       setInfoLoading(false);
       setSubmissionSuccess(false);
-      console.log('Spotify API server error when trying to fetch data for Playlists in chat!');
+      console.log(
+        'Spotify API server error when trying to fetch data for Playlists in chat!'
+      );
       return;
     }
 
-    spotifyPlaylistsData.forEach(obj => {
-      const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(e => e.linkType === 'spotifyPlaylist' && e.linkID === obj.linkID);
+    spotifyPlaylistsData.forEach((obj) => {
+      const indexOfCorrespondingRawPostObj = newPostsRaw.findIndex(
+        (e) => e.linkType === 'spotifyPlaylist' && e.linkID === obj.linkID
+      );
       newPostsRaw[indexOfCorrespondingRawPostObj] = {
         ...newPostsRaw[indexOfCorrespondingRawPostObj],
         thumbnailSmall: obj.thumbnailSmall,
@@ -291,11 +361,14 @@ function Update({
         title: obj.title,
         totalTracks: obj.totalTracks,
         owner: obj.owner,
-      }
+      };
     });
 
     // scrape genres for each spotify track
-    const newPostsInStatePlusGenres = await u.getGenresForSpotifyTracks(newPostsInState, spotifyToken);
+    const newPostsInStatePlusGenres = await u.getGenresForSpotifyTracks(
+      newPostsInState,
+      spotifyToken
+    );
     if (!newPostsInStatePlusGenres) {
       setInfoLoading(false);
       setSubmissionSuccess(false);
@@ -303,35 +376,48 @@ function Update({
       return;
     }
 
-    const newPostsInStateMinusUnnecessaryKeys = [...newPostsInStatePlusGenres]
-    newPostsInStateMinusUnnecessaryKeys.forEach(e => delete e.postId);
+    const newPostsInStateMinusUnnecessaryKeys = [...newPostsInStatePlusGenres];
+    newPostsInStateMinusUnnecessaryKeys.forEach((e) => delete e.postId);
 
     // create updated version of rawPostsLog and processedPostsLog with all the newly-found
     // and newly-processed posts, in order to then send off to FB.
     const updatedRawPosts = [...rawPostsLog, ...newPostsRaw];
-    const updatedPosts = [...(processedPostsLog || []), ...newPostsInStateMinusUnnecessaryKeys];
+    const updatedPosts = [
+      ...(processedPostsLog || []),
+      ...newPostsInStateMinusUnnecessaryKeys,
+    ];
 
     // youtube posts will have been manually excluded by user if flagged as a Youtube post that may be able to be converted,
     // but no corresponding Spotify track could be found. In which case, the user will click to exclude that Youtube post.
     // However, we want to hang on to the retrieved data for these excluded Youtube videos all the same, because we
     // want to include as part of the FB .rawPostsLog, so we can display these excluded YT videos to the user on the Stats page!
-    const excludedYoutubePosts = convertYoutubePosts.youtubePosts.reduce((acc, e) => {
-      if (!e) return acc;
-      if (!updatedPosts.some(obj => obj.linkType === 'youtube' && obj.linkID === e.youtubeID)) acc.push(e)
-      return acc;
-    }, []);
+    const excludedYoutubePosts = convertYoutubePosts.youtubePosts.reduce(
+      (acc, e) => {
+        if (!e) return acc;
+        if (
+          !updatedPosts.some(
+            (obj) => obj.linkType === 'youtube' && obj.linkID === e.youtubeID
+          )
+        )
+          acc.push(e);
+        return acc;
+      },
+      []
+    );
 
     // modify updatedRawPosts, adding .title and .thumbnail of any *excluded* YT posts to their corresponding rawPosts objects
-    excludedYoutubePosts.forEach(obj => {
-      const indexOfCorrespondingRawPostObj = updatedRawPosts.findIndex(e => e.linkType === 'youtube' && e.linkID === obj.youtubeID);
+    excludedYoutubePosts.forEach((obj) => {
+      const indexOfCorrespondingRawPostObj = updatedRawPosts.findIndex(
+        (e) => e.linkType === 'youtube' && e.linkID === obj.youtubeID
+      );
       updatedRawPosts[indexOfCorrespondingRawPostObj] = {
         ...updatedRawPosts[indexOfCorrespondingRawPostObj],
         thumbnail: obj.thumbnail,
         title: obj.title,
-      }
+      };
     });
 
-    console.log(updatedRawPosts)
+    console.log(updatedRawPosts);
 
     const updatedPlaylistObj = {
       ...playlistObj,
@@ -340,41 +426,66 @@ function Update({
     };
 
     // POST our updatedPlaylistObj off to FB.
-    const firebaseStatus = await u.createOrUpdateFirebasePlaylist('PATCH', firebaseUserId, token, updatedPlaylistObj, firebasePlaylistId);
-    // POST our new tracks to the Spotify playlist.
-    const spotifyStatus = await u.postToSpotifyPlaylist(spotifyPlaylistId, spotifyToken, trackIDs, inputText) // <--- POSTING TRACKS TO SPOTIFY!!
+    const firebaseStatus = await u.createOrUpdateFirebasePlaylist(
+      'PATCH',
+      firebaseUserId,
+      token,
+      updatedPlaylistObj,
+      firebasePlaylistId
+    );
 
-    if ([200, 201].includes(firebaseStatus) && [200, 201].includes(spotifyStatus)) {
+    // POST our new tracks to the Spotify playlist.
+    const spotifyStatus = await u.postToSpotifyPlaylist(
+      spotifyPlaylistId,
+      spotifyToken,
+      trackIDs,
+      inputTextCorrectFormat
+    ); // <--- POSTING TRACKS TO SPOTIFY!!
+
+    if (
+      [200, 201].includes(firebaseStatus) &&
+      [200, 201].includes(spotifyStatus)
+    ) {
       setInfoLoading(false);
-      console.log('SUCCESS!')
+      console.log('SUCCESS!');
       setSubmissionSuccess(true);
     } else {
       setInfoLoading(false);
       setSubmissionSuccess(false);
-      console.log('failure updating playlist - firebase or spotify')
+      console.log('failure updating playlist - firebase or spotify');
     }
-  }
+  };
   /* 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩 📩  */
 
-
   const screenToRender = () => {
-    if (infoLoading) return (
-      <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} style={{ margin: 'auto auto' }} />
-    );
+    if (infoLoading)
+      return (
+        <Oval
+          stroke="#98FFAD"
+          height={100}
+          width={100}
+          strokeWidth={4}
+          style={{ margin: 'auto auto' }}
+        />
+      );
 
     if (screen === 'choose') {
       return (
-        <ChooseInputMenu setScreen={setScreen} handleTextAreaClear={handleTextAreaClear} />
-      )
+        <ChooseInputMenu
+          setScreen={setScreen}
+          handleTextAreaClear={handleTextAreaClear}
+        />
+      );
     }
-
 
     if (screen === 'google') {
       return (
         <GoogleDocInterface
           inputText={inputText}
           validInputText={validInputText}
-          handleChangeGoogleDriveFileTextArea={handleChangeGoogleDriveFileTextArea}
+          handleChangeGoogleDriveFileTextArea={
+            handleChangeGoogleDriveFileTextArea
+          }
           handleSubmitInputText={handleSubmitInputText}
           handleTextAreaClear={handleTextAreaClear}
           // gTokenInState={gTokenInState}
@@ -382,7 +493,7 @@ function Update({
           infoLoading={infoLoading}
           showPrivacyPolicy={showPrivacyPolicy}
         />
-      )
+      );
     }
 
     if (screen === 'input') {
@@ -394,12 +505,10 @@ function Update({
           handleTextAreaClear={handleTextAreaClear}
           infoLoading={infoLoading}
         />
-      )
+      );
     }
     if (screen === 'nonew') {
-      return (
-        <NoNew />
-      )
+      return <NoNew />;
     }
     if (screen === 'youtube') {
       return (
@@ -408,7 +517,7 @@ function Update({
           handleConvertedPosts={handleConvertedPosts}
           setModalBackdrop={setModalBackdrop}
         />
-      )
+      );
     }
     if (screen === 'review') {
       return (
@@ -420,39 +529,56 @@ function Update({
           submissionSuccess={submissionSuccess}
           firebaseMetaId={firebaseMetaId}
         />
-      )
+      );
     }
-
-
   };
-
 
   return (
     <div className="Update Flex Column">
-
-      <div className="UpdateGoBackContainer Flex Row" style={{
-        backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
-      }}>
-        <button className="UpdateGoBackButton Flex Row" type="button" onClick={handleGoBack} style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
-          <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
+      <div
+        className="UpdateGoBackContainer Flex Row"
+        style={{
+          backgroundColor: showHelpTooltip ? '#010102' : '#292B3E',
+        }}
+      >
+        <button
+          className="UpdateGoBackButton Flex Row"
+          type="button"
+          onClick={handleGoBack}
+          style={{ opacity: showHelpTooltip ? 0.25 : 1 }}
+        >
+          <FontAwesomeIcon
+            id="GoBack"
+            icon={faArrowLeft}
+            pointerEvents="none"
+          />
           <span>Back</span>
         </button>
-        {!['review', 'nonew'].includes(screen) ?
-          <button className="HelpButton" type="button" onClick={() => handleHelp(true)} style={{
-            backgroundColor: showHelpTooltip ? '#40435d' : '#292B3E',
-            animation: showHelpTooltip ? 'helpBounce 0.75s infinite' : null,
-          }}>?</button>
-          : null}
+        {!['review', 'nonew'].includes(screen) ? (
+          <button
+            className="HelpButton"
+            type="button"
+            onClick={() => handleHelp(true)}
+            style={{
+              backgroundColor: showHelpTooltip ? '#40435d' : '#292B3E',
+              animation: showHelpTooltip ? 'helpBounce 0.75s infinite' : null,
+            }}
+          >
+            ?
+          </button>
+        ) : null}
       </div>
 
-      <div className="InfoArea Flex Column" style={{ opacity: showHelpTooltip ? 0.25 : 1 }}>
+      <div
+        className="InfoArea Flex Column"
+        style={{ opacity: showHelpTooltip ? 0.25 : 1 }}
+      >
         {screenToRender()}
       </div>
       {showHelp ? <Help location={screen} handleHelp={handleHelp} /> : null}
       <Toaster />
     </div>
-  )
-};
-
+  );
+}
 
 export default Update;

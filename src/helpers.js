@@ -1,64 +1,121 @@
-import _, { constant } from "lodash";
+import _, { constant } from 'lodash';
 import FontFaceObserver from 'fontfaceobserver';
 import getUserLocale from 'get-user-locale';
 
 export const spotiTrackAlbumPlaylistOrYTRegex = () => {
-  const spotiTrackAlbumPlaylistOrYTPattern = /(open.spotify.com\/track\/[^\s]*)|(open.spotify.com\/album\/[^\s]*)|(open.spotify.com\/playlist\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/(?!shorts)[^\s]*)/g
+  const spotiTrackAlbumPlaylistOrYTPattern =
+    /(open.spotify.com\/track\/[^\s]*)|(open.spotify.com\/album\/[^\s]*)|(open.spotify.com\/playlist\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/(?!shorts)[^\s]*)/g;
   return spotiTrackAlbumPlaylistOrYTPattern;
 };
 
 export const spotiOrYTRegex = () => {
-  const spotiYTRegexPattern = /(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/(?!shorts)[^\s]*)/g
+  const spotiYTRegexPattern =
+    /(open.spotify.com\/track\/[^\s]*)|(youtu.be\/[^\s]*)|(youtube.com\/(?!shorts)[^\s]*)/g;
   return spotiYTRegexPattern;
 };
 
 export const spotifyTrackIDRegex = () => {
-  const spotifyTrackIDPattern = /(?:open.spotify.com\/track\/)(.*)/i
+  const spotifyTrackIDPattern = /(?:open.spotify.com\/track\/)(.*)/i;
   return spotifyTrackIDPattern;
 };
 
 export const spotifyAlbumIDRegex = () => {
-  const spotifyTrackIDPattern = /(?:open.spotify.com\/album\/)(.*)/i
+  const spotifyTrackIDPattern = /(?:open.spotify.com\/album\/)(.*)/i;
   return spotifyTrackIDPattern;
-}
+};
 
 export const spotifyPlaylistIDRegex = () => {
-  const spotifyTrackIDPattern = /(?:open.spotify.com\/playlist\/)(.*)/i
+  const spotifyTrackIDPattern = /(?:open.spotify.com\/playlist\/)(.*)/i;
   return spotifyTrackIDPattern;
-}
+};
 
 export const youtubeVideoIDRegex = () => {
-  const youtubeVideoIDPattern = /(?:v=|v\/|vi=|vi\/|youtu.be\/)([a-zA-Z0-9_-]{11})/i;
+  const youtubeVideoIDPattern =
+    /(?:v=|v\/|vi=|vi\/|youtu.be\/|live\/)([a-zA-Z0-9_-]{11})/i;
+  // /(?:v=|v\/|vi=|vi\/|youtu.be\/)([a-zA-Z0-9_-]{11})/i;
   return youtubeVideoIDPattern;
 };
 
-// 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 
+// Reformat
+export const reformatDesktopInputToMobile = (inputText) => {
+  // Regular expression to match each line's date, time, and name
+  const regex =
+    /\[(\d{1,2})\/(\d{1,2})\/(\d{2,4}), (\d{2}):(\d{2})(?::(\d{2}))?\] (.+?):/gm;
+
+  return inputText.replace(
+    regex,
+    (match, day, month, year, hour, minute, second, name) => {
+      // Reformat the date to M/D/YYYY (or M/D/YY if the year is 2 digits)
+      const formattedYear = year.length === 4 ? year : year.slice(-2); // Keep full year or last two digits
+      const formattedDate = `${month}/${day}/${formattedYear}`;
+
+      // Reformat the time to HH:MM format (discard seconds if present)
+      const formattedTime = `${hour}:${minute}`;
+
+      // Return the reformatted string
+      return `${formattedDate}, ${formattedTime} - ${name}:`;
+    }
+  );
+};
+
+// checks inputText - if in MOBILE format (desired), just returns. if in DESKTOP format, reformats to mobile.
+export const ensureInputTextCorrectFormat = (inputText) => {
+  let mobileFormattedInputText = inputText;
+  // If inputText is in DESKTOP format, reformat to MOBILE format before proceeding
+  const contains24HrFormatMsgStartDesktop =
+    /^\[(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}),\s(\d{2}):(\d{2})(?::(\d{2}))?\]\s/gm.test(
+      inputText
+    );
+  if (contains24HrFormatMsgStartDesktop) {
+    mobileFormattedInputText = reformatDesktopInputToMobile(inputText);
+  }
+  return mobileFormattedInputText;
+};
+
+// 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧
 
 export const splitTextIntoIndividualMessages = (inputText) => {
-  const splitByMsgStart = inputText.split(/(\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}\s{1}\-{1})/g);
-  //
+  const splitByMsgStart = inputText.split(
+    /(\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}\s{1}\-{1})/g
+  );
+
+  // const splitByMsgStart = inputText.split(
+  //   /(\[?\d{1,2}[\/]\d{1,2}[\/]\d{2,4},\s\d{2}:\d{2}\:?\d{0,2}\]?)/g
+  // );
+
   let newStr = '';
 
+  // console.log(splitByMsgStart);
+  // splits into array of
+
   const individualMessages = splitByMsgStart.reduce((acc, e, i) => {
-    if ((/^\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}/gm).test(e)) {
+    if (
+      /^\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}/gm.test(
+        e
+      )
+    ) {
       acc.push(newStr.trim());
       newStr = e;
     } else {
-      newStr += (' ' + e);
+      newStr += ' ' + e;
     }
     if (i === splitByMsgStart.length - 1) acc.push(newStr.trim());
     return acc;
   }, []);
-  const individualMessagesBlanksRemoved = individualMessages.filter(e => e.length);
-  const newlinesReplacedWithSpaces = individualMessagesBlanksRemoved.map(e => e.replaceAll('\n', ' '));
+  // console.log('individualMessages: ');
+  // console.log(individualMessages);
+  const individualMessagesBlanksRemoved = individualMessages.filter(
+    (e) => e.length
+  );
+  const newlinesReplacedWithSpaces = individualMessagesBlanksRemoved.map((e) =>
+    e.replaceAll('\n', ' ')
+  );
+  // console.log('newlinesReplacedWithSpaces: ');
   // console.log(newlinesReplacedWithSpaces);
   return newlinesReplacedWithSpaces;
 };
 
-// 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 
-
-
-
+// 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧 🚧
 
 export const coerce2DigitYearTo4DigitYear = (twoDigitYearStr, currentYear) => {
   /* assume most recent message in the text was posted in current century (2099, uploading 2100) = 2199
@@ -71,14 +128,17 @@ if no, 2 init century = current year 1st 2 digits
 result = 2 init century + 2 digit year
 */
   // const currentYear = new Date().getFullYear(); // 2023
-  const currentYearFirstTwoDigits = `${currentYear.toString()[0]}${currentYear.toString()[1]}`;
-  const proposedFourDigitYear = +`${currentYearFirstTwoDigits}${twoDigitYearStr}`;
+  const currentYearFirstTwoDigits = `${currentYear.toString()[0]}${
+    currentYear.toString()[1]
+  }`;
+  const proposedFourDigitYear =
+    +`${currentYearFirstTwoDigits}${twoDigitYearStr}`;
   let twoInitCenturyMsgActual = currentYearFirstTwoDigits;
-  if (proposedFourDigitYear > currentYear) twoInitCenturyMsgActual = +currentYearFirstTwoDigits - 1;
+  if (proposedFourDigitYear > currentYear)
+    twoInitCenturyMsgActual = +currentYearFirstTwoDigits - 1;
   const fourDigitYearMsgActual = `${twoInitCenturyMsgActual}${twoDigitYearStr}`;
   return fourDigitYearMsgActual;
 };
-
 
 export const coerceLanguageDateFormat = (splitBySeperator, locale) => {
   // console.log(splitBySeperator)
@@ -153,35 +213,43 @@ export const coerceLanguageDateFormat = (splitBySeperator, locale) => {
   // year index is last index. if element length at year index is < 4, add Init 2 Century Digits at start ('20')
   const yearIndex = correctOrder.length - 1;
   const currentYear = new Date().getFullYear(); // 2023
-  correctOrder[yearIndex] = correctOrder[yearIndex].length === 4 ? correctOrder[yearIndex] : `${coerce2DigitYearTo4DigitYear(correctOrder[yearIndex], currentYear)}`
+  correctOrder[yearIndex] =
+    correctOrder[yearIndex].length === 4
+      ? correctOrder[yearIndex]
+      : `${coerce2DigitYearTo4DigitYear(correctOrder[yearIndex], currentYear)}`;
 
   // make any elements that are length 1 have an '0' at start
-  const allMin2DigitsYear4Digits = correctOrder.map(e => e.length < 2 ? `0${e}` : e);
+  const allMin2DigitsYear4Digits = correctOrder.map((e) =>
+    e.length < 2 ? `0${e}` : e
+  );
   // ['dd', 'mm', 'yyyy']
-  return ({
+  return {
     day: allMin2DigitsYear4Digits[0],
     month: allMin2DigitsYear4Digits[1],
     year: allMin2DigitsYear4Digits[2],
-  });
+  };
 };
 
 export const msgTimeComponents = (singleMessage, locale) => {
   // console.log(singleMessage, ' <-- singleMessage')
   const msgTrimmed = singleMessage.trim();
-  // if a message found to NOT BE 24 HOUR TIME, return null. 
-  if (/^\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}(?:\s{1}\-{1})/gm.test(msgTrimmed) === false) return null;
+  // if a message found to NOT BE 24 HOUR TIME, return null.
+  if (
+    /^\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}(?:\s{1}\-{1})/gm.test(
+      msgTrimmed
+    ) === false
+  )
+    return null;
   // const yes = singleMessage.includes('05re487C0a3bJNZnPfDqMp');
   // handles times in 12hr or 24hr format, as well as glitched ASCII as can be copied/pasted
   // from exports handled on mobile (eg. '12:30^£_pm);
 
   const dateTime = msgTrimmed.trim().slice(0, msgTrimmed.indexOf(' - ')).trim(); // boundary of the date and time and then the poster name! eg dd-mm-yyyy, 12:30 - Sam
 
-
   const noCommas = dateTime.replace(',', '');
   const datePortion = noCommas.split(' ')[0].trim();
   const timePortion = noCommas.split(' ')[1].trim();
   // console.log(datePortion.trim(), '<-- datePortion ' + datePortion.length)
-
 
   let separator = '/';
   if (datePortion.includes('.')) separator = '.';
@@ -205,13 +273,14 @@ export const msgTimeComponents = (singleMessage, locale) => {
 
   // 🚨 🚨 🚨 - 12 HOUR CLOCK FORMAT ALSO APPEARS TO BE LOCALIZED ('8:09 abend' in Germany, 'gece 8:09' in Turkey etc.) - AM|PM can not always be handled!
   // instead, we are going to make user check / set their system time to 24 hours BEFORE THEY EXPORT W/A CHAT.
-  const is12Hr = (['am', 'pm'].includes(timePortion.slice(-2)));
+  const is12Hr = ['am', 'pm'].includes(timePortion.slice(-2));
   if (is12Hr) {
     const amOrPm = timePortion.slice(-2);
     if (amOrPm === 'am') hourPortion = `0${hourPortion}`.slice(-2);
-    if (amOrPm === 'pm' && hourPortion !== '12') hourPortion = +hourPortion + 12;
+    if (amOrPm === 'pm' && hourPortion !== '12')
+      hourPortion = +hourPortion + 12;
     if (amOrPm === 'am' && hourPortion === '12') hourPortion = '00';
-  };
+  }
   // 🚨 🚨 🚨
 
   return {
@@ -224,6 +293,7 @@ export const msgTimeComponents = (singleMessage, locale) => {
 };
 
 export const splitIndividualMessagesIntoPosts = (individualMessages) => {
+  console.log(individualMessages);
   // iterate over individualMessages
   // const messageDateTimeRegex = /\w{2}\/\w{2}\/\w{4},\s{1}.*(?=\s{1}-\s{1}.*\:)/g
   const allPostsCrude = [];
@@ -248,20 +318,25 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
       return;
     }
 
-    if (spotiTrackAlbumPlaylistOrYTRegex().test(singleMessage)) { // if this msg contains one or more Spoti (track/album/pl) or YT links...
+    if (spotiTrackAlbumPlaylistOrYTRegex().test(singleMessage)) {
+      // if this msg contains one or more Spoti (track/album/pl) or YT links...
 
       // grab required data
       const poster = singleMessage.match(/(?:-)(.*?)(?=:)/i)[1].trim();
-      const spotiOrYTLinks = [...singleMessage.matchAll(spotiTrackAlbumPlaylistOrYTRegex())].map(arrEl => arrEl[0].trim());
+      const spotiOrYTLinks = [
+        ...singleMessage.matchAll(spotiTrackAlbumPlaylistOrYTRegex()),
+      ].map((arrEl) => arrEl[0].trim());
 
       // iterate over all Spoti or YT links in this message, and compose a postObj for each link found
-      spotiOrYTLinks.forEach(link => {
-
+      spotiOrYTLinks.forEach((link) => {
         const decideLinkType = (urlString) => {
           let linkType = 'spotify';
-          if (/open.spotify.com\/track\/.*/g.test(urlString)) linkType = 'spotify';
-          if (/open.spotify.com\/album\/.*/g.test(urlString)) linkType = 'spotifyAlbum';
-          if (/open.spotify.com\/playlist\/.*/g.test(urlString)) linkType = 'spotifyPlaylist';
+          if (/open.spotify.com\/track\/.*/g.test(urlString))
+            linkType = 'spotify';
+          if (/open.spotify.com\/album\/.*/g.test(urlString))
+            linkType = 'spotifyAlbum';
+          if (/open.spotify.com\/playlist\/.*/g.test(urlString))
+            linkType = 'spotifyPlaylist';
           if (/youtu.*/g.test(urlString)) linkType = 'youtube';
           return linkType;
         };
@@ -269,10 +344,23 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
         const linkType = decideLinkType(link);
         let linkID;
 
-        if (linkType === 'spotify') linkID = link.match(spotifyTrackIDRegex())[1].split('?')[0];
-        if (linkType === 'spotifyAlbum') linkID = link.match(spotifyAlbumIDRegex())[1].split('?')[0];
-        if (linkType === 'spotifyPlaylist') linkID = link.match(spotifyPlaylistIDRegex())[1].split('?')[0];
-        if (linkType === 'youtube') linkID = link.match(youtubeVideoIDRegex())[1];
+        if (linkType === 'spotify')
+          linkID = link.match(spotifyTrackIDRegex())[1].split('?')[0];
+        if (linkType === 'spotifyAlbum')
+          linkID = link.match(spotifyAlbumIDRegex())[1].split('?')[0];
+        if (linkType === 'spotifyPlaylist')
+          linkID = link.match(spotifyPlaylistIDRegex())[1].split('?')[0];
+        if (linkType === 'youtube') {
+          console.log(link);
+          // handle /live vs /watch
+          /*
+          turn THIS
+          https://www.youtube.com/live/anYyXMRw8W4
+          into THIS
+          https://www.youtube.com/watch?v=BxqYUbNR-c0
+           */
+          linkID = link.match(youtubeVideoIDRegex())[1];
+        }
 
         postCounter++;
         const postObj = {
@@ -286,31 +374,55 @@ export const splitIndividualMessagesIntoPosts = (individualMessages) => {
         allPostsCrude.push(postObj);
       });
     }
-  };
+  }
 
-  if (error12HrFound) { console.log('error12HrFound!'); return null; }
+  if (error12HrFound) {
+    console.log('error12HrFound!');
+    return null;
+  }
   return allPostsCrude;
 };
 
 export const timeObjInMs = (timeObj) => {
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const timeAsString = `${months[+timeObj.month - 1]} ${+timeObj.day}, ${timeObj.year} ${timeObj.hour}:${timeObj.minute}:00`;
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  const timeAsString = `${months[+timeObj.month - 1]} ${+timeObj.day}, ${
+    timeObj.year
+  } ${timeObj.hour}:${timeObj.minute}:00`;
   const timeStringAsDate = new Date(timeAsString);
   const timeAsMilliseconds = timeStringAsDate.getTime();
   return timeAsMilliseconds;
 };
 
 export const findInputPostInRawPostsLog = (inputPost, rawPostsLog) => {
-  const postWithSameLinkAndWithin24HrsAlreadyInRawPostsLog = rawPostsLog.find(rawPost => {
-    const sameLink = rawPost.linkID === inputPost.linkID && rawPost.linkType === inputPost.linkType;
-    const rawPostTimeMs = timeObjInMs(rawPost.time);
-    const inputPostTimeMs = timeObjInMs(inputPost.time);
-    const hrs24InMs = 86400000;
-    const inputPostTimePlus24HrsMs = inputPostTimeMs + hrs24InMs;
-    const inputPostTimeMinus24HrsMs = inputPostTimeMs - hrs24InMs;
-    const within24Hrs = rawPostTimeMs < inputPostTimePlus24HrsMs && rawPostTimeMs > inputPostTimeMinus24HrsMs;
-    return within24Hrs && sameLink;
-  });
+  const postWithSameLinkAndWithin24HrsAlreadyInRawPostsLog = rawPostsLog.find(
+    (rawPost) => {
+      const sameLink =
+        rawPost.linkID === inputPost.linkID &&
+        rawPost.linkType === inputPost.linkType;
+      const rawPostTimeMs = timeObjInMs(rawPost.time);
+      const inputPostTimeMs = timeObjInMs(inputPost.time);
+      const hrs24InMs = 86400000;
+      const inputPostTimePlus24HrsMs = inputPostTimeMs + hrs24InMs;
+      const inputPostTimeMinus24HrsMs = inputPostTimeMs - hrs24InMs;
+      const within24Hrs =
+        rawPostTimeMs < inputPostTimePlus24HrsMs &&
+        rawPostTimeMs > inputPostTimeMinus24HrsMs;
+      return within24Hrs && sameLink;
+    }
+  );
   return postWithSameLinkAndWithin24HrsAlreadyInRawPostsLog; // 'undefined' if not found, a matching rawPostsLog obj if found
 };
 
@@ -338,37 +450,77 @@ export const newPostsNotInRawPosts = (inputTextAsRawPosts, rawPostsLog) => {
 };
 
 export const findInputTextNewPosts = (inputText, rawPostsLog) => {
+  console.log('⭐⭐⭐⭐⭐⭐⭐⭐');
+  console.log(inputText);
   const inputTextAsMessages = splitTextIntoIndividualMessages(inputText);
-  console.log(inputTextAsMessages);
-  const inputTextAsRawPosts = splitIndividualMessagesIntoPosts(inputTextAsMessages);
+  console.log(inputTextAsMessages); // DESKTOP chat = this is an array of length 1 - MOBILE chat = this is an array of length 775, each element a string of a full message inc. date/time, name + msg text
+  /* DESKTOP chat not being split into individual messages correctly by splitTextIntoIndividualMessages() */
+  console.log('⭐⭐⭐⭐⭐⭐⭐⭐');
+
+  const inputTextAsRawPosts =
+    splitIndividualMessagesIntoPosts(inputTextAsMessages);
   console.log(inputTextAsRawPosts);
   const newPosts = newPostsNotInRawPosts(inputTextAsRawPosts, rawPostsLog);
   return newPosts;
 };
 
+/*
+
+MOBILE
+6/28/24, 17:54 - Esra: 😁 		
+6/28/24, 17:54 - Sam Lea: https://open.spotify.com/track/7HTH1ppjkkOe7RLoBDKXYJ  
+
+DESKTOP
+[28/06/2024, 17:54:01] Esra: 😁 		
+[28/06/2024, 17:54:03] Sam Lea: https://open.spotify.com/track/7HTH1ppjkkOe7RLoBDKXYJ   
+
+*/
+
 export const inputTextIsValid = (inputText) => {
   let isValid = false;
   // should not include am|pm, abend, gece etc.
-  const contains24HrFormatMsgStart = /(\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}\s{1}\-{1})/gm.test(inputText);
-  if (contains24HrFormatMsgStart) {
+  const contains24HrFormatMsgStartMobile =
+    /(\d{1,4}[\W\D]{1}\d{1,4}[\W\D]{1}\d{1,4}\,?\s{1}[0-9]{2}\:{1}[0-9]{2}\s{1}\-{1})/gm.test(
+      inputText
+    );
+
+  const contains24HrFormatMsgStartDesktop =
+    /^\[(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}),\s(\d{2}):(\d{2})(?::(\d{2}))?\]\s/gm.test(
+      inputText
+    );
+
+  // func which, if inputText is in Desktop form, reformats inputText as it would be if
+  // made with mobile, returns joined reformatted string
+  const validatedInputText = ensureInputTextCorrectFormat(inputText);
+
+  if (contains24HrFormatMsgStartMobile || contains24HrFormatMsgStartDesktop) {
+    console.log('VALID! Either mobile or desktop');
     // then check actually msgs containing Spoti/YT links
-    const individualMessages = splitTextIntoIndividualMessages(inputText);
-    const individualPosts = splitIndividualMessagesIntoPosts(individualMessages);
-    if (individualPosts) individualPosts.length ? isValid = true : isValid = false;
+    const individualMessages =
+      splitTextIntoIndividualMessages(validatedInputText);
+    // console.log('individualMessages: ', individualMessages.length);
+    // console.log(individualMessages);
+    const individualPosts =
+      splitIndividualMessagesIntoPosts(individualMessages);
+    // console.log('individualPosts: ', individualPosts.length);
+    // console.log(individualPosts);
+    if (individualPosts)
+      individualPosts.length ? (isValid = true) : (isValid = false);
   }
+  // console.log('isValid: ', isValid);
   return isValid;
 };
 
 export const mockSleep = async (milliseconds) => {
-  const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const sleep = async (fn, ...args) => await timeout(milliseconds);
   await sleep();
   return;
 };
 
 export const equalSpacedPosters = (arr, string) => {
-  console.log(string)
-  const longestNameLength = Math.max(...(arr.map(e => e.poster.length)));
+  console.log(string);
+  const longestNameLength = Math.max(...arr.map((e) => e.poster.length));
   const diff = longestNameLength - string.length;
   const nameSpaced = string + new Array(diff + 1).join('\u00a0');
   return nameSpaced;
@@ -379,9 +531,9 @@ export const curtailString = (string, limit) => {
   if (string.slice(-1) === '\u00a0') ender = '\u00a0';
   if (string.length > limit) return string.slice(0, limit - 1).concat(ender);
   return string;
-}
+};
 
-// 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 
+// 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯
 // this determines the key to use when a poster has been renamed or grouped
 // NOT FOR determining the ORIGINAL poster!
 export const determineTargetPoster = (poster, lookup, findOriginal = false) => {
@@ -390,24 +542,22 @@ export const determineTargetPoster = (poster, lookup, findOriginal = false) => {
 
   if (grouped) {
     // check if this poster has been grouped
-    const objInGrouped = grouped.find(e => e.poster === poster);
+    const objInGrouped = grouped.find((e) => e.poster === poster);
     if (objInGrouped) {
-      const objInRenamed = renamed.find(e => e.poster === objInGrouped.on);
+      const objInRenamed = renamed.find((e) => e.poster === objInGrouped.on);
       targetPoster = objInRenamed ? objInRenamed.to : objInGrouped.on;
     }
-  };
+  }
 
   if (renamed) {
     // if not, and renamed arr exists, check if this poster has been renamed
-    const objInRenamed = renamed.find(e => e.poster === poster);
+    const objInRenamed = renamed.find((e) => e.poster === poster);
     if (objInRenamed) targetPoster = objInRenamed.to;
     // if (objInRenamed) targetPoster = objInRenamed.poster;
   }
   return targetPoster;
 };
-// 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 
-
-
+// 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯 🕵️ 🎯
 
 export const tallyContributions = (processedPostsLog, lookup) => {
   const res = processedPostsLog.reduce((acc, post) => {
@@ -432,15 +582,17 @@ export const tallyContributions = (processedPostsLog, lookup) => {
     // }
 
     // finally, check if acc obj already exist for this poster - if yes, update, if not add new
-    const indexInAcc = acc.findIndex(e => e.poster === targetPoster);
+    const indexInAcc = acc.findIndex((e) => e.poster === targetPoster);
     if (indexInAcc === -1) {
       acc.push({ poster: targetPoster, totalPosts: 1 });
     } else {
       acc[indexInAcc].totalPosts++;
     }
     return acc;
-  }, [])
-  const tallySorted = res.sort((a, b) => (+a.totalPosts < +b.totalPosts) ? 1 : -1)
+  }, []);
+  const tallySorted = res.sort((a, b) =>
+    +a.totalPosts < +b.totalPosts ? 1 : -1
+  );
 
   return tallySorted;
 };
@@ -448,20 +600,24 @@ export const tallyContributions = (processedPostsLog, lookup) => {
 export const calcGroupTally = (grouped = [], renamed = []) => {
   const groups = grouped.reduce((acc, groupee, i) => {
     let targetOn = groupee.on;
-    const onInRenamed = renamed.find(e => e.poster === groupee.on);
+    const onInRenamed = renamed.find((e) => e.poster === groupee.on);
     if (onInRenamed) targetOn = onInRenamed.to;
-    const indexInAcc = acc.findIndex(e => e.groupName === targetOn);
+    const indexInAcc = acc.findIndex((e) => e.groupName === targetOn);
     if (indexInAcc !== -1) acc[indexInAcc].groupees.push(groupee.poster);
-    if (indexInAcc === -1) acc.push({ groupName: targetOn, groupees: [groupee.poster] });
+    if (indexInAcc === -1)
+      acc.push({ groupName: targetOn, groupees: [groupee.poster] });
     return acc;
   }, []);
 
-  const groupsWithGroupOnInGroupees = groups.map(group => {
+  const groupsWithGroupOnInGroupees = groups.map((group) => {
     const { groupName, groupees } = group;
     let targetGroupName = groupName;
-    const groupNameOriginal = renamed.find(e => e.to === groupName);
+    const groupNameOriginal = renamed.find((e) => e.to === groupName);
     if (groupNameOriginal) targetGroupName = groupNameOriginal.poster;
-    const updated = { ...group, groupees: [...groupees, targetGroupName].sort() }
+    const updated = {
+      ...group,
+      groupees: [...groupees, targetGroupName].sort(),
+    };
     return updated;
   });
   return groupsWithGroupOnInGroupees;
@@ -469,22 +625,23 @@ export const calcGroupTally = (grouped = [], renamed = []) => {
 
 export const isContributorAGroup = (lookupInState, poster) => {
   const { grouped = [], renamed = [] } = lookupInState;
-  return calcGroupTally(grouped, renamed).find(e => e.groupName === poster);
+  return calcGroupTally(grouped, renamed).find((e) => e.groupName === poster);
 };
 
 export const groupPostsByYear = (posts = []) => {
-
   const res = posts.reduce((acc, e) => {
-    const indexOfYearObjInAcc = acc.findIndex(obj => obj.year === e.time.year);
+    const indexOfYearObjInAcc = acc.findIndex(
+      (obj) => obj.year === e.time.year
+    );
     if (indexOfYearObjInAcc === -1) {
-      const newYearObj = { year: e.time.year, posts: [e] }
+      const newYearObj = { year: e.time.year, posts: [e] };
       acc.push(newYearObj);
     } else {
       acc[indexOfYearObjInAcc].posts.push(e);
     }
     return acc;
   }, []);
-  return res.sort((a, b) => (+a.year > +b.year) ? 1 : -1)
+  return res.sort((a, b) => (+a.year > +b.year ? 1 : -1));
 };
 
 /* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
@@ -494,61 +651,79 @@ export const groupPostsByYear = (posts = []) => {
 /* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
 /* 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱 🌱  */
 
-
 export const groupPostsByPosterYearAndMonth = (posts = [], lookup) => {
-
   const res = posts.reduce((acc, post) => {
     const { year, month } = post.time;
     const { poster } = post;
     const targetPoster = determineTargetPoster(poster, lookup);
     // create a year object in the acc if doesn't yet exist, or find its index if it does
-    const yearObjInAcc = acc.find(e => e.year === year);
+    const yearObjInAcc = acc.find((e) => e.year === year);
     if (!yearObjInAcc) acc.push({ year: year, months: [], posters: [] });
-    const yearAccIndex = acc.findIndex(e => e.year === year);
+    const yearAccIndex = acc.findIndex((e) => e.year === year);
 
     // update the months arr objects for this year object (creating if dont yet exist)
-    const monthObjInYearMonths = acc[yearAccIndex].months.find(e => e.month === month);
-    if (!monthObjInYearMonths) acc[yearAccIndex].months.push({ month: month, posts: [] });
-    const monthYearAccIndex = acc[yearAccIndex].months.findIndex(e => e.month === month);
+    const monthObjInYearMonths = acc[yearAccIndex].months.find(
+      (e) => e.month === month
+    );
+    if (!monthObjInYearMonths)
+      acc[yearAccIndex].months.push({ month: month, posts: [] });
+    const monthYearAccIndex = acc[yearAccIndex].months.findIndex(
+      (e) => e.month === month
+    );
 
-    const posterObjInMonthPosters = acc[yearAccIndex].months[monthYearAccIndex].posts.find(e => e.poster === targetPoster);
-    if (!posterObjInMonthPosters) acc[yearAccIndex].months[monthYearAccIndex].posts.push({ poster: targetPoster, monthlyTotal: 0 });
+    const posterObjInMonthPosters = acc[yearAccIndex].months[
+      monthYearAccIndex
+    ].posts.find((e) => e.poster === targetPoster);
+    if (!posterObjInMonthPosters)
+      acc[yearAccIndex].months[monthYearAccIndex].posts.push({
+        poster: targetPoster,
+        monthlyTotal: 0,
+      });
 
-    const postsMonthYearAccIndex = acc[yearAccIndex].months[monthYearAccIndex].posts.findIndex(e => e.poster === targetPoster);
-    acc[yearAccIndex].months[monthYearAccIndex].posts[postsMonthYearAccIndex].monthlyTotal++;
+    const postsMonthYearAccIndex = acc[yearAccIndex].months[
+      monthYearAccIndex
+    ].posts.findIndex((e) => e.poster === targetPoster);
+    acc[yearAccIndex].months[monthYearAccIndex].posts[postsMonthYearAccIndex]
+      .monthlyTotal++;
 
     // update the posters arr objects for this year object (creating if dont yet exist)
-    const posterObjInYearPosters = acc[yearAccIndex].posters.find(e => e.poster === targetPoster);
-    if (!posterObjInYearPosters) acc[yearAccIndex].posters.push({ poster: targetPoster, total: 0 })
-    const posterYearAccIndex = acc[yearAccIndex].posters.findIndex(e => e.poster === targetPoster);
+    const posterObjInYearPosters = acc[yearAccIndex].posters.find(
+      (e) => e.poster === targetPoster
+    );
+    if (!posterObjInYearPosters)
+      acc[yearAccIndex].posters.push({ poster: targetPoster, total: 0 });
+    const posterYearAccIndex = acc[yearAccIndex].posters.findIndex(
+      (e) => e.poster === targetPoster
+    );
     acc[yearAccIndex].posters[posterYearAccIndex].total++;
     return acc;
   }, []);
 
   // finally, sort various arrays and subarrays
-  const sortedByYear = [...res].sort((a, b) => (+a.year > +b.year) ? 1 : -1);
-  const monthsAndPostersSorted = sortedByYear.map(e => ({
+  const sortedByYear = [...res].sort((a, b) => (+a.year > +b.year ? 1 : -1));
+  const monthsAndPostersSorted = sortedByYear.map((e) => ({
     year: e.year,
-    months: [...e.months].sort((a, b) => (+a.month > +b.month) ? 1 : -1).map(f => ({
-      ...f, posts: [...f.posts].sort(function (a, b) {
-        if (a.monthlyTotal > b.monthlyTotal) return 1;
-        if (a.monthlyTotal < b.monthlyTotal) return -1;
-        return (a.poster < b.poster) ? 1 : -1;
-      }),
-    })),
-    posters: [...e.posters].sort((a, b) => (+a.total < +b.total) ? 1 : -1)
+    months: [...e.months]
+      .sort((a, b) => (+a.month > +b.month ? 1 : -1))
+      .map((f) => ({
+        ...f,
+        posts: [...f.posts].sort(function (a, b) {
+          if (a.monthlyTotal > b.monthlyTotal) return 1;
+          if (a.monthlyTotal < b.monthlyTotal) return -1;
+          return a.poster < b.poster ? 1 : -1;
+        }),
+      })),
+    posters: [...e.posters].sort((a, b) => (+a.total < +b.total ? 1 : -1)),
   }));
   return monthsAndPostersSorted;
 };
 
-export const determineOriginalPoster = () => {
-
-};
+export const determineOriginalPoster = () => {};
 
 export const listAllPosters = (posts, lookup) => {
   const res = posts.reduce((acc, e) => {
     let targetPoster = e.poster;
-    const posterInAcc = acc.some(f => f === targetPoster);
+    const posterInAcc = acc.some((f) => f === targetPoster);
     if (!posterInAcc) acc.push(targetPoster);
     return acc;
   }, []);
@@ -584,29 +759,38 @@ export const createColourMap = (posters) => {
     '1f618d',
     '4a235a',
   ];
-  return posters.map((poster, i) => ({ poster: poster, colour: colourChoices[i] }))
+  return posters.map((poster, i) => ({
+    poster: poster,
+    colour: colourChoices[i],
+  }));
 };
 
 export const pickPosterColour = (poster, lookup, colourMap) => {
   let targetPoster = poster;
   if (lookup.renamed) {
     const { renamed } = lookup;
-    const renamedPosterIndex = renamed.findIndex(e => e.to === poster);
-    targetPoster = renamedPosterIndex !== -1 ? renamed[renamedPosterIndex].poster : targetPoster;
+    const renamedPosterIndex = renamed.findIndex((e) => e.to === poster);
+    targetPoster =
+      renamedPosterIndex !== -1
+        ? renamed[renamedPosterIndex].poster
+        : targetPoster;
   }
-  const colour = colourMap.find(e => {
-    return e.poster === targetPoster
-  })?.colour || 'black';
+  const colour =
+    colourMap.find((e) => {
+      return e.poster === targetPoster;
+    })?.colour || 'black';
   return colour;
 };
 
 export const determineMostPostsInAMonth = (byYear) => {
   const monthlyTotals = byYear.reduce((acc, yearObj) => {
-    yearObj.months.forEach(monthObj => {
+    yearObj.months.forEach((monthObj) => {
       let monthlyTotalAllPosters = 0;
-      monthObj.posts.forEach(postObj => monthlyTotalAllPosters += postObj.monthlyTotal);
+      monthObj.posts.forEach(
+        (postObj) => (monthlyTotalAllPosters += postObj.monthlyTotal)
+      );
       acc.push(monthlyTotalAllPosters);
-    })
+    });
     return acc;
   }, []);
 
@@ -615,63 +799,94 @@ export const determineMostPostsInAMonth = (byYear) => {
 };
 
 export const calcTotalForMonth = (index, byYear, slide) => {
-  const monthObjIndex = byYear[slide - 1]?.months.findIndex(e => +e.month === index + 1);
+  const monthObjIndex = byYear[slide - 1]?.months.findIndex(
+    (e) => +e.month === index + 1
+  );
 
   let monthlyTotalOverall = null;
   let totalsByPoster = null;
 
   if (monthObjIndex !== -1) {
-    monthlyTotalOverall = byYear[slide - 1]?.months[monthObjIndex].posts.reduce((acc, e) => {
-      acc += e.monthlyTotal;
-      return acc;
-    }, 0);
+    monthlyTotalOverall = byYear[slide - 1]?.months[monthObjIndex].posts.reduce(
+      (acc, e) => {
+        acc += e.monthlyTotal;
+        return acc;
+      },
+      0
+    );
 
-    totalsByPoster = byYear[slide - 1]?.months[monthObjIndex].posts
-  };
+    totalsByPoster = byYear[slide - 1]?.months[monthObjIndex].posts;
+  }
   return { monthlyTotalOverall, totalsByPoster };
 };
 
 export const tallyGenres = (posts, lookup) => {
+  const tallyObj = posts.reduce(
+    (acc, post) => {
+      const {
+        poster,
+        time: { year },
+        genres,
+      } = post;
+      if (!genres || !genres.length) return acc;
+      const tPoster = determineTargetPoster(poster, lookup);
 
-  const tallyObj = posts.reduce((acc, post) => {
+      // handle creation of keys if they dont yet exist
+      if (!acc.allPosters[year]) acc.allPosters[year] = [];
+      if (!acc[tPoster]) acc[tPoster] = { allYears: [] };
+      if (!acc[tPoster][year]) acc[tPoster][year] = [];
 
-    const { poster, time: { year }, genres } = post;
-    if (!genres || !genres.length) return acc;
-    const tPoster = determineTargetPoster(poster, lookup);
+      // iterate over post's genres arr
+      genres.forEach((lowercaseGenre) => {
+        const genre = lowercaseGenre
+          .split(' ')
+          .map((e) => _.capitalize(e))
+          .join(' ');
+        // allPosters.allYears
+        const genreObjInAllPostersAllYears = acc.allPosters.allYears.find(
+          (e) => e.genre === genre
+        );
+        if (!genreObjInAllPostersAllYears)
+          acc.allPosters.allYears.push({ genre: genre, count: 0 });
+        const indexOfGenreObjInAllPostersAllYears =
+          acc.allPosters.allYears.findIndex((e) => e.genre === genre);
+        acc.allPosters.allYears[indexOfGenreObjInAllPostersAllYears].count++;
+        // allPosters[year]
+        const genreObjInAllPostersYear = acc.allPosters[year].find(
+          (e) => e.genre === genre
+        );
+        if (!genreObjInAllPostersYear)
+          acc.allPosters[year].push({ genre: genre, count: 0 });
+        const indexOfGenreObjInAllPostersYear = acc.allPosters[year].findIndex(
+          (e) => e.genre === genre
+        );
+        acc.allPosters[year][indexOfGenreObjInAllPostersYear].count++;
+        // [tPoster].allYears
+        const genreObjInPosterAllYears = acc[tPoster].allYears.find(
+          (e) => e.genre === genre
+        );
+        if (!genreObjInPosterAllYears)
+          acc[tPoster].allYears.push({ genre: genre, count: 0 });
+        const indexOfGenreObjInPosterAllYears = acc[tPoster].allYears.findIndex(
+          (e) => e.genre === genre
+        );
+        acc[tPoster].allYears[indexOfGenreObjInPosterAllYears].count++;
+        // [tPoster][year]
+        const genreObjInPosterYear = acc[tPoster][year].find(
+          (e) => e.genre === genre
+        );
+        if (!genreObjInPosterYear)
+          acc[tPoster][year].push({ genre: genre, count: 0 });
+        const indexOfGenreObjInPosterYear = acc[tPoster][year].findIndex(
+          (e) => e.genre === genre
+        );
+        acc[tPoster][year][indexOfGenreObjInPosterYear].count++;
+      });
 
-    // handle creation of keys if they dont yet exist
-    if (!acc.allPosters[year]) acc.allPosters[year] = [];
-    if (!acc[tPoster]) acc[tPoster] = { allYears: [] };
-    if (!acc[tPoster][year]) acc[tPoster][year] = [];
-
-    // iterate over post's genres arr
-    genres.forEach(lowercaseGenre => {
-      const genre = lowercaseGenre.split(' ').map(e => _.capitalize(e)).join(' ');
-      // allPosters.allYears
-      const genreObjInAllPostersAllYears = acc.allPosters.allYears.find(e => e.genre === genre);
-      if (!genreObjInAllPostersAllYears) acc.allPosters.allYears.push({ genre: genre, count: 0 });
-      const indexOfGenreObjInAllPostersAllYears = acc.allPosters.allYears.findIndex(e => e.genre === genre);
-      acc.allPosters.allYears[indexOfGenreObjInAllPostersAllYears].count++;
-      // allPosters[year]
-      const genreObjInAllPostersYear = acc.allPosters[year].find(e => e.genre === genre);
-      if (!genreObjInAllPostersYear) acc.allPosters[year].push({ genre: genre, count: 0 });
-      const indexOfGenreObjInAllPostersYear = acc.allPosters[year].findIndex(e => e.genre === genre);
-      acc.allPosters[year][indexOfGenreObjInAllPostersYear].count++;
-      // [tPoster].allYears
-      const genreObjInPosterAllYears = acc[tPoster].allYears.find(e => e.genre === genre);
-      if (!genreObjInPosterAllYears) acc[tPoster].allYears.push({ genre: genre, count: 0 });
-      const indexOfGenreObjInPosterAllYears = acc[tPoster].allYears.findIndex(e => e.genre === genre);
-      acc[tPoster].allYears[indexOfGenreObjInPosterAllYears].count++;
-      // [tPoster][year]
-      const genreObjInPosterYear = acc[tPoster][year].find(e => e.genre === genre);
-      if (!genreObjInPosterYear) acc[tPoster][year].push({ genre: genre, count: 0 });
-      const indexOfGenreObjInPosterYear = acc[tPoster][year].findIndex(e => e.genre === genre);
-      acc[tPoster][year][indexOfGenreObjInPosterYear].count++;
-    });
-
-
-    return acc;
-  }, { allPosters: { allYears: [] } });
+      return acc;
+    },
+    { allPosters: { allYears: [] } }
+  );
 
   const tallyObjGenresRanked = { ...tallyObj };
   for (const key in tallyObjGenresRanked) {
@@ -680,30 +895,59 @@ export const tallyGenres = (posts, lookup) => {
       obj[subKey] = obj[subKey].sort((a, b) => {
         // if counts are equal, sort alphabetically on genre, else sort by count in desc.
         if (+a.count === +b.count) {
-          return a.genre < b.genre ? -1 : 1
+          return a.genre < b.genre ? -1 : 1;
         } else {
-          return +a.count < +b.count ? 1 : -1
+          return +a.count < +b.count ? 1 : -1;
         }
-      })
+      });
     }
   }
 
   // sort object keys alphabetically
-  const sortedKeys = Object.entries(tallyObjGenresRanked).sort((a, b) => (a[0].toLowerCase() > b[0].toLowerCase()) ? 1 : -1);
+  const sortedKeys = Object.entries(tallyObjGenresRanked).sort((a, b) =>
+    a[0].toLowerCase() > b[0].toLowerCase() ? 1 : -1
+  );
 
   const finalTallyObj = sortedKeys.reduce((acc, e) => {
     acc[e[0]] = e[1];
     return acc;
-  }, {})
+  }, {});
   return tallyObjGenresRanked;
   // return finalTallyObj;
 };
 
 export const rgbFromLetters = (word) => {
-  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  const letters = [
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z',
+  ];
 
   const wordSplit = word.split('').slice(0, 3);
-  const rgbVals = wordSplit.map(letter => {
+  const rgbVals = wordSplit.map((letter) => {
     if (letters.indexOf(letter.toLowerCase()) === -1) return 0;
     return Math.trunc(letters.indexOf(letter.toLowerCase()) * 9.8);
   });
@@ -717,33 +961,39 @@ export const stringToColour = (str) => {
   }
   var colour = '#';
   for (var i = 0; i < 3; i++) {
-    var value = (hash >> (i * 8)) & 0xFF;
+    var value = (hash >> (i * 8)) & 0xff;
     colour += ('00' + value.toString(16)).substr(-2);
   }
   return colour;
-}
+};
 
 export const formatForPie = (genresArray) => {
   if (genresArray) {
-    const res = genresArray.map(e => ({
-      title: e.genre, value: e.count, color: stringToColour(e.genre)
-    }))
+    const res = genresArray.map((e) => ({
+      title: e.genre,
+      value: e.count,
+      color: stringToColour(e.genre),
+    }));
     return res;
   } else {
-    const res = [{
-      title: null, value: 1, color: '#09090D',
-    }];
+    const res = [
+      {
+        title: null,
+        value: 1,
+        color: '#09090D',
+      },
+    ];
     return res;
   }
 };
 
 export const groupPostsByPoster = (poster, posts, lookup) => {
-  const aliasGroupsMappedToPosts = posts.map(post => {
+  const aliasGroupsMappedToPosts = posts.map((post) => {
     const { poster } = post;
     const tPoster = determineTargetPoster(poster, lookup);
     return { ...post, poster: tPoster };
   }, []);
-  return aliasGroupsMappedToPosts.filter(e => e.poster === poster);
+  return aliasGroupsMappedToPosts.filter((e) => e.poster === poster);
 };
 
 export const dateTodayDdMmYyyy = () => {
@@ -753,22 +1003,26 @@ export const dateTodayDdMmYyyy = () => {
     mm: date.getMonth() + 1,
     dd: date.getDate(),
     yy: date.getFullYear().toString().slice(-2),
-    yyyy: date.getFullYear()
-  }
-  return format.replace(/dd|mm|yyyy/gi, matched => map[matched])
+    yyyy: date.getFullYear(),
+  };
+  return format.replace(/dd|mm|yyyy/gi, (matched) => map[matched]);
 };
 
 export const getLastUpdatedFromMeta = (playlistMetaInAppState) => {
   if (playlistMetaInAppState?.lastUpdated) {
-    const dateBits = new Date(playlistMetaInAppState.lastUpdated).toString().split(' ');
-    const lastUpdatedForDisplay = `${dateBits[2]} ${dateBits[1]} ${dateBits[3]} ${dateBits[4]?.slice(0, 5) || null}`
+    const dateBits = new Date(playlistMetaInAppState.lastUpdated)
+      .toString()
+      .split(' ');
+    const lastUpdatedForDisplay = `${dateBits[2]} ${dateBits[1]} ${
+      dateBits[3]
+    } ${dateBits[4]?.slice(0, 5) || null}`;
     return lastUpdatedForDisplay;
-  };
-  return 'never'
+  }
+  return 'never';
 };
 
 export const setLoadedFonts = async (fontsArr, fontsLoadedSetter) => {
-  const promises = fontsArr.map(e => new FontFaceObserver(e).load());
+  const promises = fontsArr.map((e) => new FontFaceObserver(e).load());
   // console.log(promises)
   Promise.all([promises]).then(function () {
     fontsLoadedSetter(true);
@@ -793,33 +1047,42 @@ export const stringContainsKaraoke = (str) => {
   return false;
 };
 
-export const stringContainsAcoustic = (str) => str.toLowerCase().includes('acoustic') ? true : false;
+export const stringContainsAcoustic = (str) =>
+  str.toLowerCase().includes('acoustic') ? true : false;
 
 export const stringContainsLive = (str) => {
   // console.log(str, ' <')
-  return str.toLowerCase().includes('live') ? true : false
+  return str.toLowerCase().includes('live') ? true : false;
 };
 
-export const stringContainsRemix = (str) => str.toLowerCase().includes('remix') ? true : false;
+export const stringContainsRemix = (str) =>
+  str.toLowerCase().includes('remix') ? true : false;
 
-export const stringContainsMix = (str) => str.toLowerCase().includes('mix') ? true : false;
+export const stringContainsMix = (str) =>
+  str.toLowerCase().includes('mix') ? true : false;
 
-export const stringContainsEdit = (str) => str.toLowerCase().includes('edit') ? true : false;
+export const stringContainsEdit = (str) =>
+  str.toLowerCase().includes('edit') ? true : false;
 
-export const stringContainsExtended = (str) => str.toLowerCase().includes('extended') ? true : false;
+export const stringContainsExtended = (str) =>
+  str.toLowerCase().includes('extended') ? true : false;
 
-export const stringContainsVersion = (str) => str.toLowerCase().includes('version') ? true : false;
+export const stringContainsVersion = (str) =>
+  str.toLowerCase().includes('version') ? true : false;
 
-export const stringContainsCover = (str) => str.toLowerCase().includes('cover') ? true : false;
+export const stringContainsCover = (str) =>
+  str.toLowerCase().includes('cover') ? true : false;
 
-export const stringContainsPiano = (str) => str.toLowerCase().includes('piano') ? true : false;
+export const stringContainsPiano = (str) =>
+  str.toLowerCase().includes('piano') ? true : false;
 
-export const stringContainsDub = (str) => str.toLowerCase().includes('dub') ? true : false;
+export const stringContainsDub = (str) =>
+  str.toLowerCase().includes('dub') ? true : false;
 
 export const millisToMinsAndSecs = (millis) => {
   const minutes = Math.floor(millis / 60000);
   const seconds = ((millis % 60000) / 1000).toFixed(0);
-  return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+  return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 };
 
 /*

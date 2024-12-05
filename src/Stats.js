@@ -16,21 +16,30 @@ import ByGenreSection from './ByGenreSection';
 import ByPosterSection from './ByPosterSection';
 import Oval from 'react-loading-icons/dist/esm/components/oval';
 import SharedNotAddedSection from './SharedNotAddedSection';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import FontFaceObserver from 'fontfaceobserver';
 import SpotifyIconWhitePNG from './Spotify_Icon_RGB_White.png';
 import SpotifyIconBlackPNG from './Spotify_Icon_RGB_Black.png';
 import SpotifyIcon from './SpotifyIcon';
 
-function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlaylistsLoading, appToast }) {
-
+function Stats({
+  userPlaylistMetas,
+  fetchAndSetFirebasePlaylistMetas,
+  userPlaylistsLoading,
+  appToast,
+}) {
   console.log('Stats');
 
-  const [fontsLoaded, setFontsLoaded] = useState(false)
+  const [fontsLoaded, setFontsLoaded] = useState(false);
   useEffect(() => {
-    const fontsArr = ['Raleway-Regular', 'Raleway-Bold', 'Raleway-Thin', 'Raleway-SemiBold']
-    h.setLoadedFonts(fontsArr, setFontsLoaded)
+    const fontsArr = [
+      'Raleway-Regular',
+      'Raleway-Bold',
+      'Raleway-Thin',
+      'Raleway-SemiBold',
+    ];
+    h.setLoadedFonts(fontsArr, setFontsLoaded);
   }, []);
 
   const history = useHistory();
@@ -41,16 +50,23 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   const token = localStorage.getItem('token');
   const spotifyToken = localStorage.getItem('spotifyToken');
 
-  const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+  const playlistMetaInAppState = userPlaylistMetas.find(
+    (e) => e.metaId === firebaseMetaId
+  );
 
   const [playlistArtworkLoaded, setPlaylistArtworkLoaded] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
-  const [firebasePlaylist, setFirebasePlaylist] = useState({ id: null, obj: {} });
+  const [firebasePlaylist, setFirebasePlaylist] = useState({
+    id: null,
+    obj: {},
+  });
   const [spotifyPlaylistData, setSpotifyPlaylistData] = useState(null);
   const [tallied, setTallied] = useState([]);
   const [overview, setOverview] = useState([]);
   const [byYear, setByYear] = useState([]);
-  const [lookupInState, setLookupInState] = useState(playlistMetaInAppState.lookup || {});
+  const [lookupInState, setLookupInState] = useState(
+    playlistMetaInAppState.lookup || {}
+  );
   const [colourMap, setColourMap] = useState([]);
   const [genresTallied, setGenresTallied] = useState({});
   const [sharingLink, setSharingLink] = useState(null);
@@ -75,40 +91,55 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   // When stats loads, get FB playlist data, spotify playlist artwork and trigger fetch of metas
   useEffect(() => {
     setPageLoading(true);
-    u.getFirebasePlaylist(spotifyPlaylistId, token).then((firebasePlaylistRes) => {
-      u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(async (spotifyRes) => {
-        console.log(spotifyRes, ' <--- spotifyRes')
-        setSpotifyPlaylistData({ ...spotifyPlaylistData, artwork: spotifyRes.data.images[0].url })
-        const { data } = firebasePlaylistRes;
-        // console.log(data, ' <<<<<<<<<<<')
-        const firebasePlaylistId = Object.entries(data)[0][0];
-        const firebasePlaylistObj = Object.entries(data)[0][1];
-        setFirebasePlaylist({ id: firebasePlaylistId, obj: firebasePlaylistObj });
+    u.getFirebasePlaylist(spotifyPlaylistId, token)
+      .then((firebasePlaylistRes) => {
+        u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(
+          async (spotifyRes) => {
+            console.log(spotifyRes, ' <--- spotifyRes');
+            setSpotifyPlaylistData({
+              ...spotifyPlaylistData,
+              artwork: spotifyRes.data.images[0].url,
+            });
+            const { data } = firebasePlaylistRes;
+            // console.log(data, ' <<<<<<<<<<<')
+            const firebasePlaylistId = Object.entries(data)[0][0];
+            const firebasePlaylistObj = Object.entries(data)[0][1];
+            setFirebasePlaylist({
+              id: firebasePlaylistId,
+              obj: firebasePlaylistObj,
+            });
 
-        // create colourmap
-        const { processedPostsLog } = firebasePlaylistObj;
-        const processedPostsPlusFakes = [...processedPostsLog, ...fakes];
-        // console.log('');
-        // console.log('');
-        // console.log('');
-        // console.log('');
-        // console.log(processedPostsPlusFakes);
+            // create colourmap
+            const { processedPostsLog } = firebasePlaylistObj;
+            const processedPostsPlusFakes = [...processedPostsLog, ...fakes];
+            // console.log('');
+            // console.log('');
+            // console.log('');
+            // console.log('');
+            // console.log(processedPostsPlusFakes);
 
-        const originalPosters = h.listAllPosters(processedPostsLog, lookupInState);
-        const originalPostersColourMap = h.createColourMap(originalPosters);
-        setColourMap(originalPostersColourMap);
+            const originalPosters = h.listAllPosters(
+              processedPostsLog,
+              lookupInState
+            );
+            const originalPostersColourMap = h.createColourMap(originalPosters);
+            setColourMap(originalPostersColourMap);
 
-        const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
-        // console.log(playlistMetaInAppState, ' <--- playlistMetaInAppState ! ! ! !! !')
-        const lookupOnFB = playlistMetaInAppState?.lookup || {};
-        // console.log(lookupOnFB)
-        await fetchAndSetFirebasePlaylistMetas();
+            const playlistMetaInAppState = userPlaylistMetas.find(
+              (e) => e.metaId === firebaseMetaId
+            );
+            // console.log(playlistMetaInAppState, ' <--- playlistMetaInAppState ! ! ! !! !')
+            const lookupOnFB = playlistMetaInAppState?.lookup || {};
+            // console.log(lookupOnFB)
+            await fetchAndSetFirebasePlaylistMetas();
 
-        h.groupPostsByYear(processedPostsLog, lookupInState);
-        // setPageLoading(false);
-        // what
-      });
-    }).catch(e => console.log(e));
+            h.groupPostsByYear(processedPostsLog, lookupInState);
+            // setPageLoading(false);
+            // what
+          }
+        );
+      })
+      .catch((e) => console.log(e));
   }, []);
 
   // When metas update, set .lookup in state, tally / re-tally contributors
@@ -120,7 +151,9 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       // setPageLoading(true)
       // console.log('Got All We Need! 🚨 🚨 🚨🚨 🚨 🚨')
       const { processedPostsLog } = firebasePlaylist.obj;
-      const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+      const playlistMetaInAppState = userPlaylistMetas.find(
+        (e) => e.metaId === firebaseMetaId
+      );
       const lookupOnFB = playlistMetaInAppState?.lookup || {};
       setLookupInState('lookup' in playlistMetaInAppState ? lookupOnFB : {});
 
@@ -129,7 +162,10 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       // console.log(processedPostsLog)
 
       // 🚨 🚨 🚨 ---> processedPostsPlusFakes should be processedPostsLog!
-      const contributions = h.tallyContributions(processedPostsLog, lookupInState);
+      const contributions = h.tallyContributions(
+        processedPostsLog,
+        lookupInState
+      );
       setTallied(contributions);
 
       // console.log(contributions);
@@ -137,7 +173,10 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
       const postsGroupedByYear = h.groupPostsByYear(processedPostsLog);
       setOverview(postsGroupedByYear);
 
-      const postsByYear = h.groupPostsByPosterYearAndMonth(processedPostsLog, lookupInState)
+      const postsByYear = h.groupPostsByPosterYearAndMonth(
+        processedPostsLog,
+        lookupInState
+      );
       setByYear(postsByYear);
 
       const genresTalliedObj = h.tallyGenres(processedPostsLog, lookupInState);
@@ -156,16 +195,23 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   // and trigger refetch of metas
   useEffect(() => {
     const postLookupThenRefetchMetas = async () => {
-      const updateLookupResponse = await u.updatePlaylistMetaLookup(lookupInState, firebaseMetaId, token);
+      const updateLookupResponse = await u.updatePlaylistMetaLookup(
+        lookupInState,
+        firebaseMetaId,
+        token
+      );
       if ([200, 204].includes(updateLookupResponse.status)) {
-        const fetchAndSetFirebasePlaylistMetasFinished = await fetchAndSetFirebasePlaylistMetas();
+        const fetchAndSetFirebasePlaylistMetasFinished =
+          await fetchAndSetFirebasePlaylistMetas();
         if (fetchAndSetFirebasePlaylistMetasFinished) {
           // setPageLoading(false)
-        };
-      };
+        }
+      }
     };
 
-    const playlistMetaInAppState = userPlaylistMetas.find(e => e.metaId === firebaseMetaId);
+    const playlistMetaInAppState = userPlaylistMetas.find(
+      (e) => e.metaId === firebaseMetaId
+    );
     const lookupOnFB = playlistMetaInAppState?.lookup || {};
     if (!_.isEqual(lookupOnFB, lookupInState)) {
       setPageLoading(true);
@@ -189,7 +235,12 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
   };
 
   const handleExportStats = async () => {
-    const exportSuccessResponse = await u.exportStatsPage(firebasePlaylist, playlistMetaInAppState, spotifyPlaylistData, token);
+    const exportSuccessResponse = await u.exportStatsPage(
+      firebasePlaylist,
+      playlistMetaInAppState,
+      spotifyPlaylistData,
+      token
+    );
     // console.log(exportSuccessResponse)
     const { status } = exportSuccessResponse;
     if (![200, 201].includes(status)) {
@@ -200,111 +251,146 @@ function Stats({ userPlaylistMetas, fetchAndSetFirebasePlaylistMetas, userPlayli
     // const sharingUrl = `http://localhost:3000/publicStats/${name}`;
     // console.log(sharingUrl);
     setSharingLink(sharingUrl);
-  }
+  };
 
   return (
     <div className="StatsContainer Flex Column">
-
-      {pageLoading || !firebasePlaylist.id || !userPlaylistMetas.length || !playlistArtworkLoaded || !fontsLoaded ?
+      {pageLoading ||
+      !firebasePlaylist.id ||
+      !userPlaylistMetas.length ||
+      !playlistArtworkLoaded ||
+      !fontsLoaded ? (
         <div className="StatsSpinnerContainer Flex Column">
           <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
         </div>
-        : null}
+      ) : null}
 
-      {
-        pageLoading || !firebasePlaylist.id || !userPlaylistMetas.length ?
-          null :
-          <div className="Stats" >
+      {pageLoading ||
+      !firebasePlaylist.id ||
+      !userPlaylistMetas.length ? null : (
+        <div className="Stats">
+          <div className="StatsPadding">
+            <div className="StatsGoBackContainer Flex">
+              <button className="Flex Row" type="button" onClick={handleGoBack}>
+                <FontAwesomeIcon
+                  id="GoBack"
+                  icon={faArrowLeft}
+                  pointerEvents="none"
+                />
+                <span>Back</span>
+              </button>
+            </div>
 
-            <div className="StatsPadding">
+            <div
+              className="StatsInfoPod Flex Column"
+              style={{
+                fontSize: `${
+                  ((100 / spotifyPlaylistName.length) * 2000) ** 0.3
+                }px`,
+              }}
+            >
+              <img
+                src={spotifyPlaylistData.artwork}
+                onLoad={() => setPlaylistArtworkLoaded(true)}
+                className="SpotifyPlaylistArtwork"
+                alt="Spotify Artwork"
+              />
+              <h1>{spotifyPlaylistName}</h1>
+              <h2>
+                <span>{processedPostsLog.length}</span> tracks
+              </h2>
+              <span>
+                last updated: {h.getLastUpdatedFromMeta(playlistMetaInAppState)}
+              </span>
+              <a
+                className="StatsInfoPodOpenButton Flex"
+                href={`https://open.spotify.com/playlist/${spotifyPlaylistId}`}
+                target="_blank"
+              >
+                <SpotifyIcon fill="white" height={30} width={30} />
+                OPEN IN SPOTIFY
+              </a>
+            </div>
 
-              <div className="StatsGoBackContainer Flex">
-                <button className="Flex Row" type="button" onClick={handleGoBack}>
-                  <FontAwesomeIcon id="GoBack" icon={faArrowLeft} pointerEvents="none" />
-                  <span>Back</span>
-                </button>
-              </div>
+            <div className="ContributorsContainer">
+              <ContributorsSection
+                tallied={tallied}
+                lookupInState={lookupInState}
+                setLookupInState={setLookupInState}
+              />
+            </div>
 
-              <div className="StatsInfoPod Flex Column" style={{ fontSize: `${((100 / spotifyPlaylistName.length) * 2000) ** (0.3)}px` }}>
-                <img src={spotifyPlaylistData.artwork} onLoad={() => setPlaylistArtworkLoaded(true)} className="SpotifyPlaylistArtwork" alt="Spotify Artwork" />
-                <h1>{spotifyPlaylistName}</h1>
-                <h2><span>{processedPostsLog.length}</span> tracks</h2>
-                <span>last updated: {h.getLastUpdatedFromMeta(playlistMetaInAppState)}</span>
-                <a className="StatsInfoPodOpenButton Flex" href={`https://open.spotify.com/playlist/${spotifyPlaylistId}`} target="_blank">
-                  <SpotifyIcon fill="white" height={30} width={30} />
-                  OPEN IN SPOTIFY</a>
-              </div>
+            <div className="ContributorsSpacer" />
 
+            <div className="OverviewContainer Flex Column">
+              <OverviewSection overview={overview} />
+            </div>
 
-              <div className="ContributorsContainer">
+            <div className="ContributorsSpacer" />
 
-                <ContributorsSection
-                  tallied={tallied}
+            <div className="ByYearContainer Flex Column">
+              {byYear.length ? (
+                <ByYearSection
+                  byYear={byYear}
                   lookupInState={lookupInState}
-                  setLookupInState={setLookupInState}
+                  colourMap={colourMap}
                 />
-              </div>
-
-              <div className="ContributorsSpacer" />
-
-              <div className="OverviewContainer Flex Column">
-
-                <OverviewSection overview={overview} />
-
-              </div>
-
-              <div className="ContributorsSpacer" />
-
-              <div className="ByYearContainer Flex Column">
-                {byYear.length ?
-                  <ByYearSection byYear={byYear} lookupInState={lookupInState} colourMap={colourMap} />
-                  : <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />}
-              </div>
-
-              <div className="ContributorsSpacer" />
-
-              <div className="ByGenreContainer Flex Column">
-                {JSON.stringify(genresTallied) !== '{}' ?
-                  <ByGenreSection genresTallied={genresTallied} />
-                  : null
-                }
-              </div>
-
-              <div className="ContributorsSpacer" />
-
-              <div className="ByPosterContainer Flex Column">
-                <ByPosterSection
-                  posters={tallied.map(e => e.poster).sort()}
-                  posts={firebasePlaylist.obj.processedPostsLog}
-                  lookup={lookupInState}
-                  playlistMetaInAppState={userPlaylistMetas.find(e => e.metaId === firebaseMetaId)}
+              ) : (
+                <Oval
+                  stroke="#98FFAD"
+                  height={100}
+                  width={100}
+                  strokeWidth={4}
                 />
-              </div>
+              )}
+            </div>
 
+            <div className="ContributorsSpacer" />
+
+            <div className="ByGenreContainer Flex Column">
+              {JSON.stringify(genresTallied) !== '{}' ? (
+                <ByGenreSection genresTallied={genresTallied} />
+              ) : null}
             </div>
-            <SharedNotAddedSection
-              rawPostsLog={firebasePlaylist.obj.rawPostsLog}
-              lookupInState={lookupInState}
-              colourMap={colourMap}
-              handleExportStats={handleExportStats}
-              sharingLink={sharingLink}
-              appToast={appToast}
-              token={token} />
-            <div className="CopyrightFooter" style={{ borderRadius: '0px 0px 15px 15px', margin: '5% 0%' }}>
-              <span> © Sam Lea 2023</span>
-              <span>|</span>
-              <span>Email the dev <a href="mailto:samuel.edward.lea@gmail.com">here</a></span>
+
+            <div className="ContributorsSpacer" />
+
+            <div className="ByPosterContainer Flex Column">
+              <ByPosterSection
+                posters={tallied.map((e) => e.poster).sort()}
+                posts={firebasePlaylist.obj.processedPostsLog}
+                lookup={lookupInState}
+                playlistMetaInAppState={userPlaylistMetas.find(
+                  (e) => e.metaId === firebaseMetaId
+                )}
+              />
             </div>
-          </ div>
-      }
+          </div>
+          <SharedNotAddedSection
+            rawPostsLog={firebasePlaylist.obj.rawPostsLog}
+            lookupInState={lookupInState}
+            colourMap={colourMap}
+            handleExportStats={handleExportStats}
+            sharingLink={sharingLink}
+            appToast={appToast}
+            token={token}
+          />
+          <div
+            className="CopyrightFooter"
+            style={{ borderRadius: '0px 0px 15px 15px', margin: '5% 0%' }}
+          >
+            <span> © Sam Lea 2023</span>
+            <span>|</span>
+            <span>
+              Email the dev{' '}
+              <a href="mailto:samuel.edward.lea@gmail.com">here</a>
+            </span>
+          </div>
+        </div>
+      )}
       <Toaster />
-    </div >
+    </div>
   );
-
-
-};
+}
 
 export default Stats;
-
-
-
