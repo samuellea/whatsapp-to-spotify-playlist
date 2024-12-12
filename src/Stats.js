@@ -306,6 +306,7 @@ function Stats({
                 className="StatsInfoPodOpenButton Flex"
                 href={`https://open.spotify.com/playlist/${spotifyPlaylistId}`}
                 target="_blank"
+                rel="noreferrer"
               >
                 <SpotifyIcon fill="white" height={30} width={30} />
                 OPEN IN SPOTIFY

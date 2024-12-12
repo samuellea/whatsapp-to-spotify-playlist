@@ -23,20 +23,35 @@
   margin: 10% 0%;
 }
 
+.videoWrapper {
+  /* border: 3px solid blue; */
+  margin-top: 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.videoContainer {
+  /* border-top: 1px solid black; */
+  /* border-right: 1px solid black; */
+  /* border-bottom: 1px solid black; */
+}
+
 .SpotifyCreditFooter {
   /* border: 1px solid red; */
   font-size: 13px;
   /* padding-bottom: 10%; */
   justify-content: center;
   align-items: center;
-  font-family: "Raleway-ExtraLight";
+  font-family: 'Raleway-ExtraLight';
   padding-right: 15px;
 }
 
 #SpotifyCreditFooterLink {
   text-decoration: none !important;
 }
-
 
 .LandingHeaders {
   /* border: 2px dashed cyan; */
@@ -80,7 +95,7 @@
   /* border: 3px solid yellow; */
   height: 55%;
   min-height: 370px;
-  background-color: #09090D;
+  background-color: #09090d;
   border-radius: 15px;
   /* padding: 15px; */
   padding: 4.2%;
@@ -96,7 +111,7 @@
   width: 100%;
   border-radius: 10px;
   border: none;
-  background-color: #7316C6;
+  background-color: #7316c6;
   font-family: Arial;
   font-size: 16px;
   font-weight: 600;
@@ -108,7 +123,7 @@
 
 .Landing a {
   /* border: 1px solid red; */
-  font-family: "Raleway-Regular";
+  font-family: 'Raleway-Regular';
   font-size: 14px;
   margin-bottom: 15px;
 }
@@ -118,10 +133,10 @@
 }
 
 .LandingInfoArea {
-  background-color: #4A4964;
+  background-color: #4a4964;
   padding: 5%;
   text-align: center;
-  font-family: "Raleway-Regular";
+  font-family: 'Raleway-Regular';
   color: white;
   display: flex;
   flex-direction: column;
@@ -135,5 +150,5 @@
 
 .LandingGradientBlock {
   height: 75px;
-  background-image: linear-gradient(#292B3E, #4A4964);
+  background-image: linear-gradient(#292b3e, #4a4964);
 }
