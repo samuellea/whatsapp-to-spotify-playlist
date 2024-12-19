@@ -67,9 +67,9 @@ function FinalReviewInterface({
   };
 
   const screenToRender = () => {
-    // console.log(processedPostsLog)
+    console.log(spotifyPlaylistObj);
     const firebasePLAndSpotifyPLInSync =
-      processedPostsLog?.length || 0 === spotifyPlaylistObj.tracks.total;
+      processedPostsLog?.length || 0 === spotifyPlaylistObj?.tracks?.total;
 
     if (!submissionFeedback) {
       return (
@@ -84,7 +84,7 @@ function FinalReviewInterface({
                 <span>{processedPostsLog?.length || 0}</span> tracks
               </h2>
               <h3>
-                Spotify: {spotifyPlaylistObj.tracks.total} tracks{' '}
+                Spotify: {spotifyPlaylistObj?.tracks?.total} tracks{' '}
                 <span>{firebasePLAndSpotifyPLInSync ? '✅' : '⚠️'}</span>
               </h3>
 

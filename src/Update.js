@@ -158,6 +158,7 @@ function Update({
       spotifyPlaylistId,
       spotifyToken
     );
+    console.log(spotifyPlaylistResponse);
     if (spotifyPlaylistResponse.status === 200) {
       const { data: spotifyPlaylistData } = spotifyPlaylistResponse;
       setSpotifyPlaylistInState(spotifyPlaylistData);
