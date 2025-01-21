@@ -96,9 +96,13 @@ function Stats({
         u.getSpotifyPlaylist(spotifyPlaylistId, spotifyToken).then(
           async (spotifyRes) => {
             console.log(spotifyRes, ' <--- spotifyRes');
+            // setSpotifyPlaylistData({
+            //   ...spotifyPlaylistData,
+            //   artwork: spotifyRes?.data?.images[0].url,
+            // });
             setSpotifyPlaylistData({
               ...spotifyPlaylistData,
-              artwork: spotifyRes.data.images[0].url,
+              artwork: spotifyRes?.playlistArtwork,
             });
             const { data } = firebasePlaylistRes;
             // console.log(data, ' <<<<<<<<<<<')
@@ -258,8 +262,7 @@ function Stats({
       {pageLoading ||
       !firebasePlaylist.id ||
       !userPlaylistMetas.length ||
-      !playlistArtworkLoaded ||
-      !fontsLoaded ? (
+      !playlistArtworkLoaded ? (
         <div className="StatsSpinnerContainer Flex Column">
           <Oval stroke="#98FFAD" height={100} width={100} strokeWidth={4} />
         </div>

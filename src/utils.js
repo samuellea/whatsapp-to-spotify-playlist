@@ -176,13 +176,24 @@ export const getFirebasePlaylist = (spotifyPlaylistId, token) => {
 export const getSpotifyPlaylist = async (spotifyPlaylistId, spotifyToken) => {
   console.log('getSpotifyPlaylist!');
   let allTracks = [];
+  let playlistResponseStatus;
+  let playlistArtworkURL = '';
+  let playlistData = {};
   let offset = 0;
   const limit = 100; // Maximum number of tracks per request
   const totalTracks = await axios({
     url: `https://api.spotify.com/v1/playlists/${spotifyPlaylistId}`,
     method: 'GET',
     headers: { Authorization: 'Bearer ' + spotifyToken },
-  }).then((response) => response.data.tracks.total); // Get total number of tracks
+  }).then((response) => {
+    console.log(response, ' <----- ❗❗❗❗ ');
+    playlistData = response.data;
+    playlistResponseStatus = response.status;
+    playlistArtworkURL = response.data.images
+      ? response.data.images[0]?.url
+      : null;
+    return response.data.tracks.total;
+  }); // Get total number of tracks
 
   // Paginate through the tracks
   while (offset < totalTracks) {
@@ -201,8 +212,14 @@ export const getSpotifyPlaylist = async (spotifyPlaylistId, spotifyToken) => {
       offset += limit; // Increase the offset to get the next set of tracks
     }
   }
-  console.log(allTracks);
-  return allTracks; // All tracks in the playlist
+  const playlistObj = {
+    status: playlistResponseStatus,
+    data: playlistData,
+    playlistTracks: allTracks,
+    playlistArtwork: playlistArtworkURL,
+  };
+  // return allTracks; // All tracks in the playlist
+  return playlistObj;
 };
 
 export const updateFirebasePlaylist = async (

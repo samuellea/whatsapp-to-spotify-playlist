@@ -160,7 +160,8 @@ function Update({
     );
     console.log(spotifyPlaylistResponse);
     if (spotifyPlaylistResponse.status === 200) {
-      const { data: spotifyPlaylistData } = spotifyPlaylistResponse;
+      // const { data: spotifyPlaylistData } = spotifyPlaylistResponse;
+      const spotifyPlaylistData = spotifyPlaylistResponse.data;
       setSpotifyPlaylistInState(spotifyPlaylistData);
     }
     // pull down the Firebase object for this playlist
